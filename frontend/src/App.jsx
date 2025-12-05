@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom'; // CHANGED THIS LINE
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
@@ -8,37 +8,100 @@ import Home from './pages/Home';
 import Services from './pages/Services';
 import Industries from './pages/Industries';
 import Company from './pages/Company';
-import Resources from './pages/Resources';
+import Academy from './pages/Academy';
 import Solutions from './pages/Solutions';
 import Contact from './pages/Contact';
+
+// Authentication Pages
 import SignIn from './pages/SignIn';
+import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
+
+// Solution Detail Pages
+import AIAnalytics from './pages/solutions/AIAnalytics';
+import Automation from './pages/solutions/Automation';
+import Cybersecurity from './pages/solutions/Cybersecurity';
+import DevSolutions from './pages/solutions/DevSolutions';
+import MachineLearning from './pages/solutions/MachineLearning';
+import CloudAI from './pages/solutions/CloudAI';
+
+// Dashboard Placeholder
+import Dashboard from './pages/Dashboard';
+
+// Error Pages
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950">
         <Header />
-        <Routes>
-          {/* Main Routes */}
-          <Route path="/" element={<Home />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/industries" element={<Industries />} />
-          <Route path="/company" element={<Company />} />
-          <Route path="/resources" element={<Resources />} />
-          <Route path="/solutions" element={<Solutions />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/signin" element={<SignIn />} />
-
-          {/* Nested Routes for Subpages */}
-          <Route path="/services/:serviceId" element={<Services />} />
-          <Route path="/industries/:industryId" element={<Industries />} />
-          <Route path="/company/:sectionId" element={<Company />} />
-          <Route path="/resources/:resourceId" element={<Resources />} />
-          <Route path="/solutions/:solutionId" element={<Solutions />} />
-          
-          {/* Optional: 404 Page */}
-          {/* <Route path="*" element={<NotFound />} /> */}
-        </Routes>
+        <main className="flex-grow">
+          <Routes>
+            {/* ========== PUBLIC ROUTES ========== */}
+            
+            {/* Main Navigation Routes */}
+            <Route path="/" element={<Home />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/industries" element={<Industries />} />
+            <Route path="/company" element={<Company />} />
+            <Route path="/academy" element={<Academy />} />
+            <Route path="/solutions" element={<Solutions />} />
+            <Route path="/contact" element={<Contact />} />
+            
+            {/* Authentication Routes */}
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            
+            {/* Sign Up Variants */}
+            <Route path="/signup" element={<SignIn />} />
+            <Route path="/signup/enterprise" element={<SignIn />} />
+            <Route path="/signup/partner" element={<SignIn />} />
+            
+            {/* ========== SOLUTION DETAIL ROUTES ========== */}
+            
+            <Route path="/solutions/ai-analytics" element={<AIAnalytics />} />
+            <Route path="/solutions/automation" element={<Automation />} />
+            <Route path="/solutions/cybersecurity" element={<Cybersecurity />} />
+            <Route path="/solutions/dev-solutions" element={<DevSolutions />} />
+            <Route path="/solutions/machine-learning" element={<MachineLearning />} />
+            <Route path="/solutions/cloud-ai" element={<CloudAI />} />
+            
+            {/* ========== SERVICE DETAIL ROUTES ========== */}
+            
+            <Route path="/services/ai-consulting" element={<Services />} />
+            <Route path="/services/cloud-migration" element={<Services />} />
+            <Route path="/services/digital-transformation" element={<Services />} />
+            <Route path="/services/tech-infrastructure" element={<Services />} />
+            <Route path="/services/support-maintenance" element={<Services />} />
+            
+            {/* ========== INDUSTRY DETAIL ROUTES ========== */}
+            
+            <Route path="/industries/finance-banking" element={<Industries />} />
+            <Route path="/industries/healthcare" element={<Industries />} />
+            <Route path="/industries/retail-ecommerce" element={<Industries />} />
+            <Route path="/industries/manufacturing" element={<Industries />} />
+            <Route path="/industries/education" element={<Industries />} />
+            <Route path="/industries/government" element={<Industries />} />
+            
+            {/* ========== COMPANY DETAIL ROUTES ========== */}
+            
+            <Route path="/company/about-us" element={<Company />} />
+            <Route path="/company/leadership" element={<Company />} />
+            <Route path="/company/careers" element={<Company />} />
+            <Route path="/company/partners" element={<Company />} />
+            <Route path="/company/newsroom" element={<Company />} />
+            
+            {/* ========== DASHBOARD ROUTE ========== */}
+            
+            <Route path="/dashboard" element={<Dashboard />} />
+            
+            {/* ========== ERROR ROUTE ========== */}
+            
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
         <Footer />
       </div>
     </Router>

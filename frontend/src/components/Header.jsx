@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, ChevronDown, Brain, Sparkles, Cpu, Globe, Shield, Code, Palette, Zap, Home, Briefcase, BookOpen, Users, Mail, FileText, Building, Server, Layers } from 'lucide-react';
+import { Menu, X, ChevronDown, Brain, Sparkles, Cpu, Globe, Shield, Code, Palette, Zap, Home, Briefcase, BookOpen, Users, Mail, FileText, Building, Server, Layers, GraduationCap } from 'lucide-react';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -44,18 +44,17 @@ const Header = () => {
     }));
   };
 
+  // Updated solutions array - removed Smart Cities and UI/UX Design
   const solutions = [
     { icon: <Brain className="h-5 w-5" />, name: "AI Analytics", desc: "Predictive insights for businesses", color: "from-blue-500 to-cyan-500", href: "/solutions/ai-analytics" },
     { icon: <Cpu className="h-5 w-5" />, name: "Automation", desc: "Streamline operations with AI", color: "from-purple-500 to-blue-500", href: "/solutions/automation" },
     { icon: <Shield className="h-5 w-5" />, name: "Cybersecurity", desc: "AI-powered threat detection", color: "from-cyan-500 to-teal-500", href: "/solutions/cybersecurity" },
-    { icon: <Globe className="h-5 w-5" />, name: "Smart Cities", desc: "Urban planning intelligence", color: "from-blue-500 to-indigo-500", href: "/solutions/smart-cities" },
     { icon: <Code className="h-5 w-5" />, name: "Dev Solutions", desc: "AI-driven development", color: "from-indigo-500 to-purple-500", href: "/solutions/dev-solutions" },
     { icon: <Server className="h-5 w-5" />, name: "Machine Learning", desc: "Custom ML models & deployment", color: "from-cyan-500 to-blue-500", href: "/solutions/machine-learning" },
-    { icon: <Palette className="h-5 w-5" />, name: "UI/UX Design", desc: "Intelligent user interfaces", color: "from-purple-500 to-pink-500", href: "/solutions/uiux-design" },
     { icon: <Zap className="h-5 w-5" />, name: "Cloud AI", desc: "Scalable AI infrastructure", color: "from-blue-500 to-cyan-500", href: "/solutions/cloud-ai" },
   ];
 
-  // Updated navigation items with proper routes
+  // Updated navigation items with NO SUBMENUS for Services, Industries, Company
   const navItems = [
     { 
       name: "Home", 
@@ -65,51 +64,26 @@ const Header = () => {
     { 
       name: "Services", 
       href: "/services", 
-      icon: <Layers className="h-4 w-4 mr-2" />,
-      submenu: [
-        { name: "AI Consulting", href: "/services/ai-consulting" },
-        { name: "Cloud Migration", href: "/services/cloud-migration" },
-        { name: "Digital Transformation", href: "/services/digital-transformation" },
-        { name: "Tech Infrastructure", href: "/services/tech-infrastructure" },
-        { name: "Support & Maintenance", href: "/services/support-maintenance" }
-      ]
+      icon: <Layers className="h-4 w-4 mr-2" />
+      // NO SUBMENU - removed dropdown
     },
     { 
       name: "Industries", 
       href: "/industries", 
-      icon: <Building className="h-4 w-4 mr-2" />,
-      submenu: [
-        { name: "Finance & Banking", href: "/industries/finance-banking" },
-        { name: "Healthcare", href: "/industries/healthcare" },
-        { name: "Retail & E-commerce", href: "/industries/retail-ecommerce" },
-        { name: "Manufacturing", href: "/industries/manufacturing" },
-        { name: "Education", href: "/industries/education" },
-        { name: "Government", href: "/industries/government" }
-      ]
+      icon: <Building className="h-4 w-4 mr-2" />
+      // NO SUBMENU - removed dropdown
     },
     { 
-      name: "Resources", 
-      href: "/resources", 
-      icon: <BookOpen className="h-4 w-4 mr-2" />,
-      submenu: [
-        { name: "Whitepapers", href: "/resources/whitepapers" },
-        { name: "Blog", href: "/resources/blog" },
-        { name: "Documentation", href: "/resources/documentation" },
-        { name: "Webinars", href: "/resources/webinars" },
-        { name: "API Reference", href: "/resources/api-reference" }
-      ]
+      name: "Academy", 
+      href: "/academy", 
+      icon: <GraduationCap className="h-4 w-4 mr-2" />
+      // NO SUBMENU - removed dropdown
     },
     { 
       name: "Company", 
       href: "/company", 
-      icon: <Users className="h-4 w-4 mr-2" />,
-      submenu: [
-        { name: "About Us", href: "/company/about-us" },
-        { name: "Leadership", href: "/company/leadership" },
-        { name: "Careers", href: "/company/careers" },
-        { name: "Partners", href: "/company/partners" },
-        { name: "Newsroom", href: "/company/newsroom" }
-      ]
+      icon: <Users className="h-4 w-4 mr-2" />
+      // NO SUBMENU - removed dropdown
     },
   ];
 
@@ -122,22 +96,18 @@ const Header = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           
-          {/* Logo Section */}
+          {/* Logo Section - EXACTLY AS BEFORE */}
           <Link to="/" className="flex items-center space-x-3">
             <div className="relative group">
-              {/* Glow effect */}
               <div className="absolute -inset-2 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-2xl opacity-0 group-hover:opacity-100 blur transition-opacity duration-500"></div>
               
-              {/* Logo container - distinct from hero background */}
               <div className="h-14 w-14 flex items-center justify-center rounded-xl bg-gradient-to-br from-[#1f2937] to-[#111827] shadow-lg border border-blue-500/30 group-hover:shadow-xl group-hover:scale-105 transition-all duration-300 relative overflow-hidden">
-                {/* Subtle grid effect */}
                 <div className="absolute inset-0 opacity-5" style={{
                   backgroundImage: `linear-gradient(90deg, #0088ff22 1px, transparent 1px),
                                   linear-gradient(#0088ff22 1px, transparent 1px)`,
                   backgroundSize: '20px 20px'
                 }}></div>
                 
-                {/* Logo */}
                 <div className="relative z-10">
                   <img 
                     src="./images/logo/bitafrica-logo.png" 
@@ -154,13 +124,11 @@ const Header = () => {
               </div>
             </div>
             
-            {/* Text with sliding animation */}
             <div className="ml-1">
               <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-300 via-cyan-300 to-blue-300 bg-clip-text text-transparent tracking-tight">
                 BitAfrica AI
               </h1>
               
-              {/* Sliding animation tagline */}
               <div className="overflow-hidden h-5 mt-0.5">
                 <p className="text-xs text-blue-400/80 font-medium tracking-wide whitespace-nowrap animate-marquee-fast">
                   Powered by AI • Transforming Africa 
@@ -169,43 +137,21 @@ const Header = () => {
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - PROFESSIONAL SPACING */}
           <nav className="hidden lg:flex items-center space-x-1">
             {navItems.map((item) => (
               <div key={item.name} className="relative group">
                 <Link 
                   to={item.href}
-                  className="flex items-center px-4 py-2.5 text-blue-100/90 hover:text-white font-medium transition-all duration-200 rounded-lg hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 group"
+                  className="flex items-center px-3.5 py-2.5 text-blue-100/90 hover:text-white font-medium transition-all duration-200 rounded-lg hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 group whitespace-nowrap"
                 >
                   {item.icon}
                   {item.name}
-                  {item.submenu && (
-                    <ChevronDown className="ml-1.5 h-3.5 w-3.5 transition-transform duration-200 group-hover:rotate-180" />
-                  )}
                 </Link>
-                
-                {item.submenu && (
-                  <div className="absolute left-0 mt-2 w-64 bg-[#1f2937]/95 backdrop-blur-xl rounded-xl shadow-2xl border border-blue-500/20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform -translate-y-2 group-hover:translate-y-0">
-                    <div className="p-2">
-                      {item.submenu.map((sub, index) => (
-                        <Link
-                          key={sub.name}
-                          to={sub.href}
-                          className="flex items-center px-4 py-3 text-blue-100/80 hover:text-white hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 rounded-lg transition-all duration-200 group/item"
-                          style={{ transitionDelay: `${index * 30}ms` }}
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          <div className="h-1.5 w-1.5 rounded-full bg-cyan-400 opacity-0 group-hover/item:opacity-100 mr-3 transition-opacity"></div>
-                          <span className="font-medium">{sub.name}</span>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             ))}
             
-            {/* Solutions Dropdown */}
+            {/* Solutions Dropdown - PROFESSIONAL SPACING (KEEP THIS DROPDOWN) */}
             <div 
               className="relative group"
               onMouseEnter={() => setHoveredSolution(0)}
@@ -213,22 +159,22 @@ const Header = () => {
             >
               <Link 
                 to="/solutions"
-                className="flex items-center px-5 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-xl hover:shadow-xl hover:scale-105 transition-all duration-300 shadow-lg group ml-2"
+                className="flex items-center px-4 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-xl hover:shadow-xl hover:scale-105 transition-all duration-300 shadow-lg group ml-2 whitespace-nowrap"
               >
                 <Sparkles className="h-4 w-4 mr-2 animate-pulse" />
                 Solutions
-                <ChevronDown className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:rotate-180" />
+                <ChevronDown className="ml-1.5 h-4 w-4 transition-transform duration-300 group-hover:rotate-180" />
               </Link>
               
-              {/* Mega Dropdown with sliding animation */}
-              <div className="absolute right-0 mt-2 w-[800px] bg-[#1f2937]/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-blue-500/20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-500 transform -translate-y-4 group-hover:translate-y-0 overflow-hidden">
-                <div className="p-6">
-                  <div className="grid grid-cols-2 gap-4">
+              {/* Mega Dropdown with 6 items (removed Smart Cities and UI/UX Design) */}
+              <div className="absolute right-0 mt-2 w-[680px] bg-[#1f2937]/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-blue-500/20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-500 transform -translate-y-4 group-hover:translate-y-0 overflow-hidden z-50">
+                <div className="p-4">
+                  <div className="grid grid-cols-2 gap-3">
                     {solutions.map((solution, index) => (
                       <Link
                         key={solution.name}
                         to={solution.href}
-                        className={`flex items-center p-4 rounded-xl transition-all duration-300 group/item transform hover:scale-[1.02] ${
+                        className={`flex items-center p-3 rounded-xl transition-all duration-300 group/item transform hover:scale-[1.02] ${
                           hoveredSolution === index 
                             ? 'bg-gradient-to-r from-blue-500/10 to-cyan-500/10 scale-[1.02]' 
                             : 'hover:bg-gradient-to-r hover:from-blue-500/5 hover:to-cyan-500/5'
@@ -239,28 +185,28 @@ const Header = () => {
                           animationDelay: `${index * 50}ms`
                         }}
                       >
-                        <div className={`h-12 w-12 flex items-center justify-center rounded-lg bg-gradient-to-r ${solution.color} text-white shadow-lg group-hover/item:shadow-xl transition-all duration-300`}>
+                        <div className={`h-10 w-10 flex items-center justify-center rounded-lg bg-gradient-to-r ${solution.color} text-white shadow-lg group-hover/item:shadow-xl transition-all duration-300`}>
                           {solution.icon}
                         </div>
-                        <div className="ml-4">
-                          <p className="font-bold text-white">{solution.name}</p>
-                          <p className="text-sm text-blue-200/70">{solution.desc}</p>
+                        <div className="ml-3 flex-1 min-w-0">
+                          <p className="font-bold text-white text-sm">{solution.name}</p>
+                          <p className="text-xs text-blue-200/70 truncate">{solution.desc}</p>
                         </div>
-                        <ChevronDown className="ml-auto h-4 w-4 text-cyan-300/50 transform -rotate-90 opacity-0 group-hover/item:opacity-100 transition-opacity" />
+                        <ChevronDown className="ml-2 h-4 w-4 text-cyan-300/50 transform -rotate-90 opacity-0 group-hover/item:opacity-100 transition-opacity flex-shrink-0" />
                       </Link>
                     ))}
                   </div>
                   
-                  {/* Preview section */}
+                  {/* Preview section - COMPACT */}
                   {hoveredSolution !== null && (
-                    <div className="mt-6 p-4 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-xl border border-cyan-500/30 animate-fadeIn">
+                    <div className="mt-4 p-3 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-xl border border-cyan-500/30 animate-fadeIn">
                       <div className="flex items-center">
-                        <div className={`h-10 w-10 flex items-center justify-center rounded-lg bg-gradient-to-r ${solutions[hoveredSolution]?.color} text-white mr-3`}>
+                        <div className={`h-8 w-8 flex items-center justify-center rounded-lg bg-gradient-to-r ${solutions[hoveredSolution]?.color} text-white mr-3`}>
                           {solutions[hoveredSolution]?.icon}
                         </div>
-                        <div>
-                          <p className="font-bold text-white">Explore {solutions[hoveredSolution]?.name}</p>
-                          <p className="text-sm text-blue-200/70">Click to see detailed capabilities and case studies</p>
+                        <div className="min-w-0">
+                          <p className="font-bold text-white text-sm">Explore {solutions[hoveredSolution]?.name}</p>
+                          <p className="text-xs text-blue-200/70 truncate">Click to see detailed capabilities and case studies</p>
                         </div>
                       </div>
                     </div>
@@ -269,34 +215,35 @@ const Header = () => {
               </div>
             </div>
 
-            {/* Contact Us Button */}
+            {/* Contact Us Button - PROFESSIONAL SPACING */}
             <Link 
               to="/contact"
-              className="flex items-center px-5 py-2.5 ml-2 text-white font-semibold rounded-xl border-2 border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 hover:border-cyan-400 hover:scale-105 transition-all duration-300 group"
+              className="flex items-center px-4 py-2.5 ml-2 text-white font-semibold rounded-xl border-2 border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 hover:border-cyan-400 hover:scale-105 transition-all duration-300 group whitespace-nowrap"
             >
               <Mail className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
               Contact
             </Link>
           </nav>
 
-          {/* Desktop CTA */}
-          <div className="hidden lg:flex items-center space-x-3">
+          {/* Desktop CTA - OPTIMIZED */}
+          <div className="hidden lg:flex items-center space-x-3 ml-2">
             <Link 
               to="/signin"
-              className="relative px-4 py-2.5 text-blue-200 hover:text-white font-medium group overflow-hidden rounded-lg"
+              className="relative px-4 py-2.5 text-blue-200 hover:text-white font-medium group overflow-hidden rounded-lg whitespace-nowrap"
             >
               <span className="relative z-10">Sign In</span>
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-transparent -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button - EXACT HAMBURGER AS BEFORE */}
           <div className="lg:hidden flex items-center">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="relative p-2.5 rounded-lg bg-gradient-to-r from-blue-500/5 to-cyan-500/5 border border-blue-500/20 hover:border-cyan-500/40 transition-all duration-300 group"
               aria-label="Toggle menu"
             >
+              {/* EXACT HAMBURGER ICON FROM YOUR ORIGINAL CODE */}
               <div className="w-6 h-6 flex flex-col items-center justify-center space-y-1.5">
                 <span className={`block h-0.5 w-5 bg-cyan-400 transition-all duration-300 ${isMenuOpen ? "rotate-45 translate-y-2" : ""}`}></span>
                 <span className={`block h-0.5 w-5 bg-cyan-400 transition-all duration-300 ${isMenuOpen ? "opacity-0" : ""}`}></span>
@@ -306,72 +253,44 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Professional Mobile Menu with sliding animation */}
+        {/* Professional Mobile Menu - SCROLLABLE & PROPER SPACING */}
         {isMenuOpen && (
           <div 
             ref={mobileMenuRef}
-            className="lg:hidden border-t border-blue-700/30 py-4 animate-slideDown bg-[#1f2937]/95 backdrop-blur-xl overflow-y-auto"
+            className="lg:hidden border-t border-blue-700/30 py-2 animate-slideDown bg-[#1f2937]/95 backdrop-blur-xl overflow-y-auto"
+            style={{ maxHeight: 'calc(100vh - 80px)' }}
           >
-            <div className="space-y-1 px-4">
-              {/* Fix: Make Home link clickable in mobile */}
+            <div className="space-y-0 px-2">
+              {/* Home link */}
               <Link
                 to="/"
-                className="flex items-center w-full px-4 py-3 text-blue-100/90 hover:text-white hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 rounded-xl font-medium transition-all duration-200 group transform hover:translate-x-2"
+                className="flex items-center w-full px-3 py-3 text-blue-100/90 hover:text-white hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 rounded-lg font-medium transition-all duration-200 group"
                 onClick={() => setIsMenuOpen(false)}
               >
                 <Home className="h-4 w-4 mr-2" />
                 <span className="font-semibold">Home</span>
               </Link>
               
-              {/* Rest of mobile navigation items */}
+              {/* All main navigation items are now simple links (no dropdowns) */}
               {navItems.slice(1).map((item, index) => (
-                <div key={item.name} className="overflow-hidden">
-                  <button
-                    onClick={() => {
-                      if (item.submenu) {
-                        toggleMobileItem(item.name);
-                      } else {
-                        setIsMenuOpen(false);
-                      }
-                    }}
-                    className="flex items-center justify-between w-full px-4 py-3 text-blue-100/90 hover:text-white hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 rounded-xl font-medium transition-all duration-200 group transform hover:translate-x-2"
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
-                    <div className="flex items-center">
-                      {item.icon}
-                      <span className="font-semibold ml-2">{item.name}</span>
-                    </div>
-                    {item.submenu && (
-                      <ChevronDown className={`h-4 w-4 text-cyan-400/50 transition-transform duration-300 ${
-                        openMobileItems[item.name] ? 'rotate-180' : ''
-                      }`} />
-                    )}
-                  </button>
-                  
-                  {item.submenu && openMobileItems[item.name] && (
-                    <div className="ml-8 mt-1 space-y-1 bg-gradient-to-b from-blue-500/10 to-cyan-500/10 rounded-lg p-2 border border-blue-500/20 animate-slideDown">
-                      {item.submenu.map((sub, subIndex) => (
-                        <Link
-                          key={sub.name}
-                          to={sub.href}
-                          className="flex items-center px-4 py-2.5 text-sm text-blue-200/80 hover:text-white hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 rounded-lg transition-all duration-200 group/sub transform hover:translate-x-2"
-                          onClick={() => setIsMenuOpen(false)}
-                          style={{ animationDelay: `${subIndex * 30}ms` }}
-                        >
-                          <div className="h-1.5 w-1.5 rounded-full bg-cyan-400 opacity-0 group-hover/sub:opacity-100 mr-3 transition-opacity"></div>
-                          <span className="font-medium">{sub.name}</span>
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className="flex items-center w-full px-3 py-3 text-blue-100/90 hover:text-white hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 rounded-lg font-medium transition-all duration-200 group"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <div className="flex items-center">
+                    {item.icon}
+                    <span className="font-semibold ml-2">{item.name}</span>
+                  </div>
+                </Link>
               ))}
               
-              {/* Mobile Solutions Accordion */}
+              {/* Mobile Solutions Accordion - WITH 6 ITEMS (KEEP THIS DROPDOWN) */}
               <div className="overflow-hidden">
                 <button
                   onClick={() => toggleMobileItem('solutions')}
-                  className="flex items-center justify-between w-full px-4 py-3 text-blue-100/90 hover:text-white hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 rounded-xl font-medium transition-all duration-200 group transform hover:translate-x-2"
+                  className="flex items-center justify-between w-full px-3 py-3 text-blue-100/90 hover:text-white hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 rounded-lg font-medium transition-all duration-200 group"
                 >
                   <div className="flex items-center">
                     <Sparkles className="h-4 w-4 mr-2" />
@@ -383,21 +302,20 @@ const Header = () => {
                 </button>
                 
                 {openMobileItems['solutions'] && (
-                  <div className="ml-8 mt-3 space-y-2 animate-slideDown">
-                    <div className="grid grid-cols-2 gap-3">
+                  <div className="ml-6 mt-1.5 space-y-1.5 animate-slideDown">
+                    <div className="grid grid-cols-2 gap-2">
                       {solutions.map((solution, index) => (
                         <Link
                           key={solution.name}
                           to={solution.href}
-                          className="flex flex-col items-center p-3 bg-gradient-to-b from-blue-500/10 to-cyan-500/10 rounded-xl border border-blue-500/20 hover:border-cyan-500/40 hover:scale-105 transition-all duration-200 group/solution transform hover:translate-y-[-2px]"
+                          className="flex flex-col items-center p-2.5 bg-gradient-to-b from-blue-500/10 to-cyan-500/10 rounded-xl border border-blue-500/20 hover:border-cyan-500/40 hover:scale-105 transition-all duration-200 group/solution"
                           onClick={() => setIsMenuOpen(false)}
-                          style={{ animationDelay: `${index * 40}ms` }}
                         >
-                          <div className={`h-10 w-10 flex items-center justify-center rounded-lg bg-gradient-to-r ${solution.color} text-white shadow-lg group-hover/solution:shadow-xl mb-2 transition-all duration-300`}>
+                          <div className={`h-9 w-9 flex items-center justify-center rounded-lg bg-gradient-to-r ${solution.color} text-white shadow-lg group-hover/solution:shadow-xl mb-1.5 transition-all duration-300`}>
                             {solution.icon}
                           </div>
                           <span className="text-xs font-bold text-white text-center">{solution.name}</span>
-                          <span className="text-[10px] text-blue-200/70 text-center mt-1">{solution.desc}</span>
+                          <span className="text-[10px] text-blue-200/70 text-center mt-0.5">{solution.desc}</span>
                         </Link>
                       ))}
                     </div>
@@ -406,10 +324,10 @@ const Header = () => {
               </div>
               
               {/* Contact in Mobile Menu */}
-              <div className="px-4 py-3">
+              <div className="px-2 py-2">
                 <Link
                   to="/contact"
-                  className="flex items-center justify-center w-full px-4 py-3 text-white font-semibold rounded-xl border-2 border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 transition-all duration-200 active:scale-95 transform hover:scale-[1.02]"
+                  className="flex items-center justify-center w-full px-3 py-3 text-white font-semibold rounded-xl border-2 border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 transition-all duration-200 active:scale-95"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <Mail className="h-4 w-4 mr-2" />
@@ -418,10 +336,10 @@ const Header = () => {
               </div>
 
               {/* Mobile CTA */}
-              <div className="pt-4 px-4 space-y-3 border-t border-blue-700/30">
+              <div className="pt-2 px-2 pb-3 space-y-2 border-t border-blue-700/30">
                 <Link 
                   to="/signin"
-                  className="w-full text-center text-cyan-400 font-semibold py-3.5 border-2 border-cyan-400/50 rounded-xl hover:bg-gradient-to-r hover:from-cyan-500/10 hover:to-blue-500/10 transition-all duration-200 active:scale-95 transform hover:scale-[1.02] block"
+                  className="w-full text-center text-cyan-400 font-semibold py-3 border-2 border-cyan-400/50 rounded-xl hover:bg-gradient-to-r hover:from-cyan-500/10 hover:to-blue-500/10 transition-all duration-200 active:scale-95 block"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <span className="flex items-center justify-center">
