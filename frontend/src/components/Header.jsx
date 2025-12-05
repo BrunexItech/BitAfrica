@@ -120,7 +120,7 @@ const Header = () => {
                 {/* Logo */}
                 <div className="relative z-10">
                   <img 
-                    src="/images/logo/bitafrica-logo.png" 
+                    src="./images/logo/bitafrica-logo.png" 
                     alt="BitAfrica AI Logo" 
                     className="h-10 w-10 object-contain p-1 transition-transform duration-300 group-hover:scale-110"
                     onError={(e) => {
