@@ -1,0 +1,474 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.8);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Marquee animations for Powered by AI */
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes marquee-smooth {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes marquee-loop {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes text-slide {
+  0% {
+    transform: translateX(100vw);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes infinite-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* FASTER MARQUEE ANIMATION - Added for header */
+@keyframes marquee-fast {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes marquee-very-fast {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Animation classes */
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-slideDown {
+  animation: slideDown 0.4s ease-out;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.4s ease-out;
+}
+
+.animate-shine {
+  animation: shine 1.5s ease-in-out;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+
+.animate-marquee-slow {
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee-loop {
+  animation: marquee-loop 15s linear infinite;
+}
+
+.animate-text-slide {
+  animation: text-slide 25s linear infinite;
+}
+
+.animate-infinite-scroll {
+  animation: infinite-scroll 40s linear infinite;
+}
+
+/* FASTER MARQUEE CLASSES - For header animation */
+.animate-marquee-fast {
+  animation: marquee-fast 12s linear infinite;
+}
+
+.animate-marquee-very-fast {
+  animation: marquee-very-fast 8s linear infinite;
+}
+
+/* Marquee container styles */
+.marquee-container {
+  display: inline-block;
+  white-space: nowrap;
+  padding-right: 100%;
+  animation: marquee 25s linear infinite;
+}
+
+.marquee-content {
+  display: inline-block;
+  white-space: nowrap;
+  padding-right: 50%;
+}
+
+.smooth-marquee {
+  display: flex;
+  white-space: nowrap;
+  animation: infinite-scroll 30s linear infinite;
+}
+
+.marquee-track {
+  display: flex;
+  white-space: nowrap;
+  animation: marquee 20s linear infinite;
+}
+
+/* Fast marquee track */
+.marquee-track-fast {
+  display: flex;
+  white-space: nowrap;
+  animation: marquee-fast 12s linear infinite;
+}
+
+@layer base {
+  body {
+    @apply bg-gradient-to-br from-gray-50 via-white to-blue-50 min-h-screen;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  /* Selection color */
+  ::selection {
+    @apply bg-blue-500/20 text-blue-900;
+  }
+
+  /* Better focus styles */
+  :focus-visible {
+    @apply outline-2 outline-blue-500 outline-offset-2;
+  }
+
+  /* Smooth transitions for all elements */
+  * {
+    @apply transition-colors duration-200;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply relative bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-3 px-8 rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 shadow-lg overflow-hidden;
+  }
+
+  .btn-primary::after {
+    content: '';
+    @apply absolute top-0 -inset-full h-full w-1/2 block transform -skew-x-12 bg-gradient-to-r from-transparent via-white/30 to-transparent;
+    animation: shine 1.5s ease-in-out infinite;
+  }
+
+  .btn-secondary {
+    @apply bg-white text-gray-800 border-2 border-gray-300 font-semibold px-8 py-3 rounded-xl hover:border-blue-500 hover:shadow-lg hover:scale-105 transition-all duration-300;
+  }
+
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8 py-12 md:py-20 lg:py-28;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-2xl hover:scale-105 hover:border-blue-300;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent;
+  }
+
+  .glass-effect {
+    @apply bg-white/80 backdrop-blur-lg border border-white/20;
+  }
+
+  /* Feature card */
+  .feature-card {
+    @apply bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-2xl hover:border-blue-200 transition-all duration-300;
+  }
+
+  /* Stats counter */
+  .stat-number {
+    @apply text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent;
+  }
+
+  /* Marquee text component */
+  .marquee-text {
+    @apply inline-block whitespace-nowrap px-4;
+  }
+
+  /* Logo subtitle */
+  .logo-subtitle {
+    @apply text-xs font-medium text-gray-500 overflow-hidden relative h-5;
+  }
+
+  .logo-subtitle-inner {
+    @apply flex items-center absolute whitespace-nowrap;
+  }
+
+  /* Header-specific marquee */
+  .header-marquee {
+    animation: marquee-fast 12s linear infinite;
+  }
+}
+
+@layer utilities {
+  /* Custom scrollbar */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-gray-100 rounded-full;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-gradient-to-b from-blue-500 to-indigo-500 rounded-full;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-gradient-to-b from-blue-600 to-indigo-600;
+  }
+
+  /* Text shadow */
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .text-shadow-lg {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Gradient borders */
+  .border-gradient {
+    border: double 2px transparent;
+    background-image: linear-gradient(white, white), 
+                      linear-gradient(to right, #3b82f6, #6366f1);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Animation pause on hover */
+  .pause-on-hover:hover {
+    animation-play-state: paused;
+  }
+
+  /* Smooth text reveal */
+  .text-reveal {
+    animation: text-slide 1.5s ease-out;
+  }
+
+  /* Infinite rotation */
+  .animate-spin-slow {
+    animation: spin 3s linear infinite;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .mobile-hide {
+    display: none;
+  }
+  
+  .marquee-container {
+    animation-duration: 15s;
+  }
+  
+  .animate-marquee {
+    animation-duration: 15s;
+  }
+
+  /* Faster marquee on mobile */
+  .animate-marquee-fast {
+    animation-duration: 10s;
+  }
+
+  .animate-marquee-very-fast {
+    animation-duration: 6s;
+  }
+
+  .header-marquee {
+    animation-duration: 10s;
+  }
+}
+
+@media (max-width: 768px) {
+  .animate-marquee-fast {
+    animation-duration: 11s;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none;
+  }
+  
+  .animate-marquee,
+  .animate-marquee-fast,
+  .animate-marquee-very-fast {
+    animation: none;
+  }
+}
+
+/* Reduce motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-marquee-slow,
+  .animate-marquee-loop,
+  .animate-marquee-fast,
+  .animate-marquee-very-fast,
+  .animate-text-slide,
+  .animate-infinite-scroll,
+  .animate-float,
+  .animate-gradient-shift,
+  .animate-pulse-glow {
+    animation: none;
+  }
+  
+  .header-marquee {
+    animation: none;
+  }
+}
+
+/* Optimize performance for animations */
+@media (prefers-reduced-motion: no-preference) {
+  .animate-marquee-fast {
+    animation: marquee-fast 12s linear infinite;
+    will-change: transform;
+  }
+}
+
+/* Smooth animation start */
+.animate-marquee-fast {
+  animation-timing-function: linear;
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transform: translate3d(0, 0, 0);
+}
