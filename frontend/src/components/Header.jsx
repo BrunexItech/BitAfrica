@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X, ChevronDown, Brain, Sparkles, Cpu, Globe, Shield, Code, Palette, Zap, Home, Briefcase, BookOpen, Users, Mail, FileText, Building, Server, Layers } from 'lucide-react';
 
@@ -7,6 +7,7 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [hoveredSolution, setHoveredSolution] = useState(null);
   const [openMobileItems, setOpenMobileItems] = useState({});
+  const mobileMenuRef = useRef(null);
 
   // Add scroll effect
   useEffect(() => {
@@ -16,6 +17,25 @@ const Header = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Fix: Enable scrolling in mobile menu
+  useEffect(() => {
+    if (isMenuOpen) {
+      // Prevent body scrolling when menu is open
+      document.body.style.overflow = 'hidden';
+      // Allow scrolling within the mobile menu
+      if (mobileMenuRef.current) {
+        mobileMenuRef.current.style.overflowY = 'auto';
+        mobileMenuRef.current.style.maxHeight = 'calc(100vh - 80px)';
+      }
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMenuOpen]);
 
   const toggleMobileItem = (itemName) => {
     setOpenMobileItems(prev => ({
@@ -288,9 +308,23 @@ const Header = () => {
 
         {/* Professional Mobile Menu with sliding animation */}
         {isMenuOpen && (
-          <div className="lg:hidden border-t border-blue-700/30 py-4 animate-slideDown bg-[#1f2937]/95 backdrop-blur-xl">
+          <div 
+            ref={mobileMenuRef}
+            className="lg:hidden border-t border-blue-700/30 py-4 animate-slideDown bg-[#1f2937]/95 backdrop-blur-xl overflow-y-auto"
+          >
             <div className="space-y-1 px-4">
-              {navItems.map((item, index) => (
+              {/* Fix: Make Home link clickable in mobile */}
+              <Link
+                to="/"
+                className="flex items-center w-full px-4 py-3 text-blue-100/90 hover:text-white hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 rounded-xl font-medium transition-all duration-200 group transform hover:translate-x-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Home className="h-4 w-4 mr-2" />
+                <span className="font-semibold">Home</span>
+              </Link>
+              
+              {/* Rest of mobile navigation items */}
+              {navItems.slice(1).map((item, index) => (
                 <div key={item.name} className="overflow-hidden">
                   <button
                     onClick={() => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Brain, Cpu, Shield, Globe, Code, Server, Palette, Zap, Sparkles, Target, BarChart, Lock, Cloud, Layout, Database, Rocket } from 'lucide-react';
+import { Brain, Cpu, Shield, Code, Server, Zap, Sparkles, Target, BarChart, Rocket } from 'lucide-react';
 
 function Solutions() {
   const solutions = [
@@ -64,26 +64,6 @@ function Solutions() {
       ]
     },
     {
-      id: "smart-cities",
-      title: "Smart Cities",
-      description: "Urban intelligence solutions for efficient city management and citizen services.",
-      icon: <Globe className="h-8 w-8" />,
-      color: "from-blue-500 to-indigo-500",
-      features: [
-        "IoT Integration",
-        "Traffic Management",
-        "Resource Optimization",
-        "Public Safety",
-        "Citizen Engagement"
-      ],
-      useCases: [
-        "Traffic Flow Optimization",
-        "Waste Management",
-        "Energy Consumption",
-        "Public Transportation"
-      ]
-    },
-    {
       id: "dev-solutions",
       title: "Dev Solutions",
       description: "AI-driven development tools and platforms for modern software engineering.",
@@ -121,26 +101,6 @@ function Solutions() {
         "Natural Language Processing",
         "Recommendation Systems",
         "Predictive Maintenance"
-      ]
-    },
-    {
-      id: "uiux-design",
-      title: "UI/UX Design",
-      description: "Intelligent user interfaces and experience design powered by behavioral analytics.",
-      icon: <Palette className="h-8 w-8" />,
-      color: "from-purple-500 to-pink-500",
-      features: [
-        "User Research",
-        "Wireframing",
-        "Prototyping",
-        "Usability Testing",
-        "Accessibility Design"
-      ],
-      useCases: [
-        "Dashboard Design",
-        "Mobile App UX",
-        "E-commerce Interfaces",
-        "Enterprise Software"
       ]
     },
     {
@@ -203,8 +163,8 @@ function Solutions() {
           </p>
         </div>
 
-        {/* Solutions Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+        {/* Solutions Grid - Now 3 columns layout for 6 items */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {solutions.map((solution) => (
             <a
               key={solution.id}
