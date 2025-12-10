@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   Eye, EyeOff, Mail, Lock, Brain, Sparkles, Zap, Cpu, 
-  Shield, Globe, Code, Server, ChevronRight, Github, 
-  Twitter, Linkedin, User, Smartphone, Key, Users, Building
+  Shield, Globe, Code, Server, ChevronRight, Key
 } from 'lucide-react';
+import authService from '../services/authService';
 
 const SignIn = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -14,17 +15,42 @@ const SignIn = () => {
     rememberMe: false
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [errors, setErrors] = useState({});
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setErrors({});
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // Call the API through authService
+      const response = await authService.login({
+        email: formData.email,
+        password: formData.password
+      });
+      
+      // Store tokens and user data
+      authService.storeTokens(response);
+      
+      // Redirect to dashboard
+      navigate('/dashboard');
+      
+    } catch (error) {
+      console.error('Login error:', error);
+      
+      // Handle specific error messages from backend
+      if (error.response?.data) {
+        const backendErrors = error.response.data;
+        setErrors({
+          submit: 'Login failed. Please check your credentials.',
+          ...backendErrors
+        });
+      } else {
+        setErrors({ submit: 'Login failed. Please try again.' });
+      }
+    } finally {
       setIsLoading(false);
-      setFormSubmitted(true);
-    }, 1500);
+    }
   };
 
   const handleChange = (e) => {
@@ -33,6 +59,14 @@ const SignIn = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    
+    // Clear error for this field
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+    if (errors.submit) {
+      setErrors(prev => ({ ...prev, submit: '' }));
+    }
   };
 
   const floatingIcons = [
@@ -115,16 +149,16 @@ const SignIn = () => {
             </div>
           </div>
 
-          {/* Success Message */}
-          {formSubmitted && (
-            <div className="mb-6 p-4 bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/30 rounded-xl animate-fadeIn">
+          {/* Error Message */}
+          {errors.submit && (
+            <div className="mb-6 p-4 bg-gradient-to-r from-red-500/10 to-pink-500/10 border border-red-500/30 rounded-xl animate-fadeIn">
               <div className="flex items-center">
-                <div className="h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 text-white mr-3">
-                  <Sparkles className="h-5 w-5" />
+                <div className="h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-r from-red-500 to-pink-500 text-white mr-3">
+                  <Shield className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="font-semibold text-white">Welcome back!</p>
-                  <p className="text-sm text-emerald-200/80">Redirecting to your dashboard...</p>
+                  <p className="font-semibold text-white">Login Failed</p>
+                  <p className="text-sm text-red-200/80">{errors.submit}</p>
                 </div>
               </div>
             </div>
@@ -147,7 +181,7 @@ const SignIn = () => {
                     value={formData.email}
                     onChange={handleChange}
                     className="relative w-full px-4 py-3 bg-[#0f172a]/60 border border-cyan-500/30 rounded-xl text-white placeholder-blue-300/50 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-transparent transition-all duration-300"
-                    placeholder="Enter your work email"
+                    placeholder="Enter your email"
                     required
                   />
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -198,12 +232,12 @@ const SignIn = () => {
                       Remember me
                     </span>
                   </label>
-                  <button
-                    type="button"
+                  <Link
+                    to="/forgot-password"
                     className="text-sm text-cyan-400 hover:text-cyan-300 transition-colors"
                   >
                     Forgot password?
-                  </button>
+                  </Link>
                 </div>
               </div>
 
@@ -236,80 +270,22 @@ const SignIn = () => {
                 </div>
               </button>
 
-              {/* Divider */}
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-cyan-500/20"></div>
+              {/* Sign Up Link */}
+              <div className="mt-8 pt-6 border-t border-cyan-500/20">
+                <div className="text-center">
+                  <p className="text-blue-200/70">
+                    Don't have an account?{' '}
+                    <Link 
+                      to="/signup" 
+                      className="font-semibold text-cyan-400 hover:text-cyan-300 transition-colors group inline-flex items-center"
+                    >
+                      Sign up here
+                      <ChevronRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </p>
                 </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-3 bg-[#1a2036] text-blue-200/50">
-                    Or continue with
-                  </span>
-                </div>
-              </div>
-
-              {/* Social Login */}
-              <div className="grid grid-cols-3 gap-3">
-                <button
-                  type="button"
-                  className="flex items-center justify-center py-2.5 bg-[#0f172a]/60 border border-blue-500/20 rounded-xl text-blue-300 hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 hover:border-cyan-500/40 hover:text-cyan-300 transition-all duration-300 group"
-                >
-                  <Github className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                </button>
-                <button
-                  type="button"
-                  className="flex items-center justify-center py-2.5 bg-[#0f172a]/60 border border-blue-500/20 rounded-xl text-blue-300 hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 hover:border-cyan-500/40 hover:text-cyan-300 transition-all duration-300 group"
-                >
-                  <Twitter className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                </button>
-                <button
-                  type="button"
-                  className="flex items-center justify-center py-2.5 bg-[#0f172a]/60 border border-blue-500/20 rounded-xl text-blue-300 hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 hover:border-cyan-500/40 hover:text-cyan-300 transition-all duration-300 group"
-                >
-                  <Linkedin className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                </button>
               </div>
             </form>
-
-            {/* Login Link */}
-            <div className="mt-8 pt-6 border-t border-cyan-500/20">
-              <div className="text-center">
-                <p className="text-blue-200/70">
-                  Already have an account?{' '}
-                  <Link 
-                    to="/login" 
-                    className="font-semibold text-cyan-400 hover:text-cyan-300 transition-colors group inline-flex items-center"
-                  >
-                    Login here
-                    <ChevronRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Additional Options */}
-          <div className="mt-6 text-center">
-            <div className="grid grid-cols-2 gap-3">
-              <Link
-                to="/signup/enterprise"
-                className="block py-2.5 px-4 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-xl text-blue-300 hover:border-cyan-500/50 hover:text-cyan-300 transition-all duration-300 group"
-              >
-                <div className="flex items-center justify-center">
-                  <Building className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
-                  Enterprise Sign In
-                </div>
-              </Link>
-              <Link
-                to="/signup/partner"
-                className="block py-2.5 px-4 bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/30 rounded-xl text-purple-300 hover:border-blue-500/50 hover:text-blue-300 transition-all duration-300 group"
-              >
-                <div className="flex items-center justify-center">
-                  <Users className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
-                  Partner Portal
-                </div>
-              </Link>
-            </div>
           </div>
 
           {/* Security Badge */}

@@ -225,13 +225,13 @@ const Header = () => {
             </Link>
           </nav>
 
-          {/* Desktop CTA - OPTIMIZED */}
+          {/* Desktop CTA - CHANGED TO SIGN UP */}
           <div className="hidden lg:flex items-center space-x-3 ml-2">
             <Link 
-              to="/signin"
+              to="/signup"  // CHANGED from /signin to /signup
               className="relative px-4 py-2.5 text-blue-200 hover:text-white font-medium group overflow-hidden rounded-lg whitespace-nowrap"
             >
-              <span className="relative z-10">Sign In</span>
+              <span className="relative z-10">Sign Up</span>  {/* CHANGED from Sign In to Sign Up */}
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-transparent -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
             </Link>
           </div>
@@ -335,15 +335,15 @@ const Header = () => {
                 </Link>
               </div>
 
-              {/* Mobile CTA */}
+              {/* Mobile CTA - CHANGED TO SIGN UP */}
               <div className="pt-2 px-2 pb-3 space-y-2 border-t border-blue-700/30">
                 <Link 
-                  to="/signin"
+                  to="/signup"  // CHANGED from /signin to /signup
                   className="w-full text-center text-cyan-400 font-semibold py-3 border-2 border-cyan-400/50 rounded-xl hover:bg-gradient-to-r hover:from-cyan-500/10 hover:to-blue-500/10 transition-all duration-200 active:scale-95 block"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <span className="flex items-center justify-center">
-                    Sign In
+                    Sign Up  {/* CHANGED from Sign In to Sign Up */}
                   </span>
                 </Link>
               </div>

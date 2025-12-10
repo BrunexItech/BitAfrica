@@ -60,9 +60,9 @@ const GetinTouch = () => {
 
   // Consultation types
   const consultationTypes = [
-    { id: 'video', name: 'Video Call', icon: <Video className="h-5 w-5" />, color: '#4ECDC4' },
-    { id: 'phone', name: 'Phone Call', icon: <Phone className="h-5 w-5" />, color: '#FF6B6B' },
-    { id: 'onsite', name: 'On-site Visit', icon: <MapPin className="h-5 w-5" />, color: '#FFD166' }
+    { id: 'video', name: 'Video Call', icon: <Video className="h-4 w-4" />, color: '#4ECDC4' },
+    { id: 'phone', name: 'Phone Call', icon: <Phone className="h-4 w-4" />, color: '#FF6B6B' },
+    { id: 'onsite', name: 'On-site Visit', icon: <MapPin className="h-4 w-4" />, color: '#FFD166' }
   ];
 
   // Time slots for scheduling
@@ -87,8 +87,8 @@ const GetinTouch = () => {
       continent.textContent = emoji;
       continent.style.cssText = `
         position: absolute;
-        font-size: ${24 + i * 8}px;
-        filter: drop-shadow(0 0 10px ${colors.primary});
+        font-size: ${20 + i * 6}px;
+        filter: drop-shadow(0 0 8px ${colors.primary});
         z-index: ${2 + i};
         opacity: 0.6;
       `;
@@ -102,56 +102,6 @@ const GetinTouch = () => {
         repeat: -1,
         ease: "none",
         transformOrigin: "center center"
-      });
-      
-      gsap.to(continent, {
-        x: Math.random() * 40 - 20,
-        y: Math.random() * 40 - 20,
-        duration: 3 + Math.random() * 2,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut"
-      });
-    });
-
-    // Create connection lines
-    const createConnection = (x1, y1, x2, y2, color) => {
-      const line = document.createElement('div');
-      line.style.cssText = `
-        position: absolute;
-        left: ${x1}%;
-        top: ${y1}%;
-        width: ${Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2)) * 2}%;
-        height: 2px;
-        background: linear-gradient(90deg, ${color}80, transparent);
-        transform-origin: 0 0;
-        transform: rotate(${Math.atan2(y2-y1, x2-x1)}rad);
-        z-index: 1;
-      `;
-      globe.appendChild(line);
-      
-      gsap.to(line, {
-        background: `linear-gradient(90deg, ${color}, ${colors.accent}80)`,
-        duration: 2,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut"
-      });
-    };
-
-    // Create connection network
-    const points = [
-      { x: 30, y: 40, color: colors.primary },
-      { x: 60, y: 30, color: colors.secondary },
-      { x: 40, y: 60, color: colors.accent },
-      { x: 70, y: 70, color: colors.global }
-    ];
-
-    points.forEach((p1, i) => {
-      points.forEach((p2, j) => {
-        if (i < j && Math.random() > 0.5) {
-          createConnection(p1.x, p1.y, p2.x, p2.y, p1.color);
-        }
       });
     });
 
@@ -168,18 +118,18 @@ const GetinTouch = () => {
     if (!container) return;
 
     // Create particles
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 20; i++) {
       const particle = document.createElement('div');
       particle.className = 'floating-particle';
       particle.style.cssText = `
         position: absolute;
-        width: ${Math.random() * 4 + 1}px;
-        height: ${Math.random() * 4 + 1}px;
+        width: ${Math.random() * 3 + 1}px;
+        height: ${Math.random() * 3 + 1}px;
         background: ${Math.random() > 0.5 ? colors.primary : colors.secondary};
         border-radius: 50%;
         pointer-events: none;
         z-index: 0;
-        opacity: ${Math.random() * 0.3 + 0.1};
+        opacity: ${Math.random() * 0.2 + 0.05};
         filter: blur(0.5px);
         left: ${Math.random() * 100}%;
         top: ${Math.random() * 100}%;
@@ -190,9 +140,9 @@ const GetinTouch = () => {
       
       // Animate particles
       gsap.to(particle, {
-        x: Math.random() * 100 - 50,
-        y: Math.random() * 100 - 50,
-        duration: Math.random() * 10 + 10,
+        x: Math.random() * 80 - 40,
+        y: Math.random() * 80 - 40,
+        duration: Math.random() * 8 + 8,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut"
@@ -225,20 +175,20 @@ const GetinTouch = () => {
 
   // Region selector component
   const RegionSelector = () => (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2 mb-2">
-        <Globe2 className="h-5 w-5 text-cyan-300" />
-        <h3 className="text-lg font-bold text-white">Select Your Region</h3>
+    <div className="space-y-3 mb-6">
+      <div className="flex items-center gap-2">
+        <Globe2 className="h-4 w-4 text-cyan-300" />
+        <h3 className="text-base font-bold text-white">Select Your Region</h3>
       </div>
       <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
         {regions.map(region => (
           <button
             key={region.id}
             onClick={() => setActiveRegion(region.id)}
-            className={`relative group p-3 rounded-xl transition-all duration-300 ${
+            className={`relative group p-2 rounded-lg transition-all duration-200 ${
               activeRegion === region.id 
-                ? 'scale-105 shadow-lg' 
-                : 'hover:scale-102'
+                ? 'scale-105 shadow-md' 
+                : 'hover:scale-[1.02]'
             }`}
             style={{
               background: activeRegion === region.id 
@@ -247,22 +197,11 @@ const GetinTouch = () => {
               border: `1px solid ${activeRegion === region.id ? region.color : 'rgba(255, 255, 255, 0.1)'}`
             }}
           >
-            <div className="flex flex-col items-center gap-2">
-              <span className="text-2xl">{region.flag}</span>
-              <span className="text-sm font-medium text-white">{region.name}</span>
-              <span className="text-xs opacity-60 text-white">{region.timezone}</span>
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-xl">{region.flag}</span>
+              <span className="text-xs font-medium text-white">{region.name}</span>
+              <span className="text-[10px] opacity-60 text-white">{region.timezone}</span>
             </div>
-            
-            {activeRegion === region.id && (
-              <div className="absolute -top-1 -right-1">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-green-500 rounded-full animate-ping" />
-                  <div className="relative bg-green-500 rounded-full p-1">
-                    <CheckCircle className="h-3 w-3 text-white" />
-                  </div>
-                </div>
-              </div>
-            )}
           </button>
         ))}
       </div>
@@ -271,12 +210,12 @@ const GetinTouch = () => {
 
   // Service selector component
   const ServiceSelector = () => (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2 mb-2">
-        <Target className="h-5 w-5 text-cyan-300" />
-        <h3 className="text-lg font-bold text-white">Select Service</h3>
+    <div className="space-y-3 mb-6">
+      <div className="flex items-center gap-2">
+        <Target className="h-4 w-4 text-cyan-300" />
+        <h3 className="text-base font-bold text-white">Select Service</h3>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
         {services.map(service => (
           <button
             key={service.id}
@@ -285,10 +224,10 @@ const GetinTouch = () => {
               setSelectedService(service.id);
               setFormData({...formData, service: service.name});
             }}
-            className={`group relative p-4 rounded-xl transition-all duration-300 ${
+            className={`group relative p-3 rounded-lg transition-all duration-200 ${
               selectedService === service.id 
-                ? 'scale-105 shadow-xl' 
-                : 'hover:scale-102'
+                ? 'scale-105 shadow-md' 
+                : 'hover:scale-[1.02]'
             }`}
             style={{
               background: selectedService === service.id 
@@ -297,28 +236,17 @@ const GetinTouch = () => {
               border: `1px solid ${selectedService === service.id ? service.color : 'rgba(255, 255, 255, 0.1)'}`
             }}
           >
-            <div className="flex flex-col items-center gap-3">
+            <div className="flex flex-col items-center gap-2">
               <div 
-                className="p-3 rounded-lg group-hover:scale-110 transition-transform"
+                className="p-2 rounded-md group-hover:scale-110 transition-transform"
                 style={{ background: `${service.color}20` }}
               >
-                <span className="text-2xl">{service.icon}</span>
+                <span className="text-xl">{service.icon}</span>
               </div>
-              <span className="text-sm font-medium text-white text-center">
+              <span className="text-xs font-medium text-white text-center">
                 {service.name}
               </span>
             </div>
-            
-            {selectedService === service.id && (
-              <div className="absolute -top-1 -right-1">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full animate-ping" />
-                  <div className="relative bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full p-1">
-                    <CheckCircle className="h-3 w-3 text-white" />
-                  </div>
-                </div>
-              </div>
-            )}
           </button>
         ))}
       </div>
@@ -327,21 +255,21 @@ const GetinTouch = () => {
 
   // Consultation type selector
   const ConsultationSelector = () => (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2 mb-2">
-        <Video className="h-5 w-5 text-cyan-300" />
-        <h3 className="text-lg font-bold text-white">Consultation Type</h3>
+    <div className="space-y-3 mb-6">
+      <div className="flex items-center gap-2">
+        <Video className="h-4 w-4 text-cyan-300" />
+        <h3 className="text-base font-bold text-white">Consultation Type</h3>
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-2">
         {consultationTypes.map(type => (
           <button
             key={type.id}
             type="button"
             onClick={() => setFormData({...formData, consultationType: type.id})}
-            className={`group p-3 rounded-xl transition-all duration-300 ${
+            className={`group p-2 rounded-lg transition-all duration-200 ${
               formData.consultationType === type.id 
-                ? 'scale-105 shadow-lg' 
-                : 'hover:scale-102'
+                ? 'scale-105 shadow-md' 
+                : 'hover:scale-[1.02]'
             }`}
             style={{
               background: formData.consultationType === type.id 
@@ -350,14 +278,14 @@ const GetinTouch = () => {
               border: `1px solid ${formData.consultationType === type.id ? type.color : 'rgba(255, 255, 255, 0.1)'}`
             }}
           >
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-1">
               <div 
-                className="p-2 rounded-lg"
+                className="p-1.5 rounded-md"
                 style={{ color: type.color }}
               >
                 {type.icon}
               </div>
-              <span className="text-sm font-medium text-white">{type.name}</span>
+              <span className="text-xs font-medium text-white">{type.name}</span>
             </div>
           </button>
         ))}
@@ -366,156 +294,92 @@ const GetinTouch = () => {
   );
 
   return (
-    <section className="relative py-24 overflow-hidden" style={{ background: colors.background }}>
+    <section className="relative py-12 md:py-16 overflow-hidden" style={{ background: colors.background }}>
       {/* Animated background */}
       <div className="absolute inset-0">
         {/* Gradient orbs */}
         <div 
-          className="absolute -top-40 -right-40 w-80 h-80 rounded-full"
+          className="absolute -top-20 -right-20 w-60 h-60 rounded-full"
           style={{
             background: `radial-gradient(circle, ${colors.primary}30 0%, transparent 70%)`,
-            filter: 'blur(60px)',
-            opacity: 0.4
+            filter: 'blur(40px)',
+            opacity: 0.3
           }}
         />
         <div 
-          className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full"
+          className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full"
           style={{
             background: `radial-gradient(circle, ${colors.secondary}30 0%, transparent 70%)`,
-            filter: 'blur(60px)',
-            opacity: 0.4
-          }}
-        />
-        
-        {/* Animated grid */}
-        <div 
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: `
-              linear-gradient(90deg, ${colors.primary}20 1px, transparent 1px),
-              linear-gradient(${colors.primary}20 1px, transparent 1px)
-            `,
-            backgroundSize: '50px 50px'
+            filter: 'blur(40px)',
+            opacity: 0.3
           }}
         />
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Header */}
-        <div className="text-center max-w-4xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 mb-8 group">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-            <Globe className="h-5 w-5 text-cyan-300 animate-spin-slow" />
-            <span className="text-sm font-bold bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent tracking-widest">
+        {/* Header - Compact */}
+        <div className="text-center max-w-3xl mx-auto mb-10">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 mb-6">
+            <Globe className="h-4 w-4 text-cyan-300 animate-spin-slow" />
+            <span className="text-xs font-bold bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent tracking-widest">
               GLOBAL CONNECTIVITY HUB
             </span>
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-black mb-8">
-            <span className="block text-white/90">Connect Globally</span>
-            <span className="block bg-gradient-to-r from-cyan-300 via-pink-400 to-yellow-300 bg-clip-text text-transparent">
+          <h1 className="text-3xl md:text-5xl font-bold mb-6">
+            <span className="block text-white/90 text-2xl md:text-4xl">Connect Globally</span>
+            <span className="block bg-gradient-to-r from-cyan-300 via-pink-400 to-yellow-300 bg-clip-text text-transparent text-3xl md:text-5xl mt-1">
               Free Consultation
             </span>
           </h1>
           
-          <p className="text-xl text-blue-100/80 leading-relaxed">
-            Book a free strategy session from anywhere in the world. Our team spans multiple time zones 
-            to serve you 24/7 with cutting-edge AI solutions.
+          <p className="text-sm md:text-base text-blue-100/80 leading-relaxed">
+            Book a free strategy session from anywhere in the world.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
-          {/* Left Column - Interactive Globe */}
-          <div className="relative">
-            <div className="sticky top-24">
+        <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          {/* Left Column - Interactive Globe - Hidden on mobile */}
+          <div className="hidden lg:block relative">
+            <div className="sticky top-20">
               {/* Animated Globe */}
               <div 
                 ref={globeRef}
-                className="relative w-full aspect-square rounded-full mb-8 overflow-hidden flex items-center justify-center"
+                className="relative w-full aspect-square rounded-full mb-6 overflow-hidden flex items-center justify-center"
                 style={{
                   background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
                   border: '2px solid rgba(255, 255, 255, 0.1)',
-                  boxShadow: '0 0 80px rgba(0, 198, 255, 0.3)'
+                  boxShadow: '0 0 60px rgba(0, 198, 255, 0.2)'
                 }}
               >
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="relative">
-                    <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full blur-xl animate-pulse" />
-                    <Globe className="h-32 w-32 text-cyan-300 animate-spin-slow" />
-                  </div>
-                </div>
-                
-                {/* Floating cities */}
-                {[
-                  { emoji: '🗽', top: '20%', left: '25%', color: colors.primary },
-                  { emoji: '🗼', top: '25%', left: '65%', color: colors.secondary },
-                  { emoji: '🏙️', top: '60%', left: '15%', color: colors.accent },
-                  { emoji: '🌆', top: '70%', left: '75%', color: colors.global }
-                ].map((city, i) => (
-                  <div
-                    key={i}
-                    className="absolute animate-float"
-                    style={{
-                      top: city.top,
-                      left: city.left,
-                      animationDelay: `${i * 0.5}s`
-                    }}
-                  >
-                    <div className="relative group">
-                      <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <span className="relative text-3xl">{city.emoji}</span>
-                      <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap text-xs opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div className="px-2 py-1 rounded bg-black/50 backdrop-blur-sm text-white">
-                          Connected
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Stats */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-                  <div className="flex items-center gap-3">
-                    <Users className="h-8 w-8 text-cyan-300" />
-                    <div>
-                      <div className="text-2xl font-bold text-white">50+</div>
-                      <div className="text-sm text-blue-100/60">Countries Served</div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-                  <div className="flex items-center gap-3">
-                    <Clock className="h-8 w-8 text-cyan-300" />
-                    <div>
-                      <div className="text-2xl font-bold text-white">24/7</div>
-                      <div className="text-sm text-blue-100/60">Support Coverage</div>
-                    </div>
+                    <div className="absolute -inset-3 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full blur-lg" />
+                    <Globe className="h-24 w-24 text-cyan-300 animate-spin-slow" />
                   </div>
                 </div>
               </div>
 
-              {/* Timezone info */}
-              <div className="mt-6 p-4 rounded-xl bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <Clock className="h-5 w-5 text-cyan-300" />
-                  <h3 className="font-bold text-white">Current Active Regions</h3>
-                </div>
-                <div className="space-y-2">
-                  {regions.slice(0, -1).map(region => (
-                    <div key={region.id} className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2">
-                        <span>{region.flag}</span>
-                        <span className="text-white/80">{region.name}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                        <span className="text-cyan-300">{region.peak}</span>
-                      </div>
+              {/* Compact Stats */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="p-3 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-6 w-6 text-cyan-300" />
+                    <div>
+                      <div className="text-lg font-bold text-white">50+</div>
+                      <div className="text-xs text-blue-100/60">Countries</div>
                     </div>
-                  ))}
+                  </div>
+                </div>
+                
+                <div className="p-3 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-6 w-6 text-cyan-300" />
+                    <div>
+                      <div className="text-lg font-bold text-white">24/7</div>
+                      <div className="text-xs text-blue-100/60">Support</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -525,29 +389,27 @@ const GetinTouch = () => {
           <div className="relative">
             <div 
               ref={formRef}
-              className="relative rounded-3xl p-8 backdrop-blur-xl border border-white/20"
+              className="relative rounded-2xl p-6 backdrop-blur-xl border border-white/20"
               style={{
                 background: 'rgba(15, 23, 42, 0.7)',
-                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)'
+                boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)'
               }}
             >
               {/* Success message */}
               {isSubmitted ? (
                 <div 
                   ref={successRef}
-                  className="text-center py-12"
+                  className="text-center py-8"
                 >
-                  <div className="relative inline-block mb-6">
-                    <div className="absolute -inset-4 bg-gradient-to-r from-green-500/30 to-emerald-500/30 rounded-full blur-xl animate-pulse" />
-                    <div className="relative p-6 rounded-full bg-gradient-to-r from-green-500 to-emerald-500">
-                      <CheckCircle className="h-16 w-16 text-white" />
+                  <div className="relative inline-block mb-4">
+                    <div className="relative p-4 rounded-full bg-gradient-to-r from-green-500 to-emerald-500">
+                      <CheckCircle className="h-12 w-12 text-white" />
                     </div>
                   </div>
                   
-                  <h3 className="text-3xl font-bold text-white mb-4">Booking Confirmed! 🎉</h3>
-                  <p className="text-blue-100/80 mb-8">
-                    Your free consultation has been scheduled. Our team will contact you 
-                    within 24 hours with the meeting details.
+                  <h3 className="text-xl font-bold text-white mb-3">Booking Confirmed! 🎉</h3>
+                  <p className="text-blue-100/80 text-sm mb-6">
+                    Your free consultation has been scheduled.
                   </p>
                   
                   <button
@@ -565,130 +427,120 @@ const GetinTouch = () => {
                       });
                       setSelectedService('');
                     }}
-                    className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold transition-all duration-300 hover:scale-105"
+                    className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-semibold transition-all duration-300"
                   >
-                    Schedule Another Session
+                    Schedule Another
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-8">
+                <form onSubmit={handleSubmit} className="space-y-6">
                   <RegionSelector />
                   
                   <ServiceSelector />
                   
                   <ConsultationSelector />
                   
-                  {/* Personal Details */}
-                  <div className="space-y-6">
-                    <div className="flex items-center gap-2 mb-4">
-                      <User className="h-5 w-5 text-cyan-300" />
-                      <h3 className="text-lg font-bold text-white">Personal Details</h3>
+                  {/* Personal Details - FIXED ICON POSITIONING */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2">
+                      <User className="h-4 w-4 text-cyan-300" />
+                      <h3 className="text-base font-bold text-white">Personal Details</h3>
                     </div>
                     
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="relative group">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="relative">
+                        <User className="absolute left-3 top-3 h-4 w-4 text-cyan-300 opacity-60" />
                         <input
                           type="text"
                           required
                           value={formData.name}
                           onChange={(e) => setFormData({...formData, name: e.target.value})}
                           placeholder="Your Name"
-                          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300 group-hover:border-white/20"
+                          className="w-full pl-10 pr-3 py-2.5 text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
                         />
-                        <div className="absolute left-4 top-3.5 opacity-60 group-focus-within:opacity-100 transition-opacity">
-                          <User className="h-4 w-4 text-cyan-300" />
-                        </div>
                       </div>
                       
-                      <div className="relative group">
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-3 h-4 w-4 text-cyan-300 opacity-60" />
                         <input
                           type="email"
                           required
                           value={formData.email}
                           onChange={(e) => setFormData({...formData, email: e.target.value})}
                           placeholder="Email Address"
-                          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300 group-hover:border-white/20"
+                          className="w-full pl-10 pr-3 py-2.5 text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
                         />
-                        <div className="absolute left-4 top-3.5 opacity-60 group-focus-within:opacity-100 transition-opacity">
-                          <Mail className="h-4 w-4 text-cyan-300" />
-                        </div>
                       </div>
                       
-                      <div className="relative group">
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-3 h-4 w-4 text-cyan-300 opacity-60" />
                         <input
                           type="tel"
                           value={formData.phone}
                           onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                          placeholder="Phone Number (Optional)"
-                          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300 group-hover:border-white/20"
+                          placeholder="Phone (Optional)"
+                          className="w-full pl-10 pr-3 py-2.5 text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
                         />
-                        <div className="absolute left-4 top-3.5 opacity-60 group-focus-within:opacity-100 transition-opacity">
-                          <Phone className="h-4 w-4 text-cyan-300" />
-                        </div>
                       </div>
                       
-                      <div className="relative group">
+                      <div className="relative">
+                        <Award className="absolute left-3 top-3 h-4 w-4 text-cyan-300 opacity-60" />
                         <input
                           type="text"
                           value={formData.company}
                           onChange={(e) => setFormData({...formData, company: e.target.value})}
                           placeholder="Company (Optional)"
-                          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300 group-hover:border-white/20"
+                          className="w-full pl-10 pr-3 py-2.5 text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
                         />
-                        <div className="absolute left-4 top-3.5 opacity-60 group-focus-within:opacity-100 transition-opacity">
-                          <Award className="h-4 w-4 text-cyan-300" />
-                        </div>
                       </div>
                     </div>
                   </div>
                   
                   {/* Project Description */}
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <MessageSquare className="h-5 w-5 text-cyan-300" />
-                      <h3 className="text-lg font-bold text-white">Project Details</h3>
+                      <MessageSquare className="h-4 w-4 text-cyan-300" />
+                      <h3 className="text-base font-bold text-white">Project Details</h3>
                     </div>
                     
-                    <div className="relative group">
+                    <div className="relative">
+                      <MessageSquare className="absolute left-3 top-3 h-4 w-4 text-cyan-300 opacity-60" />
                       <textarea
                         required
                         value={formData.description}
                         onChange={(e) => setFormData({...formData, description: e.target.value})}
-                        placeholder="Briefly describe your project goals, challenges, and timeline..."
-                        rows="4"
-                        className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300 resize-none group-hover:border-white/20"
+                        placeholder="Briefly describe your project..."
+                        rows="3"
+                        className="w-full pl-10 pr-3 py-2.5 text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300 resize-none"
                       />
-                      <div className="absolute left-4 top-3.5 opacity-60 group-focus-within:opacity-100 transition-opacity">
-                        <MessageSquare className="h-4 w-4 text-cyan-300" />
-                      </div>
                     </div>
                   </div>
                   
                   {/* Time Slot Selection */}
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <Calendar className="h-5 w-5 text-cyan-300" />
-                      <h3 className="text-lg font-bold text-white">Preferred Time Slot</h3>
+                      <Calendar className="h-4 w-4 text-cyan-300" />
+                      <h3 className="text-base font-bold text-white">Preferred Time</h3>
                     </div>
                     
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                      {timeSlots.map((slot, i) => (
+                      {timeSlots.slice(0, 4).map((slot, i) => (
                         <button
                           key={i}
                           type="button"
                           disabled={!slot.available}
-                          className={`p-3 rounded-xl text-sm transition-all duration-300 ${
+                          className={`p-2 rounded-lg text-xs transition-all duration-200 ${
                             slot.available 
-                              ? 'bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-500/50 text-white hover:scale-102' 
+                              ? 'bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-500/50 text-white' 
                               : 'bg-white/5 opacity-40 cursor-not-allowed border border-white/5 text-white/40'
                           }`}
                         >
                           <div className="flex flex-col items-center">
                             <span>{slot.time}</span>
                             {slot.available ? (
-                              <span className="text-xs text-green-400 mt-1">Available</span>
+                              <span className="text-[10px] text-green-400 mt-1">✓ Available</span>
                             ) : (
-                              <span className="text-xs text-red-400 mt-1">Booked</span>
+                              <span className="text-[10px] text-red-400 mt-1">✗ Booked</span>
                             )}
                           </div>
                         </button>
@@ -700,31 +552,30 @@ const GetinTouch = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="group relative w-full py-4 rounded-2xl overflow-hidden transition-all duration-500 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="group relative w-full py-3 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{
                       background: colors.gradient
                     }}
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                    <span className="relative z-10 flex items-center justify-center text-white font-bold text-lg">
+                    <span className="relative z-10 flex items-center justify-center text-white font-bold text-sm md:text-base">
                       {isSubmitting ? (
                         <>
-                          <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-3" />
-                          Scheduling Consultation...
+                          <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                          Scheduling...
                         </>
                       ) : (
                         <>
-                          <Rocket className="mr-3 h-5 w-5 group-hover:rotate-45 transition-transform" />
+                          <Rocket className="mr-2 h-4 w-4" />
                           Book Free Consultation
-                          <Send className="ml-3 h-5 w-5 group-hover:translate-x-2 transition-transform" />
+                          <Send className="ml-2 h-4 w-4" />
                         </>
                       )}
                     </span>
                   </button>
                   
                   {/* Privacy Note */}
-                  <p className="text-center text-sm text-blue-100/60 flex items-center justify-center gap-2">
-                    <Shield className="h-4 w-4" />
+                  <p className="text-center text-xs text-blue-100/60 flex items-center justify-center gap-2">
+                    <Shield className="h-3 w-3" />
                     Your information is secure. We follow GDPR & global privacy standards.
                   </p>
                 </form>
@@ -734,51 +585,29 @@ const GetinTouch = () => {
         </div>
       </div>
 
-      {/* Bottom gradient */}
-      <div 
-        className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
-        style={{
-          background: 'linear-gradient(to top, #0F0F23 0%, transparent 100%)',
-          opacity: 0.8
-        }}
-      />
-
       <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0) rotate(0deg); }
-          50% { transform: translateY(-20px) rotate(10deg); }
-        }
-        
         @keyframes spin-slow {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
-        }
-        
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
         }
         
         .animate-spin-slow {
           animation: spin-slow 20s linear infinite;
         }
         
-        .scale-102 {
-          transform: scale(1.02);
-        }
-        
         /* Custom scrollbar */
         ::-webkit-scrollbar {
-          width: 6px;
+          width: 4px;
         }
         
         ::-webkit-scrollbar-track {
           background: rgba(255, 255, 255, 0.05);
-          border-radius: 3px;
+          border-radius: 2px;
         }
         
         ::-webkit-scrollbar-thumb {
           background: ${colors.gradient};
-          border-radius: 3px;
+          border-radius: 2px;
         }
         
         /* Input focus styles */
@@ -786,22 +615,42 @@ const GetinTouch = () => {
           box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2);
         }
         
-        /* Responsive design */
-        @media (max-width: 768px) {
-          .text-7xl {
-            font-size: 3.5rem;
+        /* Mobile responsiveness */
+        @media (max-width: 640px) {
+          .grid-cols-5 {
+            grid-template-columns: repeat(2, 1fr);
           }
           
-          .grid-cols-5 {
+          .grid-cols-3 {
             grid-template-columns: repeat(3, 1fr);
+          }
+          
+          .p-6 {
+            padding: 1rem;
+          }
+          
+          input, textarea {
+            font-size: 14px;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .text-5xl {
+            font-size: 2.5rem;
+          }
+          
+          .text-4xl {
+            font-size: 2rem;
+          }
+          
+          .text-3xl {
+            font-size: 1.75rem;
           }
         }
         
         /* Accessibility */
         @media (prefers-reduced-motion: reduce) {
-          .animate-float,
           .animate-spin-slow,
-          .animate-pulse,
           .group-hover,
           .transition-all {
             animation: none !important;

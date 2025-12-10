@@ -2,6 +2,10 @@ import React from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
+import ScrollToTopButton from './components/ScrollToTopButton';
+import ResetPassword from './pages/ResetPassword';
+
 
 // Page Components
 import Home from './pages/Home';
@@ -14,7 +18,7 @@ import Contact from './pages/Contact';
 
 // Authentication Pages
 import SignIn from './pages/SignIn';
-import Login from './pages/Login';
+import SignUp from './pages/SignUp';
 import ForgotPassword from './pages/ForgotPassword';
 
 // Solution Detail Pages
@@ -37,6 +41,7 @@ function App() {
       <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950">
         <Header />
         <main className="flex-grow">
+          <ScrollToTop /> {/* Add this line */}
           <Routes>
             {/* ========== PUBLIC ROUTES ========== */}
             
@@ -51,13 +56,14 @@ function App() {
             
             {/* Authentication Routes */}
             <Route path="/signin" element={<SignIn />} />
-            <Route path="/login" element={<Login />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
+
             
-            {/* Sign Up Variants */}
-            <Route path="/signup" element={<SignIn />} />
-            <Route path="/signup/enterprise" element={<SignIn />} />
-            <Route path="/signup/partner" element={<SignIn />} />
+            {/* Sign Up Routes */}
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/signup/enterprise" element={<SignUp />} />
+            <Route path="/signup/partner" element={<SignUp />} />
             
             {/* ========== SOLUTION DETAIL ROUTES ========== */}
             
@@ -103,6 +109,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        <ScrollToTopButton /> {/* Add this line */}
       </div>
     </Router>
   );
