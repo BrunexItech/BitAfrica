@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: bitafrica_mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    networks:
+      - bitafrica_network
+
+  backend:
+    build: ./backend
+    container_name: bitafrica_backend
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+    env_file:
+      - .env
+      - backend/.env
+    environment:
+      - DB_HOST=bitafrica_mysql
+      - DB_PORT=3306
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./backend:/app
+    extra_hosts:
+      - "mysql:host-gateway"
+    command: >
+      sh -c "sleep 15 &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    networks:
+      - bitafrica_network
+
+  frontend:
+    build: ./frontend
+    container_name: bitafrica_frontend
+    restart: always
+    depends_on:
+      - backend
+    env_file:
+      - .env
+      - frontend/.env
+    ports:
+      - "5174:80"
+    extra_hosts:
+      - "backend:host-gateway"
+    networks:
+      - bitafrica_network
+
+volumes:
+  mysql_data:
+
+networks:
+  bitafrica_network:
+    driver: bridge
