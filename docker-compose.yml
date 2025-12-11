@@ -32,7 +32,7 @@ services:
       - .env
       - backend/.env
     environment:
-      - DB_HOST=mysql
+      - DB_HOST=bitafrica_mysql
       - DB_PORT=3306
     ports:
       - "8001:8000"
