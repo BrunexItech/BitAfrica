@@ -32,17 +32,19 @@ services:
       - .env
       - backend/.env
     environment:
-      - DB_HOST=bitafrica_mysql
+      - DB_HOST=mysql
       - DB_PORT=3306
     ports:
       - "8001:8000"
     volumes:
       - ./backend:/app
+      - static_volume:/app/staticfiles  # Shared volume for static files
     extra_hosts:
       - "mysql:host-gateway"
     command: >
       sh -c "sleep 15 &&
              python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
              python manage.py runserver 0.0.0.0:8000"
     networks:
       - bitafrica_network
@@ -58,6 +60,8 @@ services:
       - frontend/.env
     ports:
       - "5174:80"
+    volumes:
+      - static_volume:/app/staticfiles:ro  # Mount shared static files
     extra_hosts:
       - "backend:host-gateway"
     networks:
@@ -65,6 +69,7 @@ services:
 
 volumes:
   mysql_data:
+  static_volume:  # Shared volume for static files
 
 networks:
   bitafrica_network:
