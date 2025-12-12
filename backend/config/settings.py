@@ -127,7 +127,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+# With:
+if os.getenv('DEBUG', 'False').lower() == 'true':
+    STATIC_URL = 'static/'
+else:
+    STATIC_URL = 'https://www.bitafrica.co.ke/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
@@ -156,5 +160,9 @@ DATABASES = {
     }
 }
 
+FRONTEND_URL = os.getenv('FRONTEND_URL')
+#FRONTEND_URL = 'http://localhost:5174/BitAfrica'
 
-FRONTEND_URL = 'http://localhost:5174/BitAfrica'
+
+# Add after FRONTEND_URL = os.getenv('FRONTEND_URL')
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
