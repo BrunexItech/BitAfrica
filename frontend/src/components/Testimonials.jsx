@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { 
   ChevronLeft, ChevronRight, Star, Quote, 
   Award, TrendingUp, Zap, Sparkles, 
-  Heart, Shield, Globe, Rocket
+  Heart, Shield, Globe, CheckCircle
 } from 'lucide-react';
 import gsap from 'gsap';
 
@@ -15,17 +15,15 @@ const Testimonials = () => {
   const cardsRef = useRef([]);
   const progressBarRef = useRef(null);
 
-  // Premium color scheme with depth
+  // Professional color scheme
   const colors = {
     primary: '#0066FF',
     secondary: '#8A2BE2',
     accent: '#00D4AA',
     gold: '#FFD700',
-    silver: '#C0C0C0',
     background: 'linear-gradient(135deg, #0A192F 0%, #1E3A8A 50%, #2D1B69 100%)',
-    glass: 'rgba(255, 255, 255, 0.08)',
-    light: 'rgba(255, 255, 255, 0.9)',
-    dark: '#0F172A'
+    cardBg: 'rgba(15, 23, 42, 0.95)',
+    light: 'rgba(255, 255, 255, 0.95)'
   };
 
   // Premium testimonials data
@@ -41,8 +39,9 @@ const Testimonials = () => {
       industry: "FinTech",
       duration: "6 Months",
       stats: { accuracy: "99.7%", speed: "3ms", uptime: "99.99%" },
-      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      color: '#0066FF'
+      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+      color: '#0066FF',
+      achievements: ["Fraud detection accuracy increased by 45%", "Real-time monitoring implementation", "₦2.8B annual savings"]
     },
     {
       id: 2,
@@ -55,8 +54,9 @@ const Testimonials = () => {
       industry: "Agriculture",
       duration: "8 Months",
       stats: { yield: "+47%", savings: "35% Water", roi: "8.2x" },
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      color: '#10B981'
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+      color: '#10B981',
+      achievements: ["47% increase in crop yield", "35% water usage optimization", "8.2x ROI achieved"]
     },
     {
       id: 3,
@@ -69,8 +69,9 @@ const Testimonials = () => {
       industry: "Healthcare",
       duration: "1 Year",
       stats: { accuracy: "92%", patients: "50K+", savings: "30%" },
-      avatar: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      color: '#00D4AA'
+      avatar: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+      color: '#00D4AA',
+      achievements: ["92% outbreak prediction accuracy", "50,000+ patients served", "30% operational cost reduction"]
     },
     {
       id: 4,
@@ -83,8 +84,9 @@ const Testimonials = () => {
       industry: "Smart Cities",
       duration: "18 Months",
       stats: { devices: "2.5M", uptime: "100%", efficiency: "40%" },
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      color: '#8A2BE2'
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+      color: '#8A2BE2',
+      achievements: ["2.5M IoT devices managed", "Zero downtime maintained", "40% commute time reduction"]
     },
     {
       id: 5,
@@ -97,17 +99,18 @@ const Testimonials = () => {
       industry: "Education",
       duration: "10 Months",
       stats: { students: "500K+", engagement: "+300%", scores: "+42%" },
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      color: '#F59E0B'
+      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+      color: '#F59E0B',
+      achievements: ["500,000+ students served", "300% engagement increase", "42% test score improvement"]
     }
   ];
 
   // Success metrics
   const successMetrics = [
-    { value: "99%", label: "Client Satisfaction", icon: <Heart className="h-5 w-5" />, change: "+2%" },
-    { value: "98%", label: "Project Success Rate", icon: <Shield className="h-5 w-5" />, change: "+3%" },
-    { value: "24/7", label: "Support Coverage", icon: <Zap className="h-5 w-5" />, change: "99.9%" },
-    { value: "200+", label: "Happy Clients", icon: <Award className="h-5 w-5" />, change: "+50" }
+    { value: "99%", label: "Client Satisfaction", icon: <Heart className="h-4 w-4" />, change: "+2%" },
+    { value: "98%", label: "Project Success", icon: <Shield className="h-4 w-4" />, change: "+3%" },
+    { value: "24/7", label: "Support Coverage", icon: <Zap className="h-4 w-4" />, change: "99.9%" },
+    { value: "200+", label: "Happy Clients", icon: <Award className="h-4 w-4" />, change: "+50" }
   ];
 
   // Handle testimonial navigation
@@ -136,8 +139,8 @@ const Testimonials = () => {
       const activeCard = cardsRef.current[activeIndex];
       if (activeCard) {
         gsap.fromTo(activeCard,
-          { x: 100, opacity: 0, rotationY: 20 },
-          { x: 0, opacity: 1, rotationY: 0, duration: 0.8, ease: "power3.out" }
+          { y: 50, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }
         );
       }
 
@@ -153,23 +156,6 @@ const Testimonials = () => {
           }
         });
       }
-
-      successMetrics.forEach((_, index) => {
-        const metric = document.querySelector(`.metric-${index}`);
-        if (metric) {
-          gsap.from(metric, {
-            y: 30,
-            opacity: 0,
-            duration: 0.8,
-            delay: index * 0.1,
-            scrollTrigger: {
-              trigger: metric,
-              start: "top bottom-=50",
-              toggleActions: "play none none reverse"
-            }
-          });
-        }
-      });
     }, containerRef);
 
     return () => ctx.revert();
@@ -177,12 +163,12 @@ const Testimonials = () => {
 
   // Star rating component
   const StarRating = ({ rating }) => (
-    <div className="flex gap-1">
+    <div className="flex gap-0.5">
       {[...Array(5)].map((_, i) => (
         <Star
           key={i}
-          className={`h-4 w-4 ${i < rating ? 'fill-current' : ''}`}
-          style={{ color: i < rating ? colors.gold : colors.silver }}
+          className={`h-3 w-3 sm:h-4 sm:w-4 ${i < rating ? 'fill-current' : ''}`}
+          style={{ color: i < rating ? colors.gold : 'rgba(255,255,255,0.3)' }}
         />
       ))}
     </div>
@@ -191,164 +177,124 @@ const Testimonials = () => {
   // Stat badge component
   const StatBadge = ({ label, value, color }) => (
     <div 
-      className="px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm"
-      style={{ 
-        background: `${color}20`,
-        border: `1px solid ${color}40`,
-        color: color
-      }}
+      className="px-2 py-1.5 rounded-lg flex items-center justify-between bg-white/5 border border-white/10"
     >
-      {label}: <span className="font-bold">{value}</span>
+      <span className="text-xs text-white/70">{label}</span>
+      <span className="text-sm font-bold ml-2" style={{ color: color }}>{value}</span>
     </div>
   );
 
   return (
     <section 
       ref={containerRef}
-      className="relative py-16 overflow-hidden" // Changed from py-20 to py-16
+      className="relative py-12 sm:py-16 overflow-hidden"
       style={{ background: colors.background }}
     >
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Floating particles */}
-        {[...Array(20)].map((_, i) => (
+        {[...Array(15)].map((_, i) => (
           <div
             key={i}
-            className="absolute rounded-full animate-pulse"
+            className="absolute rounded-full"
             style={{
-              width: Math.random() * 3 + 1,
-              height: Math.random() * 3 + 1,
+              width: Math.random() * 2 + 1,
+              height: Math.random() * 2 + 1,
               background: colors.primary,
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              opacity: Math.random() * 0.3 + 0.1,
+              opacity: Math.random() * 0.2 + 0.1,
               animationDelay: `${i * 0.5}s`,
-              filter: 'blur(1px)'
             }}
           />
         ))}
-        
-        {/* Gradient orbs */}
-        <div 
-          className="absolute -top-40 -right-40 w-80 h-80 rounded-full"
-          style={{
-            background: `radial-gradient(circle, ${colors.primary}20 0%, transparent 70%)`,
-            filter: 'blur(40px)',
-            opacity: 0.3
-          }}
-        />
-        <div 
-          className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full"
-          style={{
-            background: `radial-gradient(circle, ${colors.secondary}20 0%, transparent 70%)`,
-            filter: 'blur(40px)',
-            opacity: 0.3
-          }}
-        />
       </div>
-
-      {/* Animated grid */}
-      <div 
-        className="absolute inset-0 opacity-5"
-        style={{
-          backgroundImage: `
-            linear-gradient(90deg, ${colors.primary}30 1px, transparent 1px),
-            linear-gradient(${colors.primary}30 1px, transparent 1px)
-          `,
-          backgroundSize: '40px 40px',
-          backgroundPosition: 'center center'
-        }}
-      />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-12 max-w-3xl mx-auto"> {/* Changed from mb-16 to mb-12 */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 mb-4"> {/* Changed from mb-6 to mb-4 */}
-            <Sparkles className="h-4 w-4 text-cyan-300" />
-            <span className="text-sm font-bold text-cyan-300 tracking-wider">
-              TRUSTED BY INDUSTRY LEADERS
+        <div className="text-center mb-10 sm:mb-12 max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 mb-4">
+            <Sparkles className="h-3 w-3 text-cyan-300 sm:h-4 sm:w-4" />
+            <span className="text-xs font-bold text-cyan-300 tracking-wider sm:text-sm">
+              CLIENT SUCCESS STORIES
             </span>
           </div>
           
-          <h2 className="text-4xl md:text-5xl font-bold mb-4"> {/* Changed from mb-6 to mb-4 */}
-            <span className="block text-white/90">Transformative Results</span>
+          <h2 className="text-2xl font-bold mb-3 sm:text-3xl lg:text-4xl">
+            <span className="block text-white/90">Trusted by Industry</span>
             <span className="block bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent">
-              From Real Clients
+              Leaders Across Africa
             </span>
           </h2>
           
-          <p className="text-lg text-blue-100/70 leading-relaxed mt-4"> {/* Changed from text-xl and added mt-4 */}
-            Discover how leading enterprises across Africa are achieving unprecedented growth 
-            and innovation with BitAfrica AI solutions.
+          <p className="text-sm text-blue-100/70 leading-relaxed sm:text-base">
+            See how enterprises are transforming operations and achieving unprecedented results with BitAfrica AI.
           </p>
         </div>
 
-        {/* Success Metrics - Height Reduced */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8"> {/* Changed gap-4 to gap-3, mb-12 to mb-8 */}
+        {/* Success Metrics */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8 sm:mb-10">
           {successMetrics.map((metric, index) => (
             <div 
               key={index}
-              className={`metric-${index} relative group`}
+              className="relative bg-white/5 backdrop-blur-sm rounded-lg p-3 border border-white/10"
             >
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-500" />
-              <div className="relative bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10 group-hover:border-cyan-500/30 transition-all duration-300"> {/* Changed p-5 to p-4 */}
-                <div className="flex items-center justify-between mb-2"> {/* Changed mb-3 to mb-2 */}
-                  <div className="text-xl font-bold text-white">{metric.value}</div> {/* Changed text-2xl to text-xl */}
-                  <div className="p-1.5 rounded-lg bg-white/10"> {/* Changed p-2 to p-1.5 */}
-                    <div className="text-cyan-300">{metric.icon}</div>
-                  </div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-lg font-bold text-white">{metric.value}</div>
+                <div className="p-1.5 rounded-lg bg-white/10">
+                  <div className="text-cyan-300">{metric.icon}</div>
                 </div>
-                <div className="text-sm text-blue-100/70 mb-1">{metric.label}</div> {/* Changed mb-2 to mb-1 */}
-                <div className="flex items-center gap-1 text-xs"> {/* Changed gap-2 to gap-1 */}
-                  <TrendingUp className="h-3 w-3 text-green-400" />
-                  <span className="text-green-400 font-semibold">{metric.change}</span>
-                  <span className="text-blue-100/50">vs last year</span>
-                </div>
+              </div>
+              <div className="text-xs text-blue-100/70 mb-1">{metric.label}</div>
+              <div className="flex items-center gap-1 text-xs">
+                <TrendingUp className="h-3 w-3 text-green-400" />
+                <span className="text-green-400 font-semibold">{metric.change}</span>
               </div>
             </div>
           ))}
         </div>
 
         {/* Main Testimonials Slider */}
-        <div className="relative max-w-6xl mx-auto mb-12"> {/* Changed mb-16 to mb-12 */}
-          {/* Navigation Controls - Height Reduced */}
-          <div className="flex justify-between items-center mb-4"> {/* Changed mb-8 to mb-4 */}
-            <button
-              onClick={prevTestimonial}
-              onMouseEnter={() => setIsAutoPlaying(false)}
-              onMouseLeave={() => setIsAutoPlaying(true)}
-              className="group relative w-12 h-12 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 hover:border-cyan-500/50 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white/10" // Changed w-14 h-14 to w-12 h-12
-            >
-              <ChevronLeft className="h-5 w-5 text-white/70 group-hover:text-cyan-300 transition-colors" /> {/* Changed h-6 w-6 to h-5 w-5 */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            </button>
-            
-            <div className="flex items-center gap-2"> {/* Changed gap-3 to gap-2 */}
+        <div className="relative max-w-6xl mx-auto">
+          {/* Navigation Controls */}
+          <div className="flex justify-between items-center mb-4 sm:mb-6">
+            <div className="flex items-center gap-2">
               {testimonials.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setActiveIndex(index)}
                   onMouseEnter={() => setIsAutoPlaying(false)}
-                  className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                    index === activeIndex ? 'w-6 bg-gradient-to-r from-cyan-500 to-blue-500' : 'bg-white/30'
-                  }`} // Changed sizes
+                  className={`transition-all duration-300 ${
+                    index === activeIndex 
+                      ? 'w-6 bg-gradient-to-r from-cyan-500 to-blue-500' 
+                      : 'w-1.5 bg-white/30'
+                  } h-1.5 rounded-full`}
                 />
               ))}
             </div>
             
-            <button
-              onClick={nextTestimonial}
-              onMouseEnter={() => setIsAutoPlaying(false)}
-              onMouseLeave={() => setIsAutoPlaying(true)}
-              className="group relative w-12 h-12 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 hover:border-cyan-500/50 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white/10" // Changed w-14 h-14 to w-12 h-12
-            >
-              <ChevronRight className="h-5 w-5 text-white/70 group-hover:text-cyan-300 transition-colors" /> {/* Changed h-6 w-6 to h-5 w-5 */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={prevTestimonial}
+                onMouseEnter={() => setIsAutoPlaying(false)}
+                onMouseLeave={() => setIsAutoPlaying(true)}
+                className="w-8 h-8 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 hover:border-cyan-500/50 flex items-center justify-center transition-all duration-300 hover:bg-white/10 sm:w-10 sm:h-10"
+              >
+                <ChevronLeft className="h-4 w-4 text-white/70 hover:text-cyan-300 sm:h-5 sm:w-5" />
+              </button>
+              
+              <button
+                onClick={nextTestimonial}
+                onMouseEnter={() => setIsAutoPlaying(false)}
+                onMouseLeave={() => setIsAutoPlaying(true)}
+                className="w-8 h-8 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 hover:border-cyan-500/50 flex items-center justify-center transition-all duration-300 hover:bg-white/10 sm:w-10 sm:h-10"
+              >
+                <ChevronRight className="h-4 w-4 text-white/70 hover:text-cyan-300 sm:h-5 sm:w-5" />
+              </button>
+            </div>
           </div>
 
-          {/* Progress Bar - Reduced Height */}
-          <div className="h-0.5 w-full bg-white/10 rounded-full overflow-hidden mb-6"> {/* Changed h-1 to h-0.5, mb-8 to mb-6 */}
+          {/* Progress Bar */}
+          <div className="h-0.5 w-full bg-white/10 rounded-full overflow-hidden mb-6">
             <div 
               ref={progressBarRef}
               className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"
@@ -356,11 +302,8 @@ const Testimonials = () => {
             />
           </div>
 
-          {/* Active Testimonial Card - Reduced Padding */}
-          <div 
-            ref={sliderRef}
-            className="relative"
-          >
+          {/* Active Testimonial Card - Professional Design */}
+          <div ref={sliderRef} className="relative">
             {testimonials.map((testimonial, index) => (
               <div
                 key={testimonial.id}
@@ -372,128 +315,159 @@ const Testimonials = () => {
                 }`}
               >
                 <div 
-                  className="relative rounded-2xl overflow-hidden border border-white/10"
+                  className="relative rounded-xl overflow-hidden border border-white/10"
                   style={{ 
-                    background: 'rgba(15, 23, 42, 0.7)',
-                    backdropFilter: 'blur(20px)'
+                    background: colors.cardBg,
+                    backdropFilter: 'blur(10px)'
                   }}
                 >
-                  {/* Gradient border */}
-                  <div className="absolute -inset-0.5 rounded-2xl opacity-30">
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500/30 via-blue-500/30 to-purple-500/30" />
+                  <div className="p-5 sm:p-6 lg:p-8">
+                    <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+                      {/* Left Column - Profile & Stats */}
+                      <div className="lg:w-2/5">
+                        <div className="flex flex-col sm:flex-row lg:flex-col gap-5">
+                          {/* Profile Section */}
+                          <div className="flex sm:items-center gap-4">
+                            {/* Avatar with comfortable background */}
+                            <div className="relative flex-shrink-0">
+                              <div className="absolute -inset-1 rounded-full opacity-20"
+                                style={{ background: testimonial.color }}
+                              />
+                              <div 
+                                className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-white/20"
+                                style={{ 
+                                  background: `${testimonial.color}20`,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center'
+                                }}
+                              >
+                                <img
+                                  src={testimonial.avatar}
+                                  alt={testimonial.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            </div>
+                            
+                            {/* Client Info */}
+                            <div>
+                              <h4 className="text-lg font-bold text-white mb-1 sm:text-xl">
+                                {testimonial.name}
+                              </h4>
+                              <div className="mb-2">
+                                <StarRating rating={testimonial.rating} />
+                              </div>
+                              <p className="text-sm text-cyan-300 font-medium">
+                                {testimonial.role}
+                              </p>
+                              <p className="text-xs text-white/70 mt-0.5">
+                                {testimonial.company}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Key Stats */}
+                          <div className="space-y-3">
+                            <div className="grid grid-cols-2 gap-3">
+                              <div 
+                                className="p-3 rounded-lg"
+                                style={{ 
+                                  background: `${testimonial.color}15`,
+                                  border: `1px solid ${testimonial.color}30`
+                                }}
+                              >
+                                <div className="text-xs text-white/70 mb-1">Industry</div>
+                                <div className="text-sm font-bold text-white">{testimonial.industry}</div>
+                              </div>
+                              
+                              <div 
+                                className="p-3 rounded-lg"
+                                style={{ 
+                                  background: `${testimonial.color}15`,
+                                  border: `1px solid ${testimonial.color}30`
+                                }}
+                              >
+                                <div className="text-xs text-white/70 mb-1">Duration</div>
+                                <div className="text-sm font-bold text-white">{testimonial.duration}</div>
+                              </div>
+                            </div>
+                            
+                            <div 
+                              className="p-3 rounded-lg"
+                              style={{ 
+                                background: `${testimonial.color}10`,
+                                border: `1px solid ${testimonial.color}20`
+                              }}
+                            >
+                              <div className="text-xs text-white/70 mb-1">Key Impact</div>
+                              <div className="text-base font-bold text-white flex items-center gap-2">
+                                <Zap className="h-4 w-4" style={{ color: testimonial.color }} />
+                                {testimonial.impact}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Right Column - Content & Achievements */}
+                      <div className="lg:w-3/5">
+                        {/* Quote Content */}
+                        <div className="mb-6">
+                          <div className="flex items-start gap-3">
+                            <Quote className="h-5 w-5 text-cyan-300/50 flex-shrink-0 mt-1 sm:h-6 sm:w-6" />
+                            <p className="text-sm text-white/90 leading-relaxed italic sm:text-base">
+                              "{testimonial.content}"
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Key Achievements */}
+                        <div className="mb-6">
+                          <h5 className="text-sm font-bold text-white/90 mb-3 flex items-center gap-2">
+                            <CheckCircle className="h-4 w-4 text-green-400" />
+                            Key Achievements
+                          </h5>
+                          <div className="space-y-2">
+                            {testimonial.achievements.map((achievement, idx) => (
+                              <div key={idx} className="flex items-start gap-2">
+                                <div 
+                                  className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0"
+                                  style={{ background: testimonial.color }}
+                                />
+                                <span className="text-sm text-white/80">{achievement}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Performance Stats */}
+                        <div>
+                          <h5 className="text-sm font-bold text-white/90 mb-3">Performance Metrics</h5>
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            {Object.entries(testimonial.stats).map(([key, value], idx) => (
+                              <StatBadge 
+                                key={idx}
+                                label={key.charAt(0).toUpperCase() + key.slice(1)}
+                                value={value}
+                                color={testimonial.color}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-
-                  <div className="relative p-6 lg:p-8"> {/* Changed p-8 lg:p-10 to p-6 lg:p-8 */}
-                    <div className="flex flex-col lg:flex-row gap-6 items-start"> {/* Changed gap-8 to gap-6 */}
-                      {/* Left Column - Avatar & Stats */}
-                      <div className="flex-shrink-0">
-                        <div className="relative">
-                          {/* Avatar with glow */}
-                          <div 
-                            className="absolute -inset-1.5 rounded-full blur opacity-30" // Changed -inset-2 to -inset-1.5
-                            style={{ background: testimonial.color }}
-                          />
-                          <img
-                            src={testimonial.avatar}
-                            alt={testimonial.name}
-                            className="relative w-20 h-20 rounded-full object-cover border-2 border-white/20" // Changed w-24 h-24 to w-20 h-20
-                          />
-                          
-                          {/* Rating badge */}
-                          <div className="absolute -bottom-1 -right-1 px-2 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20"> {/* Changed sizes */}
-                            <div className="flex items-center gap-0.5"> {/* Changed gap-1 to gap-0.5 */}
-                              <StarRating rating={testimonial.rating} />
-                              <span className="text-xs font-bold text-white ml-0.5">
-                                {testimonial.rating}/5
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Quick stats - Reduced Margin */}
-                        <div className="mt-4 space-y-2"> {/* Changed mt-6 to mt-4, space-y-3 to space-y-2 */}
-                          {Object.entries(testimonial.stats).map(([key, value], idx) => (
-                            <div key={idx} className="flex items-center justify-between">
-                              <span className="text-xs text-blue-100/60 capitalize">{key}</span>
-                              <span className="text-sm font-bold text-white">{value}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Right Column - Content */}
-                      <div className="flex-1">
-                        {/* Quote icon - Reduced Margin */}
-                        <div className="mb-4"> {/* Changed mb-6 to mb-4 */}
-                          <Quote className="h-6 w-6 text-cyan-300/30 mb-2" /> {/* Changed h-8 w-8 to h-6 w-6, mb-4 to mb-2 */}
-                          <p className="text-lg text-white/90 leading-relaxed italic"> {/* Changed text-xl to text-lg */}
-                            "{testimonial.content}"
-                          </p>
-                        </div>
-
-                        {/* Client Info - Reduced Margin */}
-                        <div className="mb-4"> {/* Changed mb-6 to mb-4 */}
-                          <h4 className="text-xl font-bold text-white mb-1"> {/* Changed text-2xl to text-xl */}
-                            {testimonial.name}
-                          </h4>
-                          <div className="flex items-center gap-2 mb-2"> {/* Changed gap-3 to gap-2, mb-4 to mb-2 */}
-                            <span className="text-cyan-300 font-medium">{testimonial.role}</span>
-                            <span className="text-white/50">•</span>
-                            <span className="text-white/70">{testimonial.company}</span>
-                          </div>
-                        </div>
-
-                        {/* Impact & Industry - Reduced Gap */}
-                        <div className="flex flex-wrap gap-2"> {/* Changed gap-3 to gap-2 */}
-                          <div 
-                            className="px-3 py-1.5 rounded-lg flex items-center gap-1.5" // Changed padding
-                            style={{ 
-                              background: `${testimonial.color}20`,
-                              border: `1px solid ${testimonial.color}40`
-                            }}
-                          >
-                            <Zap className="h-3.5 w-3.5" style={{ color: testimonial.color }} /> {/* Changed h-4 w-4 to h-3.5 w-3.5 */}
-                            <span className="font-bold text-white text-sm">{testimonial.impact}</span>
-                          </div>
-                          
-                          <div className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 flex items-center gap-1.5"> {/* Changed padding */}
-                            <Globe className="h-3.5 w-3.5 text-cyan-300" /> {/* Changed h-4 w-4 to h-3.5 w-3.5 */}
-                            <span className="text-white/80 text-sm">{testimonial.industry}</span>
-                          </div>
-                          
-                          <div className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 flex items-center gap-1.5"> {/* Changed padding */}
-                            <Award className="h-3.5 w-3.5 text-cyan-300" /> {/* Changed h-4 w-4 to h-3.5 w-3.5 */}
-                            <span className="text-white/80 text-sm">{testimonial.duration}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Bottom stats - Reduced Margin */}
-                    <div className="mt-6 pt-6 border-t border-white/10"> {/* Changed mt-8 pt-8 to mt-6 pt-6 */}
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3"> {/* Changed gap-4 to gap-3 */}
-                        <StatBadge 
-                          label="Accuracy" 
-                          value={testimonial.stats.accuracy || "98%"} 
-                          color={testimonial.color}
-                        />
-                        <StatBadge 
-                          label="ROI" 
-                          value={testimonial.stats.roi || "7.5x"} 
-                          color={testimonial.color}
-                        />
-                        <StatBadge 
-                          label="Uptime" 
-                          value={testimonial.stats.uptime || "99.9%"} 
-                          color={testimonial.color}
-                        />
-                        <StatBadge 
-                          label="Efficiency" 
-                          value={testimonial.stats.efficiency || "+40%"} 
-                          color={testimonial.color}
-                        />
-                      </div>
-                    </div>
+                  
+                  {/* Industry Badge */}
+                  <div className="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-bold"
+                    style={{ 
+                      background: `${testimonial.color}20`,
+                      color: testimonial.color,
+                      border: `1px solid ${testimonial.color}40`
+                    }}
+                  >
+                    {testimonial.industry}
                   </div>
                 </div>
               </div>
@@ -501,78 +475,39 @@ const Testimonials = () => {
           </div>
         </div>
 
-        {/* CTA - Reduced Height */}
-        <div className="text-center mt-8"> {/* Added mt-8 */}
-          <button 
-            className="group relative px-6 py-3 rounded-xl overflow-hidden transition-all duration-300 hover:scale-105" // Changed px-8 py-4 to px-6 py-3
-            onMouseEnter={() => setIsAutoPlaying(false)}
-            onMouseLeave={() => setIsAutoPlaying(true)}
-          >
-            <div 
-              className="absolute inset-0 rounded-xl"
-              style={{
-                background: 'linear-gradient(135deg, #0066FF, #8A2BE2)'
-              }}
-            />
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-            <span className="relative z-10 flex items-center justify-center text-white font-bold text-base"> {/* Changed text-lg to text-base */}
-              <Rocket className="mr-2 h-4 w-4 group-hover:rotate-45 transition-transform" /> {/* Changed mr-3 to mr-2, h-5 w-5 to h-4 w-4 */}
-              View All Case Studies
-              <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1.5 transition-transform" /> {/* Changed ml-3 to ml-2, h-5 w-5 to h-4 w-4, translate-x-2 to translate-x-1.5 */}
-            </span>
-          </button>
+        {/* Client Counter */}
+        <div className="text-center mt-8 sm:mt-10">
+          <div className="inline-flex items-center gap-6 px-6 py-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-white">200+</div>
+              <div className="text-xs text-white/70">Happy Clients</div>
+            </div>
+            <div className="h-8 w-px bg-white/20" />
+            <div className="text-center">
+              <div className="text-2xl font-bold text-white">98%</div>
+              <div className="text-xs text-white/70">Success Rate</div>
+            </div>
+            <div className="h-8 w-px bg-white/20" />
+            <div className="text-center">
+              <div className="text-2xl font-bold text-white">24/7</div>
+              <div className="text-xs text-white/70">Support</div>
+            </div>
+          </div>
           
-          <p className="text-sm text-blue-100/60 mt-3"> {/* Changed mt-4 to mt-3 */}
-            Join 200+ enterprises already transforming with BitAfrica AI
+          <p className="text-xs text-blue-100/60 mt-3 sm:text-sm">
+            Join industry leaders transforming with BitAfrica AI solutions
           </p>
         </div>
       </div>
 
-      {/* Bottom gradient fade - Reduced Height */}
+      {/* Bottom gradient fade */}
       <div 
-        className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none" // Changed h-32 to h-20
+        className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none"
         style={{
           background: 'linear-gradient(to top, #0A192F 0%, transparent 100%)',
-          opacity: 0.8
+          opacity: 0.6
         }}
       />
-
-      <style jsx>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 0.1; }
-          50% { opacity: 0.3; }
-        }
-        
-        .animate-pulse {
-          animation: pulse 2s ease-in-out infinite;
-        }
-        
-        /* Smooth transitions */
-        * {
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        /* Responsive design */
-        @media (max-width: 768px) {
-          .text-5xl {
-            font-size: 3rem;
-          }
-          
-          .grid-cols-4 {
-            grid-template-columns: repeat(2, 1fr);
-          }
-        }
-        
-        /* Accessibility */
-        @media (prefers-reduced-motion: reduce) {
-          .animate-pulse,
-          .group-hover,
-          .transition-all {
-            animation: none !important;
-            transition: none !important;
-          }
-        }
-      `}</style>
     </section>
   );
 };
