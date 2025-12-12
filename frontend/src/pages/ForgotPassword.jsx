@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Shield, CheckCircle, XCircle, Send, ArrowLeft } from 'lucide-react';
-import api from '../api';
+import api from '../services/api';
 import API_CONFIG from '/config/apiConfig';
 
 const ForgotPassword = () => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Lock, CheckCircle, XCircle, Key, Shield } from 'lucide-react';
-import api from '../api';
+import api from '../services/api';
 import API_CONFIG from '/config/apiConfig';
 
 const ResetPassword = () => {
