@@ -1,11 +1,10 @@
 import React from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Changed to BrowserRouter
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import ResetPassword from './pages/ResetPassword';
-
 
 // Page Components
 import Home from './pages/Home';
@@ -38,10 +37,10 @@ import NotFound from './pages/NotFound';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950">
+      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 flex flex-col">
         <Header />
-        <main className="flex-grow">
-          <ScrollToTop /> {/* Add this line */}
+        <main className="flex-grow pt-16"> {/* Added pt-16 to offset fixed header */}
+          <ScrollToTop />
           <Routes>
             {/* ========== PUBLIC ROUTES ========== */}
             
@@ -109,7 +108,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
-        <ScrollToTopButton /> {/* Add this line */}
+        <ScrollToTopButton />
       </div>
     </Router>
   );
