@@ -103,7 +103,7 @@ const Header = () => {
               
               <div className="overflow-hidden h-4 mt-0.5">
                 <p className="text-xs text-blue-400/80 font-medium tracking-wide whitespace-nowrap animate-marquee-fast">
-                  Powered by AI • 
+                  Powered by AI • Transforming Africa
                 </p>
               </div>
             </div>
