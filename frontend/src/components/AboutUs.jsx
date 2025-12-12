@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Added Link import
+import { Link } from 'react-router-dom';
 import { 
   MapPin, Target, Zap, Globe, Users, Award,
   TrendingUp, Shield, Heart, Sparkles, ArrowRight,
@@ -115,7 +115,7 @@ const AboutUs = () => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => setShowSignupPopup(false)} // Close popup when clicking sign up
+                    onClick={() => setShowSignupPopup(false)}
                     className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-medium text-sm transition-all duration-200"
                   >
                     Sign Up Now
@@ -191,8 +191,8 @@ const AboutUs = () => {
           </motion.p>
         </div>
 
-        {/* Main Grid */}
-        <div className="grid lg:grid-cols-2 gap-6 md:gap-8 mb-10 md:mb-12">
+        {/* Main Grid - UPDATED: Stack columns on mobile */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-10 md:mb-12">
           {/* Left Column */}
           <div className="space-y-4 md:space-y-6">
             <motion.div
@@ -220,10 +220,10 @@ const AboutUs = () => {
                 </p>
               </div>
 
-              {/* Achievements */}
+              {/* Achievements - UPDATED: Single column on mobile, 2 columns on md+ */}
               <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-gray-700/30">
                 <h4 className="text-xs md:text-sm font-bold mb-3 md:mb-4 text-gray-100">Enterprise Milestones</h4>
-                <div className="grid grid-cols-2 gap-2 md:gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
                   {achievements.map((item, idx) => (
                     <motion.div
                       key={idx}
@@ -248,8 +248,8 @@ const AboutUs = () => {
               </div>
             </motion.div>
 
-            {/* Team Stats */}
-            <div className="grid grid-cols-2 gap-2 md:gap-3">
+            {/* Team Stats - UPDATED: 2 columns on mobile, 2 on tablet, 4 on desktop */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 md:gap-3">
               {teamStats.map((stat, idx) => (
                 <motion.div
                   key={idx}
@@ -319,7 +319,7 @@ const AboutUs = () => {
               </div>
             </motion.div>
 
-            {/* Tech Focus */}
+            {/* Tech Focus - UPDATED: 2 columns on mobile, 2 on tablet, 4 on desktop */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -328,7 +328,7 @@ const AboutUs = () => {
               className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 rounded-xl md:rounded-2xl p-4 md:p-6 border border-gray-700/50 shadow-xl hover:shadow-2xl transition-all duration-300"
             >
               <h3 className="text-base md:text-lg font-bold mb-3 md:mb-4 text-gray-100">AI Stack</h3>
-              <div className="grid grid-cols-2 gap-2 md:gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 md:gap-3">
                 {techFocus.map((tech, idx) => (
                   <motion.div
                     key={idx}
@@ -336,12 +336,12 @@ const AboutUs = () => {
                     whileInView={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.4, delay: idx * 0.1 }}
                     whileHover={{ scale: 1.05 }}
-                    className="group flex items-center gap-2 md:gap-3 p-2 md:p-3 rounded-md md:rounded-lg bg-gray-800/50 backdrop-blur-sm border border-gray-700/40 hover:border-gray-600/50 hover:shadow-lg transition-all duration-300"
+                    className="group flex flex-col items-center gap-2 md:gap-3 p-2 md:p-3 rounded-md md:rounded-lg bg-gray-800/50 backdrop-blur-sm border border-gray-700/40 hover:border-gray-600/50 hover:shadow-lg transition-all duration-300"
                   >
                     <div className={`p-1.5 md:p-2 rounded ${tech.color} group-hover:scale-105 transition-transform duration-300`}>
                       {React.cloneElement(tech.icon, { className: "h-3 w-3 md:h-4 md:w-4 text-white" })}
                     </div>
-                    <span className="text-xs md:text-sm font-semibold text-gray-200">{tech.name}</span>
+                    <span className="text-xs md:text-sm font-semibold text-gray-200 text-center">{tech.name}</span>
                   </motion.div>
                 ))}
               </div>

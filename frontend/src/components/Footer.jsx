@@ -138,9 +138,9 @@ const Footer = () => {
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-1.5">
           <Globe className="h-3.5 w-3.5 text-cyan-300" />
-          <h3 className="font-semibold text-white text-xs">Global Presence</h3>
+          <h3 className="font-semibold text-white text-[13px]">Global Presence</h3> {/* Increased from text-xs */}
         </div>
-        <div className="flex items-center gap-1 text-xs text-cyan-300 bg-cyan-500/10 px-1.5 py-0.5 rounded">
+        <div className="flex items-center gap-1 text-[12px] text-cyan-300 bg-cyan-500/10 px-1.5 py-0.5 rounded">
           <Wifi className="h-2 w-2" />
           <span>LIVE</span>
         </div>
@@ -148,26 +148,26 @@ const Footer = () => {
       
       <div className="grid grid-cols-2 gap-1.5">
         <div className="text-center p-1.5 rounded bg-white/5">
-          <div className="text-sm font-bold text-white">24</div>
-          <div className="text-[10px] text-blue-100/60">Countries</div>
+          <div className="text-[15px] font-bold text-white">24</div> {/* Increased from text-sm */}
+          <div className="text-[11px] text-blue-100/60">Countries</div> {/* Increased from text-[10px] */}
         </div>
         <div className="text-center p-1.5 rounded bg-white/5">
-          <div className="text-sm font-bold text-white">500+</div>
-          <div className="text-[10px] text-blue-100/60">Clients</div>
+          <div className="text-[15px] font-bold text-white">500+</div> {/* Increased from text-sm */}
+          <div className="text-[11px] text-blue-100/60">Clients</div> {/* Increased from text-[10px] */}
         </div>
         <div className="text-center p-1.5 rounded bg-white/5">
-          <div className="text-sm font-bold text-white">99.9%</div>
-          <div className="text-[10px] text-blue-100/60">Uptime</div>
+          <div className="text-[15px] font-bold text-white">99.9%</div> {/* Increased from text-sm */}
+          <div className="text-[11px] text-blue-100/60">Uptime</div> {/* Increased from text-[10px] */}
         </div>
         <div className="text-center p-1.5 rounded bg-gradient-to-br from-cyan-500/20 to-green-500/20 border border-cyan-500/30">
           <div className="flex flex-col items-center justify-center gap-0.5">
             <div className="flex items-center gap-1">
               <Clock className="h-2.5 w-2.5 text-green-400" />
-              <div className="text-[10px] font-bold text-green-400">
+              <div className="text-[11px] font-bold text-green-400"> {/* Increased from text-[10px] */}
                 Local Time
               </div>
             </div>
-            <div className="text-xs font-bold text-green-300 tracking-tight">
+            <div className="text-[13px] font-bold text-green-300 tracking-tight"> {/* Increased from text-xs */}
               {clientTime.split(' ')[0]} {clientTime.split(' ')[1]}
             </div>
           </div>
@@ -213,10 +213,10 @@ const Footer = () => {
                 </div>
               </div>
               <div>
-                <h2 className="text-lg font-bold bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">
+                <h2 className="text-[18px] font-bold bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-transparent"> {/* Increased from text-lg */}
                   BitAfrica AI
                 </h2>
-                <p className="text-[11px] text-blue-100/60 mt-0.5">Pioneering Africa's AI Revolution</p>
+                <p className="text-[12px] text-blue-100/60 mt-0.5">Pioneering Africa's AI Revolution</p> {/* Increased from text-[11px] */}
               </div>
             </div>
             
@@ -225,7 +225,7 @@ const Footer = () => {
           
           {/* Columns 2 & 3: Services and Company - Side by side on mobile */}
           <div className="md:col-span-1">
-            <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-1.5">
+            <h3 className="text-[15px] font-bold text-white mb-2 flex items-center gap-1.5"> {/* Increased from text-sm */}
               <Zap className="h-3.5 w-3.5 text-yellow-400" />
               Services
             </h3>
@@ -244,7 +244,7 @@ const Footer = () => {
                       {service.icon}
                     </div>
                   </div>
-                  <span className="text-blue-100/80 text-[11px] group-hover:text-white">
+                  <span className="text-blue-100/80 text-[12px] group-hover:text-white"> {/* Increased from text-[11px] */}
                     {service.name}
                   </span>
                 </a>
@@ -253,7 +253,7 @@ const Footer = () => {
           </div>
           
           <div className="md:col-span-1">
-            <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-1.5">
+            <h3 className="text-[15px] font-bold text-white mb-2 flex items-center gap-1.5"> {/* Increased from text-sm */}
               <Briefcase className="h-3.5 w-3.5 text-green-400" />
               Company
             </h3>
@@ -269,7 +269,7 @@ const Footer = () => {
                       {link.icon}
                     </div>
                   </div>
-                  <span className="text-blue-100/80 text-[11px] group-hover:text-white">
+                  <span className="text-blue-100/80 text-[12px] group-hover:text-white"> {/* Increased from text-[11px] */}
                     {link.name}
                   </span>
                 </a>
@@ -283,7 +283,7 @@ const Footer = () => {
             <div className="bg-gradient-to-br from-cyan-500/10 to-purple-500/10 rounded-lg p-2.5 border border-white/10">
               <div className="flex items-center gap-1.5 mb-1.5">
                 <Bell className="h-3.5 w-3.5 text-cyan-300" />
-                <h3 className="font-bold text-white text-sm">Stay Updated</h3>
+                <h3 className="font-bold text-white text-[15px]">Stay Updated</h3> {/* Increased from text-sm */}
               </div>
               
               <form onSubmit={handleSubscribe} className="space-y-1.5">
@@ -292,11 +292,11 @@ const Footer = () => {
                   name="email"
                   required
                   placeholder="Your email"
-                  className="w-full px-2.5 py-1.5 text-xs rounded bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500"
+                  className="w-full px-2.5 py-1.5 text-[13px] rounded bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500" /* Increased from text-xs */
                 />
                 <button
                   type="submit"
-                  className="w-full py-1.5 text-xs rounded bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 transition-all flex items-center justify-center gap-1"
+                  className="w-full py-1.5 text-[13px] rounded bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 transition-all flex items-center justify-center gap-1" /* Increased from text-xs */
                 >
                   <span className="text-white font-semibold">Subscribe</span>
                   <Send className="h-2.5 w-2.5 text-white" />
@@ -304,7 +304,7 @@ const Footer = () => {
               </form>
               
               {subscribed && (
-                <div className="mt-1.5 flex items-center justify-center gap-1 text-green-400 text-[10px]">
+                <div className="mt-1.5 flex items-center justify-center gap-1 text-green-400 text-[11px]"> {/* Increased from text-[10px] */}
                   <Sparkles className="h-2.5 w-2.5" />
                   <span>Welcome aboard! 🚀</span>
                 </div>
@@ -313,7 +313,7 @@ const Footer = () => {
             
             {/* Compact Contact */}
             <div>
-              <h3 className="text-sm font-bold text-white mb-1.5 flex items-center gap-1.5">
+              <h3 className="text-[15px] font-bold text-white mb-1.5 flex items-center gap-1.5"> {/* Increased from text-sm */}
                 <MessageSquare className="h-3.5 w-3.5 text-pink-400" />
                 Contact
               </h3>
@@ -328,7 +328,7 @@ const Footer = () => {
                         {contact.icon}
                       </div>
                     </div>
-                    <span className="text-blue-100/80 text-[11px]">
+                    <span className="text-blue-100/80 text-[12px]"> {/* Increased from text-[11px] */}
                       {contact.text}
                     </span>
                   </div>
@@ -337,7 +337,7 @@ const Footer = () => {
                   <div className="p-1 rounded bg-gradient-to-r from-cyan-500/20 to-purple-500/20">
                     <MapPin className="h-3.5 w-3.5 text-cyan-300" />
                   </div>
-                  <span className="text-blue-100/80 text-[11px]">
+                  <span className="text-blue-100/80 text-[12px]"> {/* Increased from text-[11px] */}
                   Nairobi
                   </span>
                 </div>
@@ -349,7 +349,7 @@ const Footer = () => {
         {/* Connect With Us - MOVED UP */}
         <div className="mb-4">
           <div className="flex flex-col items-center">
-            <h3 className="text-sm font-bold text-white mb-2 text-center">Connect With Us</h3>
+            <h3 className="text-[15px] font-bold text-white mb-2 text-center">Connect With Us</h3> {/* Increased from text-sm */}
             <div className="flex gap-1.5">
               {socialMedia.map((social) => (
                 <a
@@ -380,11 +380,25 @@ const Footer = () => {
         {/* Divider */}
         <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-3" />
         
-        {/* Compact Copyright Section */}
+        {/* Compact Copyright Section - Made Unique */}
         <div className="text-center py-2">
-          <div className="text-[11px] text-blue-100/60">
-            <p className="font-medium bg-gradient-to-r from-cyan-500/10 to-purple-500/10 px-3 py-1.5 rounded inline-block">
-              © 2025 BitAfrica AI. All rights reserved.
+          <div className="text-[12px] text-blue-100/60">
+            <p className="font-bold px-3 py-1.5 rounded inline-block relative overflow-hidden group">
+              {/* Background gradient effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-purple-500/5 to-pink-500/5 group-hover:from-cyan-500/10 group-hover:via-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300" />
+              
+              {/* Animated border effect */}
+              <div className="absolute inset-0 rounded border border-transparent">
+                <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded opacity-0 group-hover:opacity-20 blur-sm transition-opacity duration-300" />
+              </div>
+              
+              {/* Text with gradient */}
+              <span className="relative z-10 bg-gradient-to-r from-cyan-300 via-white to-purple-300 bg-clip-text text-transparent font-extrabold tracking-wide">
+                © 2025 BitAfrica AI. All rights reserved.
+              </span>
+              
+              {/* Glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-cyan-500/10 group-hover:via-purple-500/10 group-hover:to-pink-500/10 blur-sm transition-all duration-500" />
             </p>
           </div>
         </div>
@@ -446,12 +460,20 @@ const Footer = () => {
             font-size: 0.65rem;
           }
           
+          .text-\\[13px\\] {
+            font-size: 0.8125rem;
+          }
+          
+          .text-\\[12px\\] {
+            font-size: 0.75rem;
+          }
+          
           .text-\\[11px\\] {
-            font-size: 0.7rem;
+            font-size: 0.6875rem;
           }
           
           .text-\\[10px\\] {
-            font-size: 0.6rem;
+            font-size: 0.625rem;
           }
         }
         

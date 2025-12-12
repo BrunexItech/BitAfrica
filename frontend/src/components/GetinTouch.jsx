@@ -294,7 +294,7 @@ const GetinTouch = () => {
   );
 
   return (
-    <section className="relative py-12 md:py-16 overflow-hidden" style={{ background: colors.background }}>
+    <section className="relative py-8 md:py-12 overflow-hidden" style={{ background: colors.background }}>
       {/* Animated background */}
       <div className="absolute inset-0">
         {/* Gradient orbs */}
@@ -316,68 +316,68 @@ const GetinTouch = () => {
         />
       </div>
 
-      <div className="w-full px-4 sm:px-6 lg:px-4 xl:px-6 relative z-10">
-        {/* Header - Compact */}
-        <div className="text-center mb-10 max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 mb-6">
+      <div className="w-full px-3 sm:px-5 lg:px-6 xl:px-8 relative z-10 mx-auto">
+        {/* Header - Compact with better mobile centering */}
+        <div className="text-center mb-8 max-w-4xl mx-auto px-2">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 mb-4">
             <Globe className="h-4 w-4 text-cyan-300 animate-spin-slow" />
             <span className="text-xs font-bold bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent tracking-widest">
               GLOBAL CONNECTIVITY HUB
             </span>
           </div>
           
-          <h1 className="text-3xl md:text-5xl font-bold mb-6">
-            <span className="block text-white/90 text-2xl md:text-4xl">Connect Globally</span>
-            <span className="block bg-gradient-to-r from-cyan-300 via-pink-400 to-yellow-300 bg-clip-text text-transparent text-3xl md:text-5xl mt-1">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-1">
+            <span className="block text-white/90 text-xl sm:text-2xl md:text-3xl">Connect Globally</span>
+            <span className="block bg-gradient-to-r from-cyan-300 via-pink-400 to-yellow-300 bg-clip-text text-transparent text-2xl sm:text-3xl md:text-4xl mt-1">
               Free Consultation
             </span>
           </h1>
           
-          <p className="text-sm md:text-base text-blue-100/80 leading-relaxed max-w-2xl mx-auto">
+          <p className="text-xs sm:text-sm md:text-base text-blue-100/80 leading-relaxed max-w-2xl mx-auto px-2">
             Book a free strategy session from anywhere in the world.
           </p>
         </div>
 
         <div className="w-full">
-          <div className="grid lg:grid-cols-5 gap-4 md:gap-6 lg:gap-8">
+          <div className="grid lg:grid-cols-5 gap-4 md:gap-5 lg:gap-6">
             {/* Left Column - Interactive Globe - Hidden on mobile, takes 2/5 on desktop */}
             <div className="hidden lg:block lg:col-span-2 relative w-full">
               <div className="sticky top-20 w-full">
                 {/* Animated Globe */}
                 <div 
                   ref={globeRef}
-                  className="relative w-full aspect-square rounded-full mb-6 overflow-hidden flex items-center justify-center"
+                  className="relative w-full aspect-square rounded-full mb-4 overflow-hidden flex items-center justify-center"
                   style={{
                     background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
                     border: '2px solid rgba(255, 255, 255, 0.1)',
-                    boxShadow: '0 0 60px rgba(0, 198, 255, 0.2)'
+                    boxShadow: '0 0 40px rgba(0, 198, 255, 0.2)'
                   }}
                 >
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="relative">
-                      <div className="absolute -inset-3 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full blur-lg" />
-                      <Globe className="h-24 w-24 text-cyan-300 animate-spin-slow" />
+                      <div className="absolute -inset-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full blur-md" />
+                      <Globe className="h-20 w-20 text-cyan-300 animate-spin-slow" />
                     </div>
                   </div>
                 </div>
 
                 {/* Compact Stats */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="p-2 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
                     <div className="flex items-center gap-2">
-                      <Users className="h-6 w-6 text-cyan-300" />
+                      <Users className="h-5 w-5 text-cyan-300" />
                       <div>
-                        <div className="text-lg font-bold text-white">50+</div>
+                        <div className="text-base font-bold text-white">50+</div>
                         <div className="text-xs text-blue-100/60">Countries</div>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="p-3 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
+                  <div className="p-2 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
                     <div className="flex items-center gap-2">
-                      <Clock className="h-6 w-6 text-cyan-300" />
+                      <Clock className="h-5 w-5 text-cyan-300" />
                       <div>
-                        <div className="text-lg font-bold text-white">24/7</div>
+                        <div className="text-base font-bold text-white">24/7</div>
                         <div className="text-xs text-blue-100/60">Support</div>
                       </div>
                     </div>
@@ -390,26 +390,26 @@ const GetinTouch = () => {
             <div className="lg:col-span-3 relative w-full">
               <div 
                 ref={formRef}
-                className="relative rounded-2xl p-4 sm:p-5 md:p-6 backdrop-blur-xl border border-white/20 w-full"
+                className="relative rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 backdrop-blur-xl border border-white/20 w-full"
                 style={{
                   background: 'rgba(15, 23, 42, 0.7)',
-                  boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)'
+                  boxShadow: '0 8px 30px rgba(0, 0, 0, 0.2)'
                 }}
               >
                 {/* Success message */}
                 {isSubmitted ? (
                   <div 
                     ref={successRef}
-                    className="text-center py-8"
+                    className="text-center py-6"
                   >
-                    <div className="relative inline-block mb-4">
-                      <div className="relative p-4 rounded-full bg-gradient-to-r from-green-500 to-emerald-500">
-                        <CheckCircle className="h-12 w-12 text-white" />
+                    <div className="relative inline-block mb-3">
+                      <div className="relative p-3 rounded-full bg-gradient-to-r from-green-500 to-emerald-500">
+                        <CheckCircle className="h-10 w-10 text-white" />
                       </div>
                     </div>
                     
-                    <h3 className="text-xl font-bold text-white mb-3">Booking Confirmed! 🎉</h3>
-                    <p className="text-blue-100/80 text-sm mb-6">
+                    <h3 className="text-lg sm:text-xl font-bold text-white mb-2">Booking Confirmed! 🎉</h3>
+                    <p className="text-blue-100/80 text-xs sm:text-sm mb-4">
                       Your free consultation has been scheduled.
                     </p>
                     
@@ -428,13 +428,13 @@ const GetinTouch = () => {
                         });
                         setSelectedService('');
                       }}
-                      className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-semibold transition-all duration-300"
+                      className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs sm:text-sm font-semibold transition-all duration-300"
                     >
                       Schedule Another
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="space-y-6 w-full">
+                  <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 w-full">
                     <RegionSelector />
                     
                     <ServiceSelector />
@@ -442,106 +442,106 @@ const GetinTouch = () => {
                     <ConsultationSelector />
                     
                     {/* Personal Details */}
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       <div className="flex items-center gap-2">
                         <User className="h-4 w-4 text-cyan-300" />
-                        <h3 className="text-base font-bold text-white">Personal Details</h3>
+                        <h3 className="text-sm sm:text-base font-bold text-white">Personal Details</h3>
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3">
                         <div className="relative">
-                          <User className="absolute left-3 top-3 h-4 w-4 text-cyan-300 opacity-60" />
+                          <User className="absolute left-2 top-2.5 sm:left-3 sm:top-3 h-3 w-3 sm:h-4 sm:w-4 text-cyan-300 opacity-60" />
                           <input
                             type="text"
                             required
                             value={formData.name}
                             onChange={(e) => setFormData({...formData, name: e.target.value})}
                             placeholder="Your Name"
-                            className="w-full pl-10 pr-3 py-2.5 text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
+                            className="w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
                           />
                         </div>
                         
                         <div className="relative">
-                          <Mail className="absolute left-3 top-3 h-4 w-4 text-cyan-300 opacity-60" />
+                          <Mail className="absolute left-2 top-2.5 sm:left-3 sm:top-3 h-3 w-3 sm:h-4 sm:w-4 text-cyan-300 opacity-60" />
                           <input
                             type="email"
                             required
                             value={formData.email}
                             onChange={(e) => setFormData({...formData, email: e.target.value})}
                             placeholder="Email Address"
-                            className="w-full pl-10 pr-3 py-2.5 text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
+                            className="w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
                           />
                         </div>
                         
                         <div className="relative">
-                          <Phone className="absolute left-3 top-3 h-4 w-4 text-cyan-300 opacity-60" />
+                          <Phone className="absolute left-2 top-2.5 sm:left-3 sm:top-3 h-3 w-3 sm:h-4 sm:w-4 text-cyan-300 opacity-60" />
                           <input
                             type="tel"
                             value={formData.phone}
                             onChange={(e) => setFormData({...formData, phone: e.target.value})}
                             placeholder="Phone (Optional)"
-                            className="w-full pl-10 pr-3 py-2.5 text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
+                            className="w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
                           />
                         </div>
                         
                         <div className="relative">
-                          <Award className="absolute left-3 top-3 h-4 w-4 text-cyan-300 opacity-60" />
+                          <Award className="absolute left-2 top-2.5 sm:left-3 sm:top-3 h-3 w-3 sm:h-4 sm:w-4 text-cyan-300 opacity-60" />
                           <input
                             type="text"
                             value={formData.company}
                             onChange={(e) => setFormData({...formData, company: e.target.value})}
                             placeholder="Company (Optional)"
-                            className="w-full pl-10 pr-3 py-2.5 text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
+                            className="w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
                           />
                         </div>
                       </div>
                     </div>
                     
                     {/* Project Description */}
-                    <div className="space-y-3">
+                    <div className="space-y-2 sm:space-y-3">
                       <div className="flex items-center gap-2">
                         <MessageSquare className="h-4 w-4 text-cyan-300" />
-                        <h3 className="text-base font-bold text-white">Project Details</h3>
+                        <h3 className="text-sm sm:text-base font-bold text-white">Project Details</h3>
                       </div>
                       
                       <div className="relative">
-                        <MessageSquare className="absolute left-3 top-3 h-4 w-4 text-cyan-300 opacity-60" />
+                        <MessageSquare className="absolute left-2 top-2.5 sm:left-3 sm:top-3 h-3 w-3 sm:h-4 sm:w-4 text-cyan-300 opacity-60" />
                         <textarea
                           required
                           value={formData.description}
                           onChange={(e) => setFormData({...formData, description: e.target.value})}
                           placeholder="Briefly describe your project..."
                           rows="3"
-                          className="w-full pl-10 pr-3 py-2.5 text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300 resize-none"
+                          className="w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300 resize-none"
                         />
                       </div>
                     </div>
                     
                     {/* Time Slot Selection */}
-                    <div className="space-y-3">
+                    <div className="space-y-2 sm:space-y-3">
                       <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-cyan-300" />
-                        <h3 className="text-base font-bold text-white">Preferred Time</h3>
+                        <h3 className="text-sm sm:text-base font-bold text-white">Preferred Time</h3>
                       </div>
                       
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2">
                         {timeSlots.slice(0, 4).map((slot, i) => (
                           <button
                             key={i}
                             type="button"
                             disabled={!slot.available}
-                            className={`p-2 rounded-lg text-xs transition-all duration-200 ${
+                            className={`p-1.5 sm:p-2 rounded-lg text-xs transition-all duration-200 ${
                               slot.available 
                                 ? 'bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-500/50 text-white' 
                                 : 'bg-white/5 opacity-40 cursor-not-allowed border border-white/5 text-white/40'
                             }`}
                           >
                             <div className="flex flex-col items-center">
-                              <span>{slot.time}</span>
+                              <span className="text-xs">{slot.time}</span>
                               {slot.available ? (
-                                <span className="text-[10px] text-green-400 mt-1">✓ Available</span>
+                                <span className="text-[10px] text-green-400 mt-0.5">✓ Available</span>
                               ) : (
-                                <span className="text-[10px] text-red-400 mt-1">✗ Booked</span>
+                                <span className="text-[10px] text-red-400 mt-0.5">✗ Booked</span>
                               )}
                             </div>
                           </button>
@@ -553,29 +553,29 @@ const GetinTouch = () => {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="group relative w-full py-3 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="group relative w-full py-2.5 sm:py-3 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
                       style={{
                         background: colors.gradient
                       }}
                     >
-                      <span className="relative z-10 flex items-center justify-center text-white font-bold text-sm md:text-base">
+                      <span className="relative z-10 flex items-center justify-center text-white font-bold text-xs sm:text-sm md:text-base">
                         {isSubmitting ? (
                           <>
-                            <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                            <div className="h-3 w-3 sm:h-4 sm:w-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-1.5 sm:mr-2" />
                             Scheduling...
                           </>
                         ) : (
                           <>
-                            <Rocket className="mr-2 h-4 w-4" />
+                            <Rocket className="mr-1.5 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                             Book Free Consultation
-                            <Send className="ml-2 h-4 w-4" />
+                            <Send className="ml-1.5 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
                           </>
                         )}
                       </span>
                     </button>
                     
                     {/* Privacy Note */}
-                    <p className="text-center text-xs text-blue-100/60 flex items-center justify-center gap-2">
+                    <p className="text-center text-xs text-blue-100/60 flex items-center justify-center gap-1.5 sm:gap-2">
                       <Shield className="h-3 w-3" />
                       Your information is secure. We follow GDPR & global privacy standards.
                     </p>
@@ -634,19 +634,25 @@ const GetinTouch = () => {
           input, textarea {
             font-size: 14px;
           }
+          
+          /* Ensure proper text visibility on mobile */
+          input::placeholder,
+          textarea::placeholder {
+            font-size: 13px;
+          }
         }
         
         @media (max-width: 480px) {
-          .text-5xl {
-            font-size: 2.5rem;
-          }
-          
           .text-4xl {
-            font-size: 2rem;
+            font-size: 1.75rem;
           }
           
           .text-3xl {
-            font-size: 1.75rem;
+            font-size: 1.5rem;
+          }
+          
+          .text-2xl {
+            font-size: 1.25rem;
           }
         }
         
@@ -657,6 +663,25 @@ const GetinTouch = () => {
           .transition-all {
             animation: none !important;
             transition: none !important;
+          }
+        }
+        
+        /* Ensure content is centered on mobile */
+        @media (max-width: 768px) {
+          section > div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+          
+          .relative.z-10 {
+            width: 100%;
+            max-width: 100%;
+          }
+          
+          .max-w-4xl {
+            width: 100%;
+            max-width: 100%;
           }
         }
       `}</style>
