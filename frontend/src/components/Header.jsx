@@ -189,18 +189,16 @@ const Header = () => {
               <Mail className="h-3.5 w-3.5 mr-1.5 group-hover:scale-110 transition-transform" />
               Contact
             </Link>
-          </nav>
 
-          {/* Desktop CTA - COMPACT */}
-          <div className="hidden lg:flex items-center ml-1">
+            {/* Sign Up Button - COMPACT */}
             <Link 
               to="/signup"
-              className="relative px-3 py-2 text-sm text-blue-200 hover:text-white font-medium group overflow-hidden rounded-lg whitespace-nowrap"
+              className="flex items-center ml-1 px-3 py-2 text-sm text-blue-200 hover:text-white font-medium group overflow-hidden rounded-lg whitespace-nowrap"
             >
               <span className="relative z-10">Sign Up</span>
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-transparent -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
             </Link>
-          </div>
+          </nav>
 
           {/* Mobile Menu Button - COMPACT */}
           <div className="lg:hidden flex items-center">
