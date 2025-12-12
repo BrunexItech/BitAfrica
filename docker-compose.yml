@@ -10,8 +10,6 @@ services:
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-    ports:
-      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -34,18 +32,16 @@ services:
     environment:
       - DB_HOST=bitafrica_mysql
       - DB_PORT=3306
-    ports:
-      - "8001:8000"
+    expose:
+      - "8000"
     volumes:
       - ./backend:/app
-      - static_volume:/app/staticfiles  # Shared volume for static files
-    extra_hosts:
-      - "mysql:host-gateway"
+      - static_volume:/app/staticfiles
     command: >
       sh -c "sleep 15 &&
              python manage.py migrate &&
              python manage.py collectstatic --noinput &&
-             python manage.py runserver 0.0.0.0:8000"
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3"
     networks:
       - bitafrica_network
 
@@ -56,20 +52,34 @@ services:
     depends_on:
       - backend
     env_file:
-      - .env
       - frontend/.env
-    ports:
-      - "5174:80"
+    expose:
+      - "80"
     volumes:
-      - static_volume:/app/staticfiles:ro  # Mount shared static files
-    extra_hosts:
-      - "backend:host-gateway"
+      - static_volume:/app/staticfiles:ro
+    networks:
+      - bitafrica_network
+
+  nginx-proxy:
+    build: ./nginx-proxy
+    container_name: bitafrica_nginx
+    restart: always
+    depends_on:
+      - frontend
+      - backend
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt/archive/www.bitafrica.co.ke:/etc/letsencrypt/archive/www.bitafrica.co.ke:ro
+      - /etc/letsencrypt/ssl-dhparams.pem:/etc/letsencrypt/ssl-dhparams.pem:ro
+      - static_volume:/app/staticfiles:ro
     networks:
       - bitafrica_network
 
 volumes:
   mysql_data:
-  static_volume:  # Shared volume for static files
+  static_volume:
 
 networks:
   bitafrica_network:
