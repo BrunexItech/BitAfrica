@@ -14,6 +14,9 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Install gunicorn explicitly
+RUN pip install gunicorn==21.2.0
+
 COPY . .
 
 EXPOSE 8000
