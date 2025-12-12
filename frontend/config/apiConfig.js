@@ -6,6 +6,8 @@ const API_CONFIG = {
       LOGIN: '/auth/login/',
       LOGOUT: '/auth/logout/',
       REFRESH: '/auth/token/refresh/',
+      RESET_PASSWORD: '/auth/reset-password/{uid}/{token}/',
+      FORGOT_PASSWORD: '/auth/forgot-password/',
     },
   }
 };

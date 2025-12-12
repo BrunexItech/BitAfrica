@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Lock, CheckCircle, XCircle, Key, Shield } from 'lucide-react';
+import api from '../api';
+import API_CONFIG from '/config/apiConfig';
 
 const ResetPassword = () => {
   const { uid, token } = useParams();
@@ -62,21 +64,19 @@ const ResetPassword = () => {
     }
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/auth/reset-password/${uid}/${token}/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      // Use the API config for the endpoint
+      const response = await api.post(
+        API_CONFIG.ENDPOINTS.AUTH.RESET_PASSWORD
+          .replace('{uid}', uid)
+          .replace('{token}', token),
+        {
           new_password: formData.new_password,
           confirm_password: formData.confirm_password,
-        }),
-      });
+        }
+      );
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setMessage(data.message || 'Password reset successful!');
+      if (response.status === 200) {
+        setMessage(response.data.message || 'Password reset successful!');
         // Redirect to login after 3 seconds
         setTimeout(() => {
           navigate('/signin', { 
@@ -84,10 +84,14 @@ const ResetPassword = () => {
           });
         }, 3000);
       } else {
-        setError(data.error || 'Password reset failed');
+        setError(response.data.error || 'Password reset failed');
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      if (err.response?.data) {
+        setError(err.response.data.error || err.response.data.detail || 'Password reset failed');
+      } else {
+        setError('Network error. Please try again.');
+      }
       console.error('Reset password error:', err);
     } finally {
       setIsLoading(false);

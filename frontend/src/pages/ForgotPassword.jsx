@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Shield, CheckCircle, XCircle, Send, ArrowLeft } from 'lucide-react';
+import api from '../api';
+import API_CONFIG from '/config/apiConfig';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -16,25 +18,25 @@ const ForgotPassword = () => {
     setError('');
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/auth/forgot-password/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
+      // Use the API config for the endpoint
+      const response = await api.post(
+        API_CONFIG.ENDPOINTS.AUTH.FORGOT_PASSWORD,
+        { email }
+      );
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setMessage(data.message || 'Password reset email sent successfully');
+      if (response.status === 200) {
+        setMessage(response.data.message || 'Password reset email sent successfully');
         // Clear form
         setEmail('');
       } else {
-        setError(data.error || 'Failed to send reset email');
+        setError(response.data.error || 'Failed to send reset email');
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      if (err.response?.data) {
+        setError(err.response.data.error || err.response.data.detail || 'Failed to send reset email');
+      } else {
+        setError('Network error. Please try again.');
+      }
       console.error('Forgot password error:', err);
     } finally {
       setIsLoading(false);
