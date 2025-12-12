@@ -448,14 +448,13 @@ const OurServices = () => {
           </p>
         </div>
 
-        {/* Services Grid - Updated Responsive Layout */}
-        {/* CHANGED: Removed sm:grid-cols-2, now shows 1 column on mobile, 2 on md, 3 on lg, 4 on xl */}
+        {/* Services Grid - FIXED: 1 column on mobile, 2 on tablet, 3 on desktop, 4 on xl */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 mb-16 md:mb-20">
           {services.map((service, index) => (
             <div
               key={service.id}
               ref={(el) => (cardsRef.current[index] = el)}
-              className="relative group perspective-1000"
+              className="relative group perspective-1000 w-full max-w-full"
               onMouseEnter={() => {
                 setHoveredCard(service.id);
                 setActiveService(service);
@@ -866,17 +865,19 @@ const OurServices = () => {
         }
         
         /* Enhanced Responsive Design */
-        @media (max-width: 640px) {
-          .grid-cols-4 {
-            grid-template-columns: 1fr;
+        @media (max-width: 768px) {
+          /* FORCE single column on mobile */
+          .grid {
+            display: flex !important;
+            flex-direction: column !important;
           }
           
-          .floating-icon {
-            display: none;
+          .grid > div {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin-bottom: 1rem;
           }
-        }
-        
-        @media (max-width: 768px) {
+          
           .text-7xl {
             font-size: 2.5rem;
           }
@@ -884,11 +885,30 @@ const OurServices = () => {
           .scan-line {
             display: none;
           }
+          
+          .floating-icon {
+            display: none;
+          }
         }
         
         @media (min-width: 768px) and (max-width: 1024px) {
-          .xl\:grid-cols-4 {
-            grid-template-columns: repeat(2, 1fr);
+          /* Tablet: 2 columns */
+          .grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
+        
+        @media (min-width: 1024px) and (max-width: 1280px) {
+          /* Desktop: 3 columns */
+          .grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+          }
+        }
+        
+        @media (min-width: 1280px) {
+          /* Large Desktop: 4 columns */
+          .grid {
+            grid-template-columns: repeat(4, 1fr) !important;
           }
         }
         
