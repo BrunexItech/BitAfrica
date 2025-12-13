@@ -467,16 +467,6 @@ const Services = () => {
                   </ul>
                   
                   <div className="flex flex-col sm:flex-row gap-4">
-                    <Link
-                      to={`/services/${services[activeService].id}`}
-                      className="group px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center"
-                      style={{
-                        boxShadow: '0 10px 30px rgba(6, 182, 212, 0.3)',
-                      }}
-                    >
-                      <span>Explore AI Capabilities</span>
-                      <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-2 transition-transform" />
-                    </Link>
                     <button
                       onClick={() => setIsPlaying(!isPlaying)}
                       className="px-8 py-4 border-2 border-white/20 text-white rounded-xl hover:bg-white/5 transition-all duration-300 backdrop-blur-sm"
@@ -877,18 +867,11 @@ const Services = () => {
             <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#1e293b] to-transparent pointer-events-none" />
           </div>
 
-          {/* CTA below slider */}
+          {/* CTA below slider - Removed "Discuss Your Project Requirements" */}
           <div className="text-center mt-12">
             <p className="text-gray-300 text-lg mb-6">
               Need a specific solution not listed? Our experts can customize any service to fit your unique requirements.
             </p>
-            <Link
-              to="/contact"
-              className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-bold rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 text-lg group"
-            >
-              <MessageSquare className="h-5 w-5 mr-3 group-hover:scale-110 transition-transform" />
-              Discuss Your Project Requirements
-            </Link>
           </div>
         </div>
       </div>
