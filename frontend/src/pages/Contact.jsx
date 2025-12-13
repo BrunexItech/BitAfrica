@@ -1,512 +1,417 @@
 import React, { useState } from 'react';
 import { 
-  Mail, Phone, MapPin, MessageSquare, Send, Globe, 
-  Brain, Cpu, Shield, Database, Users, Clock,
-  Zap, Sparkles, CheckCircle, ArrowRight, Bot,
-  Video, Calendar, Headphones, Code, Cloud, Network,
-  Smartphone, Tablet, Laptop, Server, Wifi
+  Mail, Phone, MapPin, MessageSquare, Send, 
+  Sparkles, CheckCircle, ArrowRight, Bot,
+  Zap, Brain, Shield, Clock, Star, Rocket,
+  MessageCircle, PhoneCall, Video, Calendar,
+  Globe, Users, Code, Cloud, Cpu
 } from 'lucide-react';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    name: '',
     email: '',
-    company: '',
-    phone: '',
-    inquiryType: 'general',
     message: '',
-    urgency: 'normal',
-    subscribe: true
+    interest: 'ai',
+    priority: 'normal'
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [activeTab, setActiveTab] = useState('contact');
+  const [hoveredField, setHoveredField] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate API call
+    // Simulate magical submission
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitted(true);
-      setTimeout(() => setSubmitted(false), 5000);
-    }, 1500);
+      // Reset after celebration
+      setTimeout(() => {
+        setSubmitted(false);
+        setFormData({ name: '', email: '', message: '', interest: 'ai', priority: 'normal' });
+      }, 4000);
+    }, 1800);
   };
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value
     }));
   };
 
-  const inquiryTypes = [
-    { id: 'sales', name: 'Sales Inquiry', icon: <Users className="h-4 w-4" />, color: 'from-blue-500 to-cyan-500' },
-    { id: 'support', name: 'Technical Support', icon: <Headphones className="h-4 w-4" />, color: 'from-purple-500 to-pink-500' },
-    { id: 'partnership', name: 'Partnership', icon: <Globe className="h-4 w-4" />, color: 'from-cyan-500 to-teal-500' },
-    { id: 'careers', name: 'Careers', icon: <Code className="h-4 w-4" />, color: 'from-emerald-500 to-green-500' }
-  ];
+  // Magical floating particles
+  const FloatingParticles = () => (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {[...Array(15)].map((_, i) => (
+        <div
+          key={i}
+          className="absolute rounded-full animate-particle-float"
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            width: `${Math.random() * 6 + 2}px`,
+            height: `${Math.random() * 6 + 2}px`,
+            background: `radial-gradient(circle, 
+              ${i % 3 === 0 ? '#60a5fa' : i % 3 === 1 ? '#a855f7' : '#22d3ee'}80, 
+              transparent)`,
+            animationDelay: `${Math.random() * 5}s`,
+            animationDuration: `${Math.random() * 10 + 15}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
 
-  const urgencyLevels = [
-    { id: 'low', name: 'Low Priority', color: 'text-gray-400', bg: 'bg-gray-500/20' },
-    { id: 'normal', name: 'Normal', color: 'text-blue-400', bg: 'bg-blue-500/20' },
-    { id: 'high', name: 'High Priority', color: 'text-orange-400', bg: 'bg-orange-500/20' },
-    { id: 'urgent', name: 'Urgent', color: 'text-red-400', bg: 'bg-red-500/20' }
-  ];
-
-  const aiFeatures = [
-    { icon: <Brain className="h-5 w-5" />, title: 'AI Response System', desc: 'Instant smart replies' },
-    { icon: <Shield className="h-5 w-5" />, title: 'Secure Communication', desc: 'End-to-end encrypted' },
-    { icon: <Clock className="h-5 w-5" />, title: '24/7 Availability', desc: 'Always here to help' },
-    { icon: <Bot className="h-5 w-5" />, title: 'AI Assistant', desc: 'Smart query routing' }
-  ];
-
-  const techIcons = [
-    <Brain key="brain" className="h-6 w-6" />,
-    <Cpu key="cpu" className="h-6 w-6" />,
-    <Database key="db" className="h-6 w-6" />,
-    <Cloud key="cloud" className="h-6 w-6" />,
-    <Network key="network" className="h-6 w-6" />,
-    <Server key="server" className="h-6 w-6" />,
-    <Laptop key="laptop" className="h-6 w-6" />,
-    <Tablet key="tablet" className="h-6 w-6" />,
-    <Smartphone key="phone" className="h-6 w-6" />,
-    <Wifi key="wifi" className="h-6 w-6" />
-  ];
+  // Glowing orbs
+  const GlowingOrbs = () => (
+    <>
+      <div className="absolute -top-20 -left-20 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl animate-pulse-slow" />
+      <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse-slow" style={{animationDelay: '1s'}} />
+      <div className="absolute top-1/2 left-1/3 w-48 h-48 bg-blue-500/5 rounded-full blur-2xl animate-pulse-slow" style={{animationDelay: '2s'}} />
+    </>
+  );
 
   return (
-    <main className="pt-20 min-h-screen bg-gradient-to-b from-[#0a0a1a] via-[#111827] to-[#0a0a1a] overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Floating Tech Icons */}
-        <div className="absolute top-20 left-10 animate-float-3d">
-          <div className="h-12 w-12 rounded-xl bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 flex items-center justify-center">
-            <Brain className="h-6 w-6 text-blue-400" />
-          </div>
-        </div>
-        <div className="absolute top-40 right-20 animate-float-3d" style={{ animationDelay: '1s' }}>
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 flex items-center justify-center">
-            <Cpu className="h-5 w-5 text-purple-400" />
-          </div>
-        </div>
-        <div className="absolute bottom-40 left-1/4 animate-float-3d" style={{ animationDelay: '2s' }}>
-          <div className="h-14 w-14 rounded-xl bg-gradient-to-r from-cyan-500/10 to-teal-500/10 border border-cyan-500/20 flex items-center justify-center">
-            <Database className="h-7 w-7 text-cyan-400" />
-          </div>
-        </div>
-        
-        {/* Animated Grid */}
-        <div className="absolute inset-0 opacity-5" style={{
-          backgroundImage: `linear-gradient(90deg, #0088ff22 1px, transparent 1px),
-                          linear-gradient(#0088ff22 1px, transparent 1px)`,
-          backgroundSize: '60px 60px',
-          animation: 'gridMove 20s linear infinite'
-        }}></div>
+    <div className="min-h-screen bg-gradient-to-b from-[#0a0a0f] via-[#0d0f1a] to-[#0a0a0f] overflow-hidden relative">
+      {/* Animated Background */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `radial-gradient(circle at 20% 80%, rgba(56, 189, 248, 0.1) 0%, transparent 40%),
+                          radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.1) 0%, transparent 40%)`
+        }} />
+        <FloatingParticles />
+        <GlowingOrbs />
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
-        {/* Hero Section */}
-        <div className="text-center mb-16 lg:mb-24">
-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30 backdrop-blur-sm mb-8 group hover:scale-105 transition-all duration-300">
-            <Sparkles className="h-5 w-5 text-cyan-400 animate-pulse" />
-            <span className="text-sm font-bold text-cyan-400 tracking-wider">CONNECT WITH INNOVATION</span>
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-24">
+        {/* Magical Header */}
+        <div className="text-center mb-16 lg:mb-20">
+          <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-500/10 border border-cyan-500/30 backdrop-blur-lg mb-8 group hover:scale-105 transition-transform duration-300">
+            <Sparkles className="h-5 w-5 text-cyan-400 animate-spin-slow" />
+            <span className="text-sm font-semibold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent tracking-wider">
+              MAGICAL CONNECTION AWAITS
+            </span>
+            <Sparkles className="h-5 w-5 text-purple-400 animate-spin-slow" style={{animationDelay: '0.5s'}} />
           </div>
           
-          <h1 className="text-5xl lg:text-7xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent animate-gradient-shift">
-              Let's Build
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-6">
+            <span className="block bg-gradient-to-r from-cyan-300 via-white to-purple-300 bg-clip-text text-transparent animate-gradient-shift">
+              Speak to the Future
             </span>
-            <br />
-            <span className="text-white">The Future Together</span>
           </h1>
           
-          <p className="text-gray-300 text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed">
-            Your vision meets our expertise. Connect with Africa's leading AI innovators 
-            to transform possibilities into reality.
+          <p className="text-gray-300 text-lg lg:text-xl max-w-2xl mx-auto leading-relaxed font-light">
+            Your words transform into digital magic. Share your vision and watch 
+            as <span className="text-cyan-300 font-semibold">AI weaves possibilities</span>.
           </p>
-          
-          {/* AI Features Banner */}
-          <div className="flex flex-wrap justify-center gap-4 mt-10">
-            {aiFeatures.map((feature, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-white/5 to-transparent border border-white/10 backdrop-blur-sm"
-              >
-                <div className="text-cyan-400">{feature.icon}</div>
-                <div className="text-left">
-                  <p className="text-sm font-semibold text-white">{feature.title}</p>
-                  <p className="text-xs text-cyan-300/70">{feature.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Tabs Navigation */}
-        <div className="flex justify-center mb-12">
-          <div className="inline-flex rounded-2xl bg-gray-900/50 border border-gray-800 p-1 backdrop-blur-sm">
-            {['contact', 'schedule', 'support'].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
-                  activeTab === tab
-                    ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-white shadow-lg'
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                {tab === 'contact' ? 'Contact Form' : 
-                 tab === 'schedule' ? 'Schedule Call' : 'Live Support'}
-              </button>
-            ))}
-          </div>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
-          {/* Left Panel - Contact Info & Stats */}
+          {/* Magical Contact Cards */}
           <div className="space-y-8">
-            {/* Contact Cards */}
-            <div className="bg-gradient-to-br from-gray-900/80 to-[#0a0a1a]/80 backdrop-blur-2xl rounded-3xl border border-blue-500/20 p-8 shadow-2xl">
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-300 to-cyan-300 bg-clip-text text-transparent mb-6">
-                Connect Directly
-              </h2>
+            {/* Floating Contact Card */}
+            <div 
+              className="bg-gradient-to-br from-gray-900/40 to-gray-900/20 backdrop-blur-2xl rounded-2xl border border-cyan-500/20 p-8 shadow-2xl hover:shadow-cyan-500/10 hover:border-cyan-500/40 transition-all duration-500 group"
+              style={{
+                transformStyle: 'preserve-3d',
+                transform: 'perspective(1000px) rotateX(2deg)'
+              }}
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <MessageCircle className="h-5 w-5 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-white">Instant Magic</h3>
+              </div>
               
               <div className="space-y-6">
                 {[
                   {
-                    icon: <Mail className="h-6 w-6" />,
-                    title: 'Email',
-                    details: ['contact@bitafrica-ai.com', 'sales@bitafrica-ai.com'],
-                    color: 'from-blue-500 to-cyan-500',
-                    tag: 'Response within 2 hours'
+                    icon: <Mail className="h-5 w-5" />,
+                    title: 'Email Portal',
+                    detail: 'reply@ai-magic.com',
+                    gradient: 'from-cyan-500 to-blue-500',
+                    action: 'Send Spell'
                   },
                   {
-                    icon: <Phone className="h-6 w-6" />,
-                    title: 'Phone',
-                    details: ['+254 700 123 456', '+1 (555) 123-4567'],
-                    color: 'from-purple-500 to-pink-500',
-                    tag: '24/7 Support Line'
+                    icon: <PhoneCall className="h-5 w-5" />,
+                    title: 'Voice Channel',
+                    detail: '+1 (555) 888-9999',
+                    gradient: 'from-purple-500 to-pink-500',
+                    action: 'Cast Call'
                   },
                   {
-                    icon: <MapPin className="h-6 w-6" />,
-                    title: 'Global Offices',
-                    details: ['Nairobi, Kenya', 'Cape Town, SA', 'Lagos, Nigeria'],
-                    color: 'from-emerald-500 to-teal-500',
-                    tag: 'Across Africa'
-                  },
-                  {
-                    icon: <Video className="h-6 w-6" />,
-                    title: 'Video Call',
-                    details: ['Book a demo', 'Technical consultation'],
-                    color: 'from-orange-500 to-red-500',
-                    tag: 'Calendar link below'
+                    icon: <Video className="h-5 w-5" />,
+                    title: 'Crystal Call',
+                    detail: 'Book visual session',
+                    gradient: 'from-orange-500 to-red-500',
+                    action: 'Scry Now'
                   }
                 ].map((item, index) => (
                   <div
                     key={index}
-                    className="group p-4 rounded-xl bg-gradient-to-r from-white/5 to-transparent border border-white/10 hover:border-blue-500/40 transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+                    className="flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-white/5 to-transparent hover:from-white/10 transition-all duration-300 group/item"
                   >
-                    <div className="flex items-start gap-4">
-                      <div className={`h-12 w-12 rounded-xl bg-gradient-to-r ${item.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                    <div className="flex items-center gap-4">
+                      <div className={`h-10 w-10 rounded-lg bg-gradient-to-r ${item.gradient} flex items-center justify-center group-hover/item:rotate-12 transition-transform`}>
                         {item.icon}
                       </div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-bold text-white">{item.title}</h3>
-                          <span className="text-xs px-2 py-1 rounded-full bg-blue-500/20 text-blue-300">
-                            {item.tag}
-                          </span>
-                        </div>
-                        {item.details.map((detail, i) => (
-                          <p key={i} className="text-gray-300 text-sm">{detail}</p>
-                        ))}
+                      <div>
+                        <p className="text-sm font-medium text-gray-300">{item.title}</p>
+                        <p className="text-white font-semibold">{item.detail}</p>
                       </div>
                     </div>
+                    <button className="text-xs px-3 py-1.5 rounded-lg bg-gradient-to-r from-white/10 to-white/5 text-cyan-300 hover:text-white hover:from-cyan-500/20 transition-all duration-300">
+                      {item.action}
+                    </button>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Response Time Stats */}
-            <div className="bg-gradient-to-br from-gray-900/80 to-[#0a0a1a]/80 backdrop-blur-2xl rounded-3xl border border-purple-500/20 p-8 shadow-2xl">
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent mb-6">
-                Our Response Time
-              </h2>
+            {/* AI Assistant Preview */}
+            <div className="bg-gradient-to-br from-gray-900/40 to-purple-900/20 backdrop-blur-2xl rounded-2xl border border-purple-500/20 p-8 shadow-2xl">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="relative">
+                  <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                    <Brain className="h-5 w-5 text-white" />
+                  </div>
+                  <div className="absolute -top-1 -right-1 h-4 w-4 bg-green-500 rounded-full animate-ping" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white">AI Guardian</h3>
+                  <p className="text-sm text-purple-300">Always Awake</p>
+                </div>
+              </div>
               
               <div className="space-y-4">
                 {[
-                  { label: 'Initial Response', time: '< 2 hours', percent: '95%', color: 'bg-emerald-500' },
-                  { label: 'Technical Support', time: '< 30 minutes', percent: '90%', color: 'bg-cyan-500' },
-                  { label: 'Sales Inquiry', time: '< 1 hour', percent: '98%', color: 'bg-blue-500' },
-                  { label: 'Emergency Support', time: '< 15 minutes', percent: '100%', color: 'bg-purple-500' }
-                ].map((stat, index) => (
-                  <div key={index} className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-300">{stat.label}</span>
-                      <span className="text-white font-semibold">{stat.time}</span>
+                  { icon: <Shield className="h-4 w-4" />, text: 'Encrypted whispers', color: 'text-cyan-400' },
+                  { icon: <Clock className="h-4 w-4" />, text: '24/7 starlight watch', color: 'text-emerald-400' },
+                  { icon: <Zap className="h-4 w-4" />, text: 'Lightning responses', color: 'text-yellow-400' },
+                  { icon: <Cloud className="h-4 w-4" />, text: 'Cloud memory', color: 'text-blue-400' }
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <div className={`p-2 rounded-lg bg-gradient-to-br from-white/5 to-transparent ${item.color}`}>
+                      {item.icon}
                     </div>
-                    <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full ${stat.color} transition-all duration-1000`}
-                        style={{ width: stat.percent }}
-                      />
-                    </div>
-                    <div className="text-right text-xs text-gray-400">{stat.percent} success rate</div>
+                    <span className="text-sm text-gray-300">{item.text}</span>
                   </div>
                 ))}
               </div>
+              
+              <button className="w-full mt-6 px-4 py-3 rounded-xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 text-purple-300 hover:text-white hover:border-purple-500/50 hover:bg-gradient-to-r hover:from-purple-500/30 hover:to-pink-500/30 transition-all duration-300 flex items-center justify-center gap-2">
+                <Bot className="h-4 w-4" />
+                Summon Assistant
+              </button>
             </div>
           </div>
 
-          {/* Center Panel - Contact Form */}
+          {/* Center - Magical Form */}
           <div className="lg:col-span-2">
-            <div className="bg-gradient-to-br from-gray-900/80 to-[#0a0a1a]/80 backdrop-blur-2xl rounded-3xl border border-cyan-500/20 p-8 lg:p-12 shadow-2xl">
+            <div 
+              className="bg-gradient-to-br from-gray-900/40 via-gray-900/30 to-gray-900/40 backdrop-blur-2xl rounded-2xl border border-white/10 shadow-2xl p-8 lg:p-12 relative overflow-hidden"
+              style={{
+                backgroundImage: `radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.1) 0%, transparent 50%)`
+              }}
+            >
+              {/* Form Glow Effect */}
+              <div 
+                className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-purple-500/5 animate-shimmer"
+                style={{ backgroundSize: '200% 100%' }}
+              />
+              
               {submitted ? (
-                <div className="text-center py-12">
-                  <div className="h-24 w-24 mx-auto rounded-full bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border-4 border-emerald-500/30 flex items-center justify-center mb-8 animate-pulse-glow">
-                    <CheckCircle className="h-12 w-12 text-emerald-400" />
+                <div className="text-center py-12 relative z-10">
+                  <div className="relative inline-block mb-8">
+                    <div className="h-32 w-32 rounded-full bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border-4 border-emerald-500/30 flex items-center justify-center mx-auto animate-pulse-glow">
+                      <CheckCircle className="h-16 w-16 text-emerald-400" />
+                    </div>
+                    <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-emerald-400 animate-spin-slow" />
                   </div>
                   <h3 className="text-3xl font-bold bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent mb-4">
-                    Message Sent Successfully!
+                    Message Enchanted! ✨
                   </h3>
-                  <p className="text-gray-300 mb-8">
-                    Our AI system has received your inquiry. You'll receive a confirmation email 
-                    within minutes, and our team will contact you shortly.
+                  <p className="text-gray-300 mb-8 max-w-md mx-auto">
+                    Your words have been woven into the digital tapestry. 
+                    Expect magical responses within moments.
                   </p>
-                  <button
-                    onClick={() => setSubmitted(false)}
-                    className="px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-xl hover:shadow-xl transition-all duration-300"
-                  >
-                    Send Another Message
-                  </button>
+                  <div className="flex items-center justify-center gap-2 text-sm text-cyan-300">
+                    <Sparkles className="h-4 w-4" />
+                    <span>Spell cast successfully</span>
+                    <Sparkles className="h-4 w-4" />
+                  </div>
                 </div>
               ) : (
                 <>
-                  <div className="flex items-center justify-between mb-8">
-                    <h2 className="text-3xl font-bold bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent">
-                      Send Your Inquiry
-                    </h2>
-                    <div className="flex items-center text-sm text-cyan-400">
-                      <Zap className="h-4 w-4 mr-2 animate-pulse" />
-                      AI-Powered Routing
-                    </div>
-                  </div>
-                  
-                  <form onSubmit={handleSubmit} className="space-y-8">
-                    {/* Inquiry Type Selection */}
-                    <div>
-                      <label className="block text-sm font-semibold text-cyan-300 mb-4">
-                        What can we help you with?
-                      </label>
-                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                        {inquiryTypes.map((type) => (
-                          <label
-                            key={type.id}
-                            className={`relative p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 group ${
-                              formData.inquiryType === type.id
-                                ? 'bg-gradient-to-r from-white/10 to-white/5 border-cyan-500/50 scale-[1.02] shadow-lg'
-                                : 'border-white/10 bg-white/5 hover:border-cyan-500/30'
-                            }`}
-                          >
-                            <input
-                              type="radio"
-                              name="inquiryType"
-                              value={type.id}
-                              checked={formData.inquiryType === type.id}
-                              onChange={handleChange}
-                              className="sr-only"
-                            />
-                            <div className={`h-10 w-10 rounded-lg bg-gradient-to-r ${type.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
-                              {type.icon}
-                            </div>
-                            <span className="text-sm font-medium text-white">{type.name}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Urgency Selection */}
-                    <div>
-                      <label className="block text-sm font-semibold text-cyan-300 mb-4">
-                        How urgent is your inquiry?
-                      </label>
-                      <div className="flex flex-wrap gap-2">
-                        {urgencyLevels.map((level) => (
-                          <label
-                            key={level.id}
-                            className={`px-4 py-2 rounded-lg cursor-pointer transition-all duration-300 ${
-                              formData.urgency === level.id
-                                ? `${level.bg} ${level.color} ring-2 ring-current/30`
-                                : 'bg-gray-800 text-gray-400 hover:text-white'
-                            }`}
-                          >
-                            <input
-                              type="radio"
-                              name="urgency"
-                              value={level.id}
-                              checked={formData.urgency === level.id}
-                              onChange={handleChange}
-                              className="sr-only"
-                            />
-                            {level.name}
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Form Grid */}
-                    <div className="grid md:grid-cols-2 gap-6">
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-8">
                       <div>
-                        <label className="block text-sm font-semibold text-gray-300 mb-2">
-                          First Name *
+                        <h2 className="text-3xl font-bold bg-gradient-to-r from-cyan-300 via-white to-purple-300 bg-clip-text text-transparent">
+                          Weave Your Message
+                        </h2>
+                        <p className="text-gray-400 mt-2">Each field is a spell component</p>
+                      </div>
+                      <div className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30">
+                        <Star className="h-4 w-4 text-cyan-400" />
+                        <span className="text-sm text-cyan-300">AI-Enhanced</span>
+                      </div>
+                    </div>
+                    
+                    <form onSubmit={handleSubmit} className="space-y-8">
+                      {/* Name Field with Magic */}
+                      <div 
+                        className="relative"
+                        onMouseEnter={() => setHoveredField('name')}
+                        onMouseLeave={() => setHoveredField(null)}
+                      >
+                        <label className="block text-sm font-semibold text-cyan-300 mb-3 flex items-center gap-2">
+                          <Sparkles className="h-4 w-4" />
+                          Your Identity
                         </label>
                         <input
                           type="text"
-                          name="firstName"
-                          value={formData.firstName}
+                          name="name"
+                          value={formData.name}
                           onChange={handleChange}
-                          className="w-full px-4 py-3 bg-white/5 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all duration-300"
-                          placeholder="Enter your first name"
+                          className="w-full px-6 py-4 bg-white/5 border border-cyan-500/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all duration-300 backdrop-blur-sm"
+                          placeholder="Whisper your name..."
                           required
                         />
+                        <div className={`absolute -inset-1 rounded-xl bg-gradient-to-r from-cyan-500/20 to-transparent blur-xl transition-opacity duration-500 ${hoveredField === 'name' ? 'opacity-100' : 'opacity-0'}`} />
                       </div>
-                      
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-300 mb-2">
-                          Last Name *
-                        </label>
-                        <input
-                          type="text"
-                          name="lastName"
-                          value={formData.lastName}
-                          onChange={handleChange}
-                          className="w-full px-4 py-3 bg-white/5 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all duration-300"
-                          placeholder="Enter your last name"
-                          required
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-300 mb-2">
-                          Email Address *
+
+                      {/* Email Field */}
+                      <div 
+                        className="relative"
+                        onMouseEnter={() => setHoveredField('email')}
+                        onMouseLeave={() => setHoveredField(null)}
+                      >
+                        <label className="block text-sm font-semibold text-purple-300 mb-3 flex items-center gap-2">
+                          <Mail className="h-4 w-4" />
+                          Digital Echo
                         </label>
                         <input
                           type="email"
                           name="email"
                           value={formData.email}
                           onChange={handleChange}
-                          className="w-full px-4 py-3 bg-white/5 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all duration-300"
-                          placeholder="your@email.com"
+                          className="w-full px-6 py-4 bg-white/5 border border-purple-500/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-300 backdrop-blur-sm"
+                          placeholder="your@magic.domain"
                           required
                         />
+                        <div className={`absolute -inset-1 rounded-xl bg-gradient-to-r from-purple-500/20 to-transparent blur-xl transition-opacity duration-500 ${hoveredField === 'email' ? 'opacity-100' : 'opacity-0'}`} />
                       </div>
-                      
+
+                      {/* Interest Selection */}
                       <div>
-                        <label className="block text-sm font-semibold text-gray-300 mb-2">
-                          Phone Number
+                        <label className="block text-sm font-semibold text-blue-300 mb-3">
+                          Your Quest
                         </label>
-                        <input
-                          type="tel"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleChange}
-                          className="w-full px-4 py-3 bg-white/5 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all duration-300"
-                          placeholder="+254 700 000 000"
-                        />
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                          {[
+                            { value: 'ai', label: 'AI Magic', icon: <Brain className="h-4 w-4" />, color: 'from-cyan-500 to-blue-500' },
+                            { value: 'web', label: 'Web Spells', icon: <Globe className="h-4 w-4" />, color: 'from-purple-500 to-pink-500' },
+                            { value: 'mobile', label: 'Mobile Charms', icon: <Phone className="h-4 w-4" />, color: 'from-orange-500 to-red-500' },
+                            { value: 'data', label: 'Data Alchemy', icon: <Cpu className="h-4 w-4" />, color: 'from-emerald-500 to-teal-500' }
+                          ].map((item) => (
+                            <label
+                              key={item.value}
+                              className={`relative p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 group ${
+                                formData.interest === item.value
+                                  ? `bg-gradient-to-r ${item.color}/20 border-${item.color.split('-')[1]}-500/50 scale-[1.02]`
+                                  : 'border-white/10 bg-white/5 hover:border-white/20'
+                              }`}
+                            >
+                              <input
+                                type="radio"
+                                name="interest"
+                                value={item.value}
+                                checked={formData.interest === item.value}
+                                onChange={handleChange}
+                                className="sr-only"
+                              />
+                              <div className={`h-10 w-10 rounded-lg bg-gradient-to-r ${item.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
+                                {item.icon}
+                              </div>
+                              <span className="text-sm font-medium text-white">{item.label}</span>
+                            </label>
+                          ))}
+                        </div>
                       </div>
-                      
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-semibold text-gray-300 mb-2">
-                          Company / Organization *
+
+                      {/* Message Field */}
+                      <div 
+                        className="relative"
+                        onMouseEnter={() => setHoveredField('message')}
+                        onMouseLeave={() => setHoveredField(null)}
+                      >
+                        <label className="block text-sm font-semibold text-emerald-300 mb-3 flex items-center gap-2">
+                          <MessageSquare className="h-4 w-4" />
+                          Your Incantation
                         </label>
-                        <input
-                          type="text"
-                          name="company"
-                          value={formData.company}
+                        <textarea
+                          name="message"
+                          value={formData.message}
                           onChange={handleChange}
-                          className="w-full px-4 py-3 bg-white/5 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all duration-300"
-                          placeholder="Enter company name"
+                          rows="4"
+                          className="w-full px-6 py-4 bg-white/5 border border-emerald-500/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all duration-300 backdrop-blur-sm resize-none"
+                          placeholder="Weave your thoughts here... Let the magic flow through your words..."
                           required
                         />
+                        <div className={`absolute -inset-1 rounded-xl bg-gradient-to-r from-emerald-500/20 to-transparent blur-xl transition-opacity duration-500 ${hoveredField === 'message' ? 'opacity-100' : 'opacity-0'}`} />
                       </div>
-                    </div>
 
-                    {/* Message Area */}
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-300 mb-2">
-                        Your Message *
-                      </label>
-                      <textarea
-                        name="message"
-                        value={formData.message}
-                        onChange={handleChange}
-                        rows="5"
-                        className="w-full px-4 py-3 bg-white/5 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all duration-300 resize-none"
-                        placeholder="Describe your project, inquiry, or challenge in detail..."
-                        required
-                      />
-                    </div>
-
-                    {/* Submit Area */}
-                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-gray-800">
-                      <label className="flex items-center cursor-pointer group">
-                        <input
-                          type="checkbox"
-                          name="subscribe"
-                          checked={formData.subscribe}
-                          onChange={handleChange}
-                          className="h-4 w-4 rounded border-gray-600 bg-white/5 text-cyan-500 focus:ring-cyan-500/50"
-                        />
-                        <span className="ml-2 text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
-                          Subscribe to AI insights & updates
-                        </span>
-                      </label>
-                      
-                      <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className={`relative px-8 py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 text-white font-bold rounded-xl shadow-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed group overflow-hidden ${
-                          isSubmitting ? 'cursor-wait' : ''
-                        }`}
-                      >
-                        <div className="relative z-10 flex items-center justify-center">
-                          {isSubmitting ? (
-                            <>
-                              <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-3"></div>
-                              Processing with AI...
-                            </>
-                          ) : (
-                            <>
-                              <Send className="h-5 w-5 mr-3" />
-                              Send Intelligent Inquiry
-                              <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-2 transition-transform" />
-                            </>
-                          )}
-                        </div>
-                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-white/10 to-purple-500/0 animate-shine-slow"></div>
-                      </button>
-                    </div>
-                  </form>
+                      {/* Submit Button */}
+                      <div className="pt-6 border-t border-white/10">
+                        <button
+                          type="submit"
+                          disabled={isSubmitting}
+                          className={`relative w-full py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 text-white font-bold rounded-xl shadow-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed group overflow-hidden ${
+                            isSubmitting ? 'cursor-wait' : ''
+                          }`}
+                        >
+                          <div className="relative z-10 flex items-center justify-center">
+                            {isSubmitting ? (
+                              <>
+                                <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-3"></div>
+                                Casting Your Spell...
+                              </>
+                            ) : (
+                              <>
+                                <Send className="h-5 w-5 mr-3 group-hover:rotate-12 transition-transform" />
+                                Enchant Message
+                                <Rocket className="ml-3 h-5 w-5 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all" />
+                              </>
+                            )}
+                          </div>
+                          <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-white/10 to-purple-500/0 animate-shimmer" />
+                        </button>
+                        <p className="text-center text-sm text-gray-400 mt-4">
+                          Each submission charges our magical servers ⚡
+                        </p>
+                      </div>
+                    </form>
+                  </div>
                 </>
               )}
             </div>
           </div>
         </div>
 
-        {/* Bottom CTA Section */}
-        <div className="mt-20 text-center">
-          <div className="inline-flex flex-col sm:flex-row items-center justify-center gap-6 px-8 py-6 rounded-3xl bg-gradient-to-r from-blue-500/10 via-cyan-500/10 to-purple-500/10 border border-blue-500/30 backdrop-blur-sm">
-            <div className="text-left">
-              <h3 className="text-2xl font-bold text-white mb-2">Need Immediate Assistance?</h3>
-              <p className="text-gray-300">Our AI support assistant is available 24/7</p>
-            </div>
-            <button className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-semibold rounded-xl hover:shadow-xl transition-all duration-300 flex items-center whitespace-nowrap">
-              <Bot className="h-5 w-5 mr-2" />
-              Start AI Chat
+        {/* Magical Footer */}
+        <div className="mt-16 text-center">
+          <div className="inline-flex items-center gap-4 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-500/10 via-cyan-500/10 to-purple-500/10 border border-white/10 backdrop-blur-lg">
+            <div className="h-3 w-3 rounded-full bg-cyan-500 animate-pulse" />
+            <span className="text-gray-300">Ready for magical collaboration?</span>
+            <button className="text-cyan-300 hover:text-white font-semibold flex items-center gap-2 hover:gap-3 transition-all">
+              Explore More Spells
+              <ArrowRight className="h-4 w-4" />
             </button>
           </div>
         </div>
@@ -514,57 +419,90 @@ const Contact = () => {
 
       {/* Custom Animations */}
       <style jsx>{`
-        @keyframes float-3d {
-          0%, 100% { transform: translateY(0) translateX(0) rotateX(0) rotateY(0); }
-          25% { transform: translateY(-10px) translateX(5px) rotateX(3deg) rotateY(3deg); }
-          50% { transform: translateY(-20px) translateX(-5px) rotateX(-3deg) rotateY(-3deg); }
-          75% { transform: translateY(-15px) translateX(3px) rotateX(2deg) rotateY(2deg); }
+        @keyframes particle-float {
+          0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
         }
         
-        @keyframes gridMove {
-          0% { background-position: 0 0; }
-          100% { background-position: 60px 60px; }
-        }
-        
-        @keyframes shine-slow {
-          0% { background-position: -100% 50%; }
-          100% { background-position: 200% 50%; }
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
         
         @keyframes gradient-shift {
-          0% { background-position: 0% 50%; }
+          0%, 100% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes shimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+        
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 0.1; }
+          50% { opacity: 0.2; }
         }
         
         @keyframes pulse-glow {
           0%, 100% { 
-            box-shadow: 0 0 30px rgba(52, 211, 153, 0.3);
+            box-shadow: 0 0 20px rgba(52, 211, 153, 0.3),
+                        0 0 40px rgba(52, 211, 153, 0.2);
           }
           50% { 
-            box-shadow: 0 0 60px rgba(52, 211, 153, 0.6);
+            box-shadow: 0 0 40px rgba(52, 211, 153, 0.5),
+                        0 0 80px rgba(52, 211, 153, 0.3);
           }
         }
         
-        .animate-float-3d {
-          animation: float-3d 8s ease-in-out infinite;
+        .animate-particle-float {
+          animation: particle-float linear infinite;
         }
         
-        .animate-shine-slow {
-          background-size: 200% 100%;
-          animation: shine-slow 3s linear infinite;
+        .animate-spin-slow {
+          animation: spin-slow 20s linear infinite;
         }
         
         .animate-gradient-shift {
-          background-size: 200% 200%;
+          background-size: 200% auto;
           animation: gradient-shift 3s ease infinite;
+        }
+        
+        .animate-shimmer {
+          animation: shimmer 2s linear infinite;
+        }
+        
+        .animate-pulse-slow {
+          animation: pulse-slow 4s ease-in-out infinite;
         }
         
         .animate-pulse-glow {
           animation: pulse-glow 2s ease-in-out infinite;
         }
+        
+        /* Smooth scrolling and selection */
+        ::selection {
+          background: rgba(56, 189, 248, 0.3);
+          color: white;
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+          width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.05);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+          background: linear-gradient(180deg, #60a5fa, #a855f7);
+          border-radius: 4px;
+        }
       `}</style>
-    </main>
+    </div>
   );
 };
 
