@@ -5,12 +5,14 @@ import {
   CheckCircle, X, Globe2, Users, Award, Shield
 } from 'lucide-react';
 import gsap from 'gsap';
+import consultationService from '../services/consultationService'; // ADD THIS IMPORT
 
 const GetinTouch = () => {
   const [activeRegion, setActiveRegion] = useState('global');
   const [selectedService, setSelectedService] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState(''); // ADDED for error handling
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -19,13 +21,15 @@ const GetinTouch = () => {
     service: '',
     description: '',
     timezone: 'GMT',
-    consultationType: 'video'
+    consultationType: 'video',
+    region: 'global' // ADDED to track region for backend
   });
 
   const globeRef = useRef(null);
   const formRef = useRef(null);
   const particlesRef = useRef([]);
   const successRef = useRef(null);
+  const errorRef = useRef(null); // ADDED for error animation
 
   // Vibrant color palette with global inspiration
   const colors = {
@@ -34,6 +38,7 @@ const GetinTouch = () => {
     accent: '#FFD166',      // Sunshine yellow
     global: '#118AB2',      // Ocean blue
     success: '#06D6A0',     // Emerald green
+    error: '#EF4444',       // Red for errors
     gradient: 'linear-gradient(135deg, #FF6B6B, #FFD166, #4ECDC4)',
     background: 'linear-gradient(135deg, #0F0F23 0%, #1A1A2E 50%, #16213E 100%)',
     glass: 'rgba(255, 255, 255, 0.08)'
@@ -155,25 +160,83 @@ const GetinTouch = () => {
     };
   }, []);
 
-  // Form submission animation
+  // UPDATED: Form submission handler with backend integration
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitError(''); // Clear any previous errors
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    // Validate required fields
+    if (!formData.name || !formData.email || !formData.service || !formData.description) {
+      setSubmitError('Please fill in all required fields.');
+      setIsSubmitting(false);
+      
+      // Animate error message
+      if (errorRef.current) {
+        gsap.fromTo(errorRef.current,
+          { scale: 0.8, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.7)" }
+        );
+      }
+      return;
+    }
 
-    setIsSubmitting(false);
-    setIsSubmitted(true);
+    try {
+      // Prepare data for backend
+      const submissionData = {
+        ...formData,
+        region: activeRegion, // Use the active region
+        consultation_type: formData.consultationType // Map to backend field name
+      };
 
-    // Animate success message
-    gsap.fromTo(successRef.current,
-      { scale: 0, opacity: 0 },
-      { scale: 1, opacity: 1, duration: 0.8, ease: "back.out(1.7)" }
-    );
+      // Call the consultation service
+      const response = await consultationService.submitConsultation(submissionData);
+      
+      // Handle success
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+
+      // Animate success message
+      gsap.fromTo(successRef.current,
+        { scale: 0, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.8, ease: "back.out(1.7)" }
+      );
+      
+    } catch (error) {
+      console.error('Consultation submission error:', error);
+      
+      // Handle error - extract error message from response
+      let errorMessage = 'Failed to submit consultation request. Please try again.';
+      
+      if (error.response?.data) {
+        // Try to get error message from Django validation
+        if (error.response.data.error) {
+          errorMessage = error.response.data.error;
+        } else if (typeof error.response.data === 'object') {
+          // Handle field-specific errors from Django serializer
+          const errors = Object.values(error.response.data).flat();
+          errorMessage = errors[0] || errorMessage;
+        } else if (typeof error.response.data === 'string') {
+          errorMessage = error.response.data;
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      setSubmitError(errorMessage);
+      setIsSubmitting(false);
+      
+      // Animate error message
+      if (errorRef.current) {
+        gsap.fromTo(errorRef.current,
+          { scale: 0.8, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.7)" }
+        );
+      }
+    }
   };
 
-  // Region selector component
+  // UPDATED: Region selector to update formData
   const RegionSelector = () => (
     <div className="space-y-3 mb-6">
       <div className="flex items-center gap-2">
@@ -184,7 +247,11 @@ const GetinTouch = () => {
         {regions.map(region => (
           <button
             key={region.id}
-            onClick={() => setActiveRegion(region.id)}
+            type="button"
+            onClick={() => {
+              setActiveRegion(region.id);
+              setFormData({...formData, region: region.id, timezone: region.timezone});
+            }}
             className={`relative group p-2 rounded-lg transition-all duration-200 ${
               activeRegion === region.id 
                 ? 'scale-105 shadow-md' 
@@ -208,7 +275,7 @@ const GetinTouch = () => {
     </div>
   );
 
-  // Service selector component
+  // UPDATED: Service selector to update formData
   const ServiceSelector = () => (
     <div className="space-y-3 mb-6">
       <div className="flex items-center gap-2">
@@ -253,7 +320,7 @@ const GetinTouch = () => {
     </div>
   );
 
-  // Consultation type selector
+  // UPDATED: Consultation type selector to update formData
   const ConsultationSelector = () => (
     <div className="space-y-3 mb-6">
       <div className="flex items-center gap-2">
@@ -408,9 +475,10 @@ const GetinTouch = () => {
                       </div>
                     </div>
                     
-                    <h3 className="text-lg sm:text-xl font-bold text-white mb-2">Booking Confirmed! 🎉</h3>
+                    <h3 className="text-lg sm:text-xl font-bold text-white mb-2">Consultation Request Sent! 🎉</h3>
                     <p className="text-blue-100/80 text-xs sm:text-sm mb-4">
-                      Your free consultation has been scheduled.
+                      Your free consultation request has been submitted successfully.
+                      We'll contact you within 24-48 hours.
                     </p>
                     
                     <button
@@ -424,13 +492,16 @@ const GetinTouch = () => {
                           service: '',
                           description: '',
                           timezone: 'GMT',
-                          consultationType: 'video'
+                          consultationType: 'video',
+                          region: 'global'
                         });
                         setSelectedService('');
+                        setActiveRegion('global');
+                        setSubmitError('');
                       }}
                       className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs sm:text-sm font-semibold transition-all duration-300"
                     >
-                      Schedule Another
+                      Submit Another Request
                     </button>
                   </div>
                 ) : (
@@ -440,6 +511,19 @@ const GetinTouch = () => {
                     <ServiceSelector />
                     
                     <ConsultationSelector />
+                    
+                    {/* ADDED: Error message display */}
+                    {submitError && (
+                      <div 
+                        ref={errorRef}
+                        className="p-3 rounded-lg border border-red-500/30 bg-red-500/10"
+                      >
+                        <div className="flex items-center gap-2 text-red-300 text-sm">
+                          <X className="h-4 w-4 flex-shrink-0" />
+                          <span>{submitError}</span>
+                        </div>
+                      </div>
+                    )}
                     
                     {/* Personal Details */}
                     <div className="space-y-3">
@@ -455,8 +539,11 @@ const GetinTouch = () => {
                             type="text"
                             required
                             value={formData.name}
-                            onChange={(e) => setFormData({...formData, name: e.target.value})}
-                            placeholder="Your Name"
+                            onChange={(e) => {
+                              setFormData({...formData, name: e.target.value});
+                              if (submitError) setSubmitError(''); // Clear error when user types
+                            }}
+                            placeholder="Your Name *"
                             className="w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
                           />
                         </div>
@@ -467,8 +554,11 @@ const GetinTouch = () => {
                             type="email"
                             required
                             value={formData.email}
-                            onChange={(e) => setFormData({...formData, email: e.target.value})}
-                            placeholder="Email Address"
+                            onChange={(e) => {
+                              setFormData({...formData, email: e.target.value});
+                              if (submitError) setSubmitError('');
+                            }}
+                            placeholder="Email Address *"
                             className="w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
                           />
                         </div>
@@ -478,7 +568,10 @@ const GetinTouch = () => {
                           <input
                             type="tel"
                             value={formData.phone}
-                            onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                            onChange={(e) => {
+                              setFormData({...formData, phone: e.target.value});
+                              if (submitError) setSubmitError('');
+                            }}
                             placeholder="Phone (Optional)"
                             className="w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
                           />
@@ -489,7 +582,10 @@ const GetinTouch = () => {
                           <input
                             type="text"
                             value={formData.company}
-                            onChange={(e) => setFormData({...formData, company: e.target.value})}
+                            onChange={(e) => {
+                              setFormData({...formData, company: e.target.value});
+                              if (submitError) setSubmitError('');
+                            }}
                             placeholder="Company (Optional)"
                             className="w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
                           />
@@ -509,19 +605,22 @@ const GetinTouch = () => {
                         <textarea
                           required
                           value={formData.description}
-                          onChange={(e) => setFormData({...formData, description: e.target.value})}
-                          placeholder="Briefly describe your project..."
+                          onChange={(e) => {
+                            setFormData({...formData, description: e.target.value});
+                            if (submitError) setSubmitError('');
+                          }}
+                          placeholder="Briefly describe your project... *"
                           rows="3"
                           className="w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300 resize-none"
                         />
                       </div>
                     </div>
                     
-                    {/* Time Slot Selection */}
+                    {/* Time Slot Selection - Optional for now */}
                     <div className="space-y-2 sm:space-y-3">
                       <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-cyan-300" />
-                        <h3 className="text-sm sm:text-base font-bold text-white">Preferred Time</h3>
+                        <h3 className="text-sm sm:text-base font-bold text-white">Preferred Time (Optional)</h3>
                       </div>
                       
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2">
@@ -562,12 +661,12 @@ const GetinTouch = () => {
                         {isSubmitting ? (
                           <>
                             <div className="h-3 w-3 sm:h-4 sm:w-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-1.5 sm:mr-2" />
-                            Scheduling...
+                            Submitting...
                           </>
                         ) : (
                           <>
                             <Rocket className="mr-1.5 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                            Book Free Consultation
+                            Submit Consultation Request
                             <Send className="ml-1.5 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
                           </>
                         )}
@@ -578,6 +677,11 @@ const GetinTouch = () => {
                     <p className="text-center text-xs text-blue-100/60 flex items-center justify-center gap-1.5 sm:gap-2">
                       <Shield className="h-3 w-3" />
                       Your information is secure. We follow GDPR & global privacy standards.
+                    </p>
+                    
+                    {/* ADDED: Note about email confirmation */}
+                    <p className="text-center text-xs text-cyan-300/70">
+                      You'll receive a confirmation email after submission.
                     </p>
                   </form>
                 )}

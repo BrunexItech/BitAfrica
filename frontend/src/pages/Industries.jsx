@@ -374,22 +374,33 @@ function Industries() {
           </div>
         </motion.div>
 
-        {/* Mobile-Friendly Industry Navigation */}
+        {/* Mobile-Friendly Industry Navigation - FIXED FOR MOBILE */}
         <div className="mb-12 sm:mb-20 relative">
-          {/* Mobile horizontal scroll for industry buttons */}
-          <div className="lg:hidden overflow-x-auto pb-4 mb-8 px-4">
-            <div className="flex gap-3 min-w-max">
+          {/* Mobile horizontal scroll for industry buttons - IMPROVED VISIBILITY */}
+          <div className="lg:hidden overflow-x-auto pb-4 mb-8 px-2">
+            <div className="flex gap-2 min-w-max px-2">
               {industries.slice(0, 6).map((industry) => (
                 <button
                   key={industry.id}
                   onClick={() => setActiveIndustry(industry.id)}
-                  className={`px-4 py-2 rounded-full font-medium text-sm transition-all duration-300 whitespace-nowrap ${
+                  className={`px-4 py-3 rounded-lg font-medium text-sm transition-all duration-300 whitespace-nowrap flex-shrink-0 min-w-[100px] ${
                     activeIndustry === industry.id
                       ? `bg-gradient-to-r ${industry.color} text-white shadow-lg`
-                      : 'bg-gray-800/50 text-gray-300 hover:bg-gray-800/80'
+                      : 'bg-gray-800/80 text-gray-300 hover:bg-gray-800'
                   }`}
+                  style={{
+                    border: activeIndustry === industry.id 
+                      ? `1px solid ${industry.accentColor}`
+                      : '1px solid rgba(255, 255, 255, 0.1)',
+                    backdropFilter: 'blur(10px)'
+                  }}
                 >
-                  {industry.title}
+                  <div className="flex flex-col items-center gap-1">
+                    <div className={`${activeIndustry === industry.id ? 'text-white' : 'text-gray-400'}`}>
+                      {React.cloneElement(industry.icon, { className: 'h-5 w-5' })}
+                    </div>
+                    <span className="font-semibold">{industry.title}</span>
+                  </div>
                 </button>
               ))}
             </div>
@@ -479,7 +490,7 @@ function Industries() {
           </div>
         </div>
 
-        {/* Main Industry Showcase - Made Responsive */}
+        {/* Main Industry Showcase - FIXED FOR MOBILE VISIBILITY */}
         <motion.div 
           key={activeIndustry}
           initial={{ opacity: 0, y: 30 }}
@@ -497,12 +508,41 @@ function Industries() {
               `
             }}
           >
-            <div className="relative p-6 sm:p-8 lg:p-12">
+            <div className="relative p-4 sm:p-8 lg:p-12">
+              {/* Mobile Title - Better visibility */}
+              <div className="lg:hidden mb-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="relative">
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                      className="absolute inset-0 border-2 border-dashed rounded-full border-cyan-500/30"
+                    />
+                    <div className="p-3 rounded-2xl bg-gradient-to-br from-black/50 to-transparent backdrop-blur-sm">
+                      {currentIndustry.icon}
+                    </div>
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-black text-white">
+                      {currentIndustry.title}
+                      <span className="text-cyan-400 ml-2">AI</span>
+                    </h2>
+                    <div className="text-gray-500 text-xs font-medium tracking-wider">
+                      INTELLIGENT TRANSFORMATION
+                    </div>
+                  </div>
+                </div>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  {currentIndustry.description}
+                </p>
+              </div>
+
               <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                {/* Left - Data Visualization */}
+                {/* Left - Data Visualization - FIXED FOR MOBILE */}
                 <div>
                   <div className="mb-6 sm:mb-8">
-                    <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                    {/* Desktop Title */}
+                    <div className="hidden lg:flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
                       <div className="relative">
                         <motion.div
                           animate={{ rotate: 360 }}
@@ -524,11 +564,11 @@ function Industries() {
                       </div>
                     </div>
 
-                    {/* Animated progress rings - Made Responsive */}
+                    {/* Animated progress rings - IMPROVED MOBILE SIZE */}
                     <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
                       {Object.entries(currentIndustry.stats).map(([key, value], idx) => (
                         <div key={key} className="text-center">
-                          <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mx-auto mb-2">
+                          <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2">
                             <svg className="w-full h-full" viewBox="0 0 100 100">
                               <circle
                                 cx="50"
@@ -553,7 +593,7 @@ function Industries() {
                               />
                             </svg>
                             <div className="absolute inset-0 flex items-center justify-center">
-                              <div className="text-lg sm:text-xl md:text-2xl font-black text-white">{value}</div>
+                              <div className="text-xl sm:text-2xl md:text-3xl font-black text-white">{value}</div>
                             </div>
                           </div>
                           <div className="text-xs text-gray-500 uppercase tracking-wider">
@@ -589,38 +629,41 @@ function Industries() {
                   </div>
                 </div>
 
-                {/* Right - Interactive 3D Effect - Made Responsive */}
+                {/* Right - Interactive 3D Effect - FIXED FOR MOBILE VISIBILITY */}
                 <div className="relative mt-8 lg:mt-0">
-                  <div className="relative h-64 sm:h-80 md:h-96 rounded-xl sm:rounded-2xl overflow-hidden"
+                  <div className="relative h-72 sm:h-80 md:h-96 rounded-xl sm:rounded-2xl overflow-hidden"
                     style={{
                       background: `linear-gradient(45deg, ${currentIndustry.accentColor}15, transparent)`,
-                      border: '1px solid rgba(255, 255, 255, 0.1)'
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      minHeight: '280px'
                     }}
                   >
-                    {/* Floating data points */}
-                    {[...Array(10)].map((_, i) => (
+                    {/* Floating data points - VISIBLE ON MOBILE */}
+                    {[...Array(15)].map((_, i) => (
                       <motion.div
                         key={i}
-                        className="absolute w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full"
+                        className="absolute w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full"
                         style={{
                           background: currentIndustry.accentColor,
                           left: `${Math.random() * 100}%`,
                           top: `${Math.random() * 100}%`,
+                          filter: 'drop-shadow(0 0 4px currentColor)'
                         }}
                         animate={{
-                          y: [0, -15, 0],
-                          opacity: [0.2, 1, 0.2],
+                          y: [0, -20, 0],
+                          opacity: [0.3, 0.8, 0.3],
+                          scale: [1, 1.2, 1]
                         }}
                         transition={{
-                          duration: 2 + Math.random(),
+                          duration: 2 + Math.random() * 2,
                           repeat: Infinity,
                           delay: Math.random() * 2,
                         }}
                       />
                     ))}
 
-                    {/* Central visualization */}
-                    <div className="absolute inset-0 flex items-center justify-center">
+                    {/* Central visualization - VISIBLE ON MOBILE */}
+                    <div className="absolute inset-0 flex items-center justify-center p-4">
                       <motion.div
                         animate={{ 
                           rotateY: [0, 180, 360],
@@ -631,20 +674,61 @@ function Industries() {
                           repeat: Infinity,
                           ease: "linear"
                         }}
-                        className="relative w-48 h-48 sm:w-64 sm:h-64"
+                        className="relative w-56 h-56 sm:w-64 sm:h-64"
                       >
-                        <div className="absolute inset-0 border-2 border-dashed rounded-full border-cyan-500/30" />
-                        <div className="absolute inset-6 sm:inset-8 border-2 border-dashed rounded-full border-blue-500/30" />
-                        <div className="absolute inset-12 sm:inset-16 border-2 border-dashed rounded-full border-purple-500/30" />
+                        <div className="absolute inset-0 border-2 border-dashed rounded-full border-cyan-500/40" />
+                        <div className="absolute inset-6 sm:inset-8 border-2 border-dashed rounded-full border-blue-500/40" />
+                        <div className="absolute inset-12 sm:inset-16 border-2 border-dashed rounded-full border-purple-500/40" />
                         
-                        {/* Pulsing center */}
+                        {/* Pulsing center - VISIBLE ON MOBILE */}
                         <motion.div
-                          animate={{ scale: [1, 1.3, 1] }}
-                          transition={{ duration: 2, repeat: Infinity }}
-                          className="absolute inset-16 sm:inset-24 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"
+                          animate={{ 
+                            scale: [1, 1.4, 1],
+                            opacity: [0.8, 1, 0.8]
+                          }}
+                          transition={{ 
+                            duration: 2, 
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                          }}
+                          className="absolute inset-16 sm:inset-20 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"
+                          style={{
+                            boxShadow: `
+                              0 0 40px ${currentIndustry.accentColor},
+                              inset 0 0 20px rgba(255, 255, 255, 0.3)
+                            `
+                          }}
+                        />
+                        
+                        {/* Glow effect around the center */}
+                        <motion.div
+                          animate={{ 
+                            scale: [1, 1.6, 1],
+                            opacity: [0, 0.4, 0]
+                          }}
+                          transition={{ 
+                            duration: 3, 
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                          }}
+                          className="absolute inset-10 sm:inset-14 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 rounded-full blur-sm"
                         />
                       </motion.div>
                     </div>
+                    
+                    {/* Animated rings around the visualization */}
+                    <motion.div
+                      animate={{ 
+                        rotate: 360,
+                        scale: [1, 1.05, 1]
+                      }}
+                      transition={{ 
+                        duration: 25, 
+                        repeat: Infinity,
+                        ease: "linear"
+                      }}
+                      className="absolute inset-4 sm:ins-6 border border-cyan-500/20 rounded-full"
+                    />
                   </div>
 
                   {/* Real-time metrics - Made Responsive */}

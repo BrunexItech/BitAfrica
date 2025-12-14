@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Changed to BrowserRouter
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
@@ -31,82 +31,275 @@ import CloudAI from './pages/solutions/CloudAI';
 // Dashboard Placeholder
 import Dashboard from './pages/Dashboard';
 
+// Layouts
+import AuthenticatedLayout from './components/AuthenticatedLayout';
+import ProtectedRoute from './components/ProtectedRoute';
+
 // Error Pages
 import NotFound from './pages/NotFound';
+
+// Public Layout Component (with Header)
+const PublicLayout = ({ children }) => (
+  <>
+    <Header />
+    <main className="flex-grow pt-16"> {/* Added pt-16 to offset fixed header */}
+      <ScrollToTop />
+      {children}
+    </main>
+  </>
+);
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 flex flex-col">
-        <Header />
-        <main className="flex-grow pt-16"> {/* Added pt-16 to offset fixed header */}
-          <ScrollToTop />
-          <Routes>
-            {/* ========== PUBLIC ROUTES ========== */}
-            
-            {/* Main Navigation Routes */}
-            <Route path="/" element={<Home />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/industries" element={<Industries />} />
-            <Route path="/company" element={<Company />} />
-            <Route path="/academy" element={<Academy />} />
-            <Route path="/solutions" element={<Solutions />} />
-            <Route path="/contact" element={<Contact />} />
-            
-            {/* Authentication Routes */}
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
-
-            
-            {/* Sign Up Routes */}
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/signup/enterprise" element={<SignUp />} />
-            <Route path="/signup/partner" element={<SignUp />} />
-            
-            {/* ========== SOLUTION DETAIL ROUTES ========== */}
-            
-            <Route path="/solutions/ai-analytics" element={<AIAnalytics />} />
-            <Route path="/solutions/automation" element={<Automation />} />
-            <Route path="/solutions/cybersecurity" element={<Cybersecurity />} />
-            <Route path="/solutions/dev-solutions" element={<DevSolutions />} />
-            <Route path="/solutions/machine-learning" element={<MachineLearning />} />
-            <Route path="/solutions/cloud-ai" element={<CloudAI />} />
-            
-            {/* ========== SERVICE DETAIL ROUTES ========== */}
-            
-            <Route path="/services/ai-consulting" element={<Services />} />
-            <Route path="/services/cloud-migration" element={<Services />} />
-            <Route path="/services/digital-transformation" element={<Services />} />
-            <Route path="/services/tech-infrastructure" element={<Services />} />
-            <Route path="/services/support-maintenance" element={<Services />} />
-            
-            {/* ========== INDUSTRY DETAIL ROUTES ========== */}
-            
-            <Route path="/industries/finance-banking" element={<Industries />} />
-            <Route path="/industries/healthcare" element={<Industries />} />
-            <Route path="/industries/retail-ecommerce" element={<Industries />} />
-            <Route path="/industries/manufacturing" element={<Industries />} />
-            <Route path="/industries/education" element={<Industries />} />
-            <Route path="/industries/government" element={<Industries />} />
-            
-            {/* ========== COMPANY DETAIL ROUTES ========== */}
-            
-            <Route path="/company/about-us" element={<Company />} />
-            <Route path="/company/leadership" element={<Company />} />
-            <Route path="/company/careers" element={<Company />} />
-            <Route path="/company/partners" element={<Company />} />
-            <Route path="/company/newsroom" element={<Company />} />
-            
-            {/* ========== DASHBOARD ROUTE ========== */}
-            
-            <Route path="/dashboard" element={<Dashboard />} />
-            
-            {/* ========== ERROR ROUTE ========== */}
-            
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </main>
+        <Routes>
+          {/* ========== PUBLIC ROUTES (with Header + Footer) ========== */}
+          
+          {/* Main Navigation Routes */}
+          <Route path="/" element={
+            <PublicLayout>
+              <Home />
+            </PublicLayout>
+          } />
+          
+          <Route path="/services" element={
+            <PublicLayout>
+              <Services />
+            </PublicLayout>
+          } />
+          
+          <Route path="/industries" element={
+            <PublicLayout>
+              <Industries />
+            </PublicLayout>
+          } />
+          
+          <Route path="/company" element={
+            <PublicLayout>
+              <Company />
+            </PublicLayout>
+          } />
+          
+          <Route path="/academy" element={
+            <PublicLayout>
+              <Academy />
+            </PublicLayout>
+          } />
+          
+          <Route path="/solutions" element={
+            <PublicLayout>
+              <Solutions />
+            </PublicLayout>
+          } />
+          
+          <Route path="/contact" element={
+            <PublicLayout>
+              <Contact />
+            </PublicLayout>
+          } />
+          
+          {/* Authentication Routes */}
+          <Route path="/signin" element={
+            <PublicLayout>
+              <SignIn />
+            </PublicLayout>
+          } />
+          
+          <Route path="/forgot-password" element={
+            <PublicLayout>
+              <ForgotPassword />
+            </PublicLayout>
+          } />
+          
+          <Route path="/reset-password/:uid/:token" element={
+            <PublicLayout>
+              <ResetPassword />
+            </PublicLayout>
+          } />
+          
+          {/* Sign Up Routes */}
+          <Route path="/signup" element={
+            <PublicLayout>
+              <SignUp />
+            </PublicLayout>
+          } />
+          
+          <Route path="/signup/enterprise" element={
+            <PublicLayout>
+              <SignUp />
+            </PublicLayout>
+          } />
+          
+          <Route path="/signup/partner" element={
+            <PublicLayout>
+              <SignUp />
+            </PublicLayout>
+          } />
+          
+          {/* ========== SOLUTION DETAIL ROUTES (with Header + Footer) ========== */}
+          
+          <Route path="/solutions/ai-analytics" element={
+            <PublicLayout>
+              <AIAnalytics />
+            </PublicLayout>
+          } />
+          
+          <Route path="/solutions/automation" element={
+            <PublicLayout>
+              <Automation />
+            </PublicLayout>
+          } />
+          
+          <Route path="/solutions/cybersecurity" element={
+            <PublicLayout>
+              <Cybersecurity />
+            </PublicLayout>
+          } />
+          
+          <Route path="/solutions/dev-solutions" element={
+            <PublicLayout>
+              <DevSolutions />
+            </PublicLayout>
+          } />
+          
+          <Route path="/solutions/machine-learning" element={
+            <PublicLayout>
+              <MachineLearning />
+            </PublicLayout>
+          } />
+          
+          <Route path="/solutions/cloud-ai" element={
+            <PublicLayout>
+              <CloudAI />
+            </PublicLayout>
+          } />
+          
+          {/* ========== SERVICE DETAIL ROUTES (with Header + Footer) ========== */}
+          
+          <Route path="/services/ai-consulting" element={
+            <PublicLayout>
+              <Services />
+            </PublicLayout>
+          } />
+          
+          <Route path="/services/cloud-migration" element={
+            <PublicLayout>
+              <Services />
+            </PublicLayout>
+          } />
+          
+          <Route path="/services/digital-transformation" element={
+            <PublicLayout>
+              <Services />
+            </PublicLayout>
+          } />
+          
+          <Route path="/services/tech-infrastructure" element={
+            <PublicLayout>
+              <Services />
+            </PublicLayout>
+          } />
+          
+          <Route path="/services/support-maintenance" element={
+            <PublicLayout>
+              <Services />
+            </PublicLayout>
+          } />
+          
+          {/* ========== INDUSTRY DETAIL ROUTES (with Header + Footer) ========== */}
+          
+          <Route path="/industries/finance-banking" element={
+            <PublicLayout>
+              <Industries />
+            </PublicLayout>
+          } />
+          
+          <Route path="/industries/healthcare" element={
+            <PublicLayout>
+              <Industries />
+            </PublicLayout>
+          } />
+          
+          <Route path="/industries/retail-ecommerce" element={
+            <PublicLayout>
+              <Industries />
+            </PublicLayout>
+          } />
+          
+          <Route path="/industries/manufacturing" element={
+            <PublicLayout>
+              <Industries />
+            </PublicLayout>
+          } />
+          
+          <Route path="/industries/education" element={
+            <PublicLayout>
+              <Industries />
+            </PublicLayout>
+          } />
+          
+          <Route path="/industries/government" element={
+            <PublicLayout>
+              <Industries />
+            </PublicLayout>
+          } />
+          
+          {/* ========== COMPANY DETAIL ROUTES (with Header + Footer) ========== */}
+          
+          <Route path="/company/about-us" element={
+            <PublicLayout>
+              <Company />
+            </PublicLayout>
+          } />
+          
+          <Route path="/company/leadership" element={
+            <PublicLayout>
+              <Company />
+            </PublicLayout>
+          } />
+          
+          <Route path="/company/careers" element={
+            <PublicLayout>
+              <Company />
+            </PublicLayout>
+          } />
+          
+          <Route path="/company/partners" element={
+            <PublicLayout>
+              <Company />
+            </PublicLayout>
+          } />
+          
+          <Route path="/company/newsroom" element={
+            <PublicLayout>
+              <Company />
+            </PublicLayout>
+          } />
+          
+          {/* ========== DASHBOARD ROUTE (NO Header, YES Footer, Protected) ========== */}
+          
+          <Route element={<AuthenticatedLayout />}>
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } 
+            />
+          </Route>
+          
+          {/* ========== ERROR ROUTE (with Header + Footer) ========== */}
+          
+          <Route path="*" element={
+            <PublicLayout>
+              <NotFound />
+            </PublicLayout>
+          } />
+        </Routes>
+        
+        {/* Footer is always shown at the bottom */}
         <Footer />
         <ScrollToTopButton />
       </div>

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
   Eye, EyeOff, Mail, Lock, Brain, Sparkles, Zap, Cpu, 
   Shield, Globe, Code, Server, ChevronRight, Key
@@ -8,6 +8,7 @@ import authService from '../services/authService';
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -16,6 +17,19 @@ const SignIn = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkAuth = () => {
+      if (authService.isAuthenticated()) {
+        // Redirect to dashboard or previous location
+        const from = location.state?.from?.pathname || '/dashboard';
+        navigate(from, { replace: true });
+      }
+    };
+
+    checkAuth();
+  }, [navigate, location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,8 +46,22 @@ const SignIn = () => {
       // Store tokens and user data
       authService.storeTokens(response);
       
-      // Redirect to dashboard
-      navigate('/dashboard');
+      // Force a storage event to trigger header updates in other components
+      window.dispatchEvent(new Event('storage'));
+      
+      // Check if remember me is checked
+      if (formData.rememberMe) {
+        // Set a long-lived cookie or localStorage flag if needed
+        localStorage.setItem('rememberMe', 'true');
+      }
+      
+      // Get the redirect location or default to dashboard
+      const from = location.state?.from?.pathname || '/dashboard';
+      
+      // Show success message and redirect
+      setTimeout(() => {
+        navigate(from, { replace: true });
+      }, 100);
       
     } catch (error) {
       console.error('Login error:', error);
@@ -42,9 +70,11 @@ const SignIn = () => {
       if (error.response?.data) {
         const backendErrors = error.response.data;
         setErrors({
-          submit: 'Login failed. Please check your credentials.',
+          submit: backendErrors.detail || 'Login failed. Please check your credentials.',
           ...backendErrors
         });
+      } else if (error.message === 'Network Error') {
+        setErrors({ submit: 'Network error. Please check your internet connection.' });
       } else {
         setErrors({ submit: 'Login failed. Please try again.' });
       }
@@ -164,6 +194,21 @@ const SignIn = () => {
             </div>
           )}
 
+          {/* Success Message (if redirected from signup) */}
+          {location.state?.success && (
+            <div className="mb-6 p-4 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-xl animate-fadeIn">
+              <div className="flex items-center">
+                <div className="h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-r from-green-500 to-emerald-500 text-white mr-3">
+                  <Sparkles className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="font-semibold text-white">Registration Successful!</p>
+                  <p className="text-sm text-green-200/80">{location.state.message}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Main Form Card */}
           <div className="bg-gradient-to-br from-[#1a2036]/80 to-[#0f172a]/90 backdrop-blur-2xl rounded-2xl shadow-2xl border border-cyan-500/20 p-8">
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -183,6 +228,7 @@ const SignIn = () => {
                     className="relative w-full px-4 py-3 bg-[#0f172a]/60 border border-cyan-500/30 rounded-xl text-white placeholder-blue-300/50 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-transparent transition-all duration-300"
                     placeholder="Enter your email"
                     required
+                    disabled={isLoading}
                   />
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                     <div className="h-2 w-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 animate-pulse"></div>
@@ -206,11 +252,13 @@ const SignIn = () => {
                     className="relative w-full px-4 py-3 bg-[#0f172a]/60 border border-cyan-500/30 rounded-xl text-white placeholder-blue-300/50 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-transparent transition-all duration-300 pr-12"
                     placeholder="Enter your password"
                     required
+                    disabled={isLoading}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1.5 hover:bg-cyan-500/10 rounded-lg transition-colors duration-200"
+                    disabled={isLoading}
                   >
                     {showPassword ? (
                       <EyeOff className="h-5 w-5 text-cyan-400" />
@@ -227,6 +275,7 @@ const SignIn = () => {
                       checked={formData.rememberMe}
                       onChange={handleChange}
                       className="h-4 w-4 rounded border-cyan-500/50 bg-[#0f172a]/60 text-cyan-500 focus:ring-cyan-500/50 focus:ring-offset-[#0f172a]"
+                      disabled={isLoading}
                     />
                     <span className="ml-2 text-sm text-blue-200/70 group-hover:text-cyan-300 transition-colors">
                       Remember me
