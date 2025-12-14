@@ -770,6 +770,167 @@ const DashboardContent = ({
           )}
         </div>
 
+        {/* Quiz Modal */}
+        {quizStarted && !quizCompleted && (
+          <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${darkMode ? 'bg-gray-900/90' : 'bg-black/50'}`}>
+            <div className={`w-full max-w-2xl rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 shadow-2xl`}>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold">Quiz: {selectedCourse?.title}</h2>
+                <button
+                  onClick={() => setQuizStarted(false)}
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+              
+              {quizQuestions.length > 0 && currentQuestion < quizQuestions.length ? (
+                <>
+                  <div className="mb-6">
+                    <div className="flex justify-between text-sm mb-2">
+                      <span>Question {currentQuestion + 1} of {quizQuestions.length}</span>
+                      <span>Score: {score}</span>
+                    </div>
+                    <div className={`h-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
+                      <div 
+                        className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500"
+                        style={{ width: `${((currentQuestion + 1) / quizQuestions.length) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                  
+                  <div className="mb-8">
+                    <h3 className="text-xl font-semibold mb-4">
+                      {quizQuestions[currentQuestion].question}
+                    </h3>
+                    
+                    <div className="space-y-3">
+                      {quizQuestions[currentQuestion].options.map((option, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleQuizAnswer(index)}
+                          className={`w-full text-left p-4 rounded-lg border transition-all ${
+                            darkMode 
+                              ? 'border-gray-700 hover:border-blue-500 hover:bg-blue-900/20' 
+                              : 'border-gray-200 hover:border-blue-400 hover:bg-blue-50'
+                          }`}
+                        >
+                          <div className="flex items-center">
+                            <div className={`w-6 h-6 rounded-full border mr-3 flex items-center justify-center ${
+                              darkMode ? 'border-gray-600' : 'border-gray-300'
+                            }`}>
+                              <span className="text-sm">{String.fromCharCode(65 + index)}</span>
+                            </div>
+                            <span>{option}</span>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-12">
+                  <Loader2 className="h-12 w-12 animate-spin text-blue-500 mx-auto mb-4" />
+                  <p className="text-gray-600 dark:text-gray-300">Loading quiz questions...</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Quiz Results Modal */}
+        {quizCompleted && quizResults && (
+          <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${darkMode ? 'bg-gray-900/90' : 'bg-black/50'}`}>
+            <div className={`w-full max-w-2xl rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 shadow-2xl`}>
+              <div className="text-center">
+                <div className={`w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center ${
+                  quizResults.percentage >= 70 
+                    ? 'bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300' 
+                    : 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900 dark:text-yellow-300'
+                }`}>
+                  {quizResults.percentage >= 70 ? (
+                    <Award size={40} />
+                  ) : (
+                    <Brain size={40} />
+                  )}
+                </div>
+                
+                <h2 className="text-2xl font-bold mb-2">
+                  {quizResults.percentage >= 70 ? 'Congratulations!' : 'Good Effort!'}
+                </h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  You scored {quizResults.correct_answers} out of {quizResults.total_questions} questions
+                </p>
+                
+                <div className={`text-4xl font-bold mb-6 ${
+                  quizResults.percentage >= 90 ? 'text-green-600 dark:text-green-400' :
+                  quizResults.percentage >= 70 ? 'text-blue-600 dark:text-blue-400' :
+                  'text-yellow-600 dark:text-yellow-400'
+                }`}>
+                  {quizResults.percentage.toFixed(1)}%
+                </div>
+                
+                {/* Score Breakdown */}
+                <div className="mb-8">
+                  <h3 className="font-semibold mb-4">Question Breakdown</h3>
+                  <div className="space-y-3">
+                    {quizResults.details.map((detail, index) => (
+                      <div 
+                        key={index}
+                        className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} ${
+                          detail.is_correct ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500'
+                        }`}
+                      >
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="font-medium">Question {index + 1}</span>
+                          <span className={`text-sm px-2 py-1 rounded-full ${
+                            detail.is_correct 
+                              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
+                              : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                          }`}>
+                            {detail.is_correct ? 'Correct' : 'Incorrect'}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
+                          Your answer: Option {detail.selected_option}
+                          {!detail.is_correct && ` (Correct: Option ${detail.correct_option})`}
+                        </p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          <span className="font-medium">Explanation:</span> {detail.explanation}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="flex justify-center space-x-3">
+                  <button
+                    onClick={() => {
+                      setQuizCompleted(false);
+                      setQuizResults(null);
+                      setQuizStarted(false);
+                    }}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  >
+                    Return to Dashboard
+                  </button>
+                  <button
+                    onClick={() => {
+                      setQuizCompleted(false);
+                      setQuizResults(null);
+                      setCurrentQuestion(0);
+                      setScore(0);
+                    }}
+                    className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    Retake Quiz
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Progress Analytics */}
         <div className={`rounded-xl p-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
           <h2 className="text-2xl font-bold mb-6 flex items-center">
