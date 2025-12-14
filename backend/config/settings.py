@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     # Local apps (we'll create these next)
      'accounts',
     'users',
+    'consultation',
+    'contact',
+
     
 ]
 
