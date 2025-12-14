@@ -15,11 +15,15 @@ class ModuleSerializer(serializers.ModelSerializer):
     def get_is_completed(self, obj):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
-            return UserProgress.objects.filter(
-                user=request.user,
-                module=obj,
-                completed=True
-            ).exists()
+            try:
+                progress = UserProgress.objects.get(
+                    user=request.user,
+                    course=obj.course,
+                    module=obj
+                )
+                return progress.completed
+            except UserProgress.DoesNotExist:
+                return False
         return False
 
 class CourseSerializer(serializers.ModelSerializer):

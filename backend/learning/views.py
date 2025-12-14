@@ -1,5 +1,6 @@
 from django.db.models import Avg
 from django.shortcuts import render
+from django.utils import timezone  
 
 # Create your views here.
 from rest_framework import generics, status, permissions
@@ -166,7 +167,6 @@ class SubmitQuizView(APIView):
             
             if created or not UserAchievement.objects.filter(user=user, achievement=achievement).exists():
                 UserAchievement.objects.create(user=user, achievement=achievement)
-
 class UpdateProgressView(APIView):
     """Update user progress for a module"""
     permission_classes = [permissions.IsAuthenticated]
@@ -178,43 +178,54 @@ class UpdateProgressView(APIView):
             module_id = serializer.validated_data['module_id']
             completed = serializer.validated_data['completed']
             
-            # Update or create progress record
-            progress, created = UserProgress.objects.update_or_create(
-                user=request.user,
-                course_id=course_id,
-                module_id=module_id,
-                defaults={
-                    'completed': completed,
-                    'completed_at': timezone.now() if completed else None
-                }
-            )
-            
-            # Check for module completion achievement
-            if completed:
-                completed_count = UserProgress.objects.filter(
-                    user=request.user,
-                    completed=True
-                ).count()
+            try:
+                course = Course.objects.get(id=course_id)
+                module = Module.objects.get(id=module_id, course_id=course_id)
                 
-                # Achievement for completing X modules
-                if completed_count >= 5:
-                    achievement, created = Achievement.objects.get_or_create(
-                        condition_type='module_count',
-                        condition_value=5,
-                        defaults={
-                            'name': 'Quick Learner',
-                            'description': 'Complete 5 modules',
-                            'icon': '🚀'
-                        }
-                    )
+                # Update or create progress record
+                progress, created = UserProgress.objects.update_or_create(
+                    user=request.user,
+                    course=course,
+                    module=module,
+                    defaults={
+                        'completed': completed,
+                        'completed_at': timezone.now() if completed else None
+                    }
+                )
+                
+                # Check for module completion achievement
+                if completed:
+                    completed_count = UserProgress.objects.filter(
+                        user=request.user,
+                        completed=True
+                    ).count()
                     
-                    if created or not UserAchievement.objects.filter(user=request.user, achievement=achievement).exists():
-                        UserAchievement.objects.create(user=request.user, achievement=achievement)
-            
-            return Response({
-                'message': 'Progress updated successfully',
-                'progress_id': progress.id
-            }, status=status.HTTP_200_OK)
+                    # Achievement for completing X modules
+                    if completed_count >= 5:
+                        achievement, created = Achievement.objects.get_or_create(
+                            condition_type='module_count',
+                            condition_value=5,
+                            defaults={
+                                'name': 'Quick Learner',
+                                'description': 'Complete 5 modules',
+                                'icon': '🚀'
+                            }
+                        )
+                        
+                        if created or not UserAchievement.objects.filter(user=request.user, achievement=achievement).exists():
+                            UserAchievement.objects.create(user=request.user, achievement=achievement)
+                
+                return Response({
+                    'message': 'Progress updated successfully',
+                    'progress_id': progress.id,
+                    'completed': completed
+                }, status=status.HTTP_200_OK)
+                
+            except (Course.DoesNotExist, Module.DoesNotExist):
+                return Response(
+                    {'error': 'Course or module not found'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

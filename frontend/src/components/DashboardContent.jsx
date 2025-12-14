@@ -46,7 +46,8 @@ const DashboardContent = ({
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [modules, setModules] = useState([]);
   const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
-  const [moduleCompleted, setModuleCompleted] = useState(false);
+  const [isCurrentModuleCompleted, setIsCurrentModuleCompleted] = useState(false);
+  const [moduleLoading, setModuleLoading] = useState(false);
   
   // Quiz states
   const [quizStarted, setQuizStarted] = useState(false);
@@ -94,10 +95,15 @@ const DashboardContent = ({
       const modulesData = await learningService.getModules(courseId);
       setModules(modulesData);
       setCurrentModuleIndex(0);
-      setModuleCompleted(false);
+      
+      // Check if current module is already completed
+      const currentModule = modulesData[0];
+      setIsCurrentModuleCompleted(currentModule?.is_completed || false);
+      
       setLearningMode(true);
       setQuizStarted(false);
       setQuizCompleted(false);
+      setQuizResults(null);
     } catch (error) {
       console.error('Error starting learning:', error);
     }
@@ -126,40 +132,74 @@ const DashboardContent = ({
   // Mark current module as completed
   const markModuleCompleted = async () => {
     try {
+      setModuleLoading(true);
       const currentModule = modules[currentModuleIndex];
+      
+      // Update backend
       await learningService.updateProgress(
         selectedCourse.id,
         currentModule.id,
         true
       );
       
-      setModuleCompleted(true);
+      // Update frontend state
+      setIsCurrentModuleCompleted(true);
       
-      // Refresh dashboard data
+      // Refresh dashboard data to update progress
       const updatedCourses = await learningService.getCourses();
       setCourses(updatedCourses);
       
+      // Refresh stats
+      const updatedStats = await learningService.getDashboardStats();
+      setStats(updatedStats);
+      
     } catch (error) {
       console.error('Error marking module complete:', error);
+      alert('Failed to mark module as completed. Please try again.');
+    } finally {
+      setModuleLoading(false);
     }
   };
 
   // Go to next module
   const nextModule = () => {
     if (currentModuleIndex < modules.length - 1) {
-      setCurrentModuleIndex(prev => prev + 1);
-      setModuleCompleted(false);
+      const nextIndex = currentModuleIndex + 1;
+      setCurrentModuleIndex(nextIndex);
+      
+      // Check if the next module is already completed
+      const nextModule = modules[nextIndex];
+      setIsCurrentModuleCompleted(nextModule?.is_completed || false);
     } else {
-      // All modules completed, offer quiz
+      // All modules completed, exit learning mode
       setLearningMode(false);
+      setSelectedCourse(null);
+      
+      // Optionally show quiz option
+      if (selectedCourse) {
+        // Check if all modules are actually completed
+        const allCompleted = modules.every(module => module.is_completed);
+        if (allCompleted) {
+          // Show quiz notification or automatically start quiz
+          setTimeout(() => {
+            if (window.confirm(`Congratulations! You've completed all modules. Would you like to take the quiz for ${selectedCourse.title}?`)) {
+              startQuiz(selectedCourse.id);
+            }
+          }, 500);
+        }
+      }
     }
   };
 
   // Go to previous module
   const previousModule = () => {
     if (currentModuleIndex > 0) {
-      setCurrentModuleIndex(prev => prev - 1);
-      setModuleCompleted(false);
+      const prevIndex = currentModuleIndex - 1;
+      setCurrentModuleIndex(prevIndex);
+      
+      // Check if the previous module is already completed
+      const prevModule = modules[prevIndex];
+      setIsCurrentModuleCompleted(prevModule?.is_completed || false);
     }
   };
 
@@ -190,6 +230,12 @@ const DashboardContent = ({
 
   // Get current module
   const currentModule = modules[currentModuleIndex];
+
+  // Calculate completed modules count
+  const completedModulesCount = modules.filter(m => m.is_completed).length;
+  
+  // Calculate if all modules are completed
+  const allModulesCompleted = modules.length > 0 && completedModulesCount === modules.length;
 
   // Filter courses based on search and status
   const filteredCourses = courses.filter(course => {
@@ -285,6 +331,37 @@ const DashboardContent = ({
           <div className={`rounded-xl p-6 mb-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}>
             <h1 className="text-2xl md:text-3xl font-bold mb-2">{selectedCourse.title}</h1>
             <p className="text-gray-600 dark:text-gray-300 mb-4">{selectedCourse.description}</p>
+            
+            {/* Module Progress Dots */}
+            <div className="flex flex-wrap gap-2 mb-4">
+              {modules.map((module, index) => {
+                const isCompleted = module.is_completed;
+                const isCurrent = index === currentModuleIndex;
+                
+                return (
+                  <button
+                    key={module.id}
+                    onClick={() => {
+                      if (index !== currentModuleIndex) {
+                        setCurrentModuleIndex(index);
+                        setIsCurrentModuleCompleted(module.is_completed || false);
+                      }
+                    }}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all ${
+                      isCurrent 
+                        ? 'bg-blue-600 text-white ring-2 ring-blue-300' 
+                        : isCompleted
+                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                        : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                    } ${!isCurrent ? 'hover:scale-110' : ''}`}
+                    title={`Module ${index + 1}: ${module.title} ${isCompleted ? '(Completed)' : ''}`}
+                  >
+                    {isCompleted ? <Check className="h-4 w-4" /> : index + 1}
+                  </button>
+                );
+              })}
+            </div>
+            
             <div className="flex items-center space-x-4 text-sm">
               <span className="flex items-center">
                 <Clock className="h-4 w-4 mr-1" />
@@ -292,7 +369,7 @@ const DashboardContent = ({
               </span>
               <span className="flex items-center">
                 <FileText className="h-4 w-4 mr-1" />
-                Module {currentModuleIndex + 1}
+                {completedModulesCount} of {modules.length} modules completed
               </span>
             </div>
           </div>
@@ -301,7 +378,7 @@ const DashboardContent = ({
           <div className={`rounded-xl p-6 mb-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl md:text-2xl font-bold">{currentModule.title}</h2>
-              {moduleCompleted && (
+              {isCurrentModuleCompleted && (
                 <span className="flex items-center text-green-600 dark:text-green-400">
                   <Check className="h-5 w-5 mr-1" />
                   Completed
@@ -335,21 +412,31 @@ const DashboardContent = ({
                 onClick={previousModule}
                 disabled={currentModuleIndex === 0}
                 className={`px-4 py-2 rounded-lg flex items-center ${currentModuleIndex === 0 
-                  ? 'opacity-50 cursor-not-allowed' 
-                  : 'hover:bg-gray-100 dark:hover:bg-gray-700'}`}
+                  ? 'opacity-50 cursor-not-allowed text-gray-400' 
+                  : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300'}`}
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Previous
               </button>
 
               <div className="flex space-x-3">
-                {!moduleCompleted ? (
+                {!isCurrentModuleCompleted ? (
                   <button
                     onClick={markModuleCompleted}
-                    className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center"
+                    disabled={moduleLoading}
+                    className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Check className="h-4 w-4 mr-2" />
-                    Mark as Completed
+                    {moduleLoading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Check className="h-4 w-4 mr-2" />
+                        Mark as Completed
+                      </>
+                    )}
                   </button>
                 ) : (
                   <button
@@ -368,39 +455,47 @@ const DashboardContent = ({
           <div className={`rounded-xl p-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}>
             <div className="flex justify-between text-sm mb-2">
               <span>Course Progress</span>
-              <span>{Math.round((currentModuleIndex + 1) / modules.length * 100)}%</span>
+              <span>{Math.round((completedModulesCount / modules.length) * 100)}%</span>
             </div>
             <div className={`h-3 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
               <div 
                 className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500"
-                style={{ width: `${((currentModuleIndex + 1) / modules.length) * 100}%` }}
+                style={{ width: `${(completedModulesCount / modules.length) * 100}%` }}
               ></div>
             </div>
             <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-2">
-              <span>Completed: {currentModuleIndex} modules</span>
-              <span>Remaining: {modules.length - currentModuleIndex - 1} modules</span>
+              <span>Completed: {completedModulesCount} modules</span>
+              <span>Remaining: {modules.length - completedModulesCount} modules</span>
             </div>
           </div>
 
           {/* Take Quiz Option (After completing all modules) */}
-          {currentModuleIndex === modules.length - 1 && moduleCompleted && (
+          {allModulesCompleted && (
             <div className={`mt-6 p-6 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-gradient-to-r from-green-50 to-emerald-50'} border ${darkMode ? 'border-gray-700' : 'border-green-200'}`}>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
+              <div className="flex flex-col md:flex-row md:items-center justify-between">
+                <div className="flex items-center mb-4 md:mb-0">
                   <Target className={`mr-3 ${darkMode ? 'text-green-400' : 'text-green-600'}`} size={24} />
                   <div>
-                    <h3 className="font-semibold">Ready for the Quiz?</h3>
+                    <h3 className="font-semibold">🎉 Course Completed! Ready for the Quiz?</h3>
                     <p className="text-sm opacity-75">
-                      Test your knowledge of {selectedCourse.title}
+                      You've completed all {modules.length} modules. Test your knowledge of {selectedCourse.title}
                     </p>
                   </div>
                 </div>
-                <button 
-                  onClick={() => startQuiz(selectedCourse.id)}
-                  className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                >
-                  Take Quiz
-                </button>
+                <div className="flex space-x-3">
+                  <button 
+                    onClick={() => setLearningMode(false)}
+                    className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    Return to Dashboard
+                  </button>
+                  <button 
+                    onClick={() => startQuiz(selectedCourse.id)}
+                    className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                  >
+                    Take Quiz
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -674,20 +769,6 @@ const DashboardContent = ({
             </div>
           )}
         </div>
-
-        {/* Quiz Modal - Keep the existing quiz modal code */}
-        {quizStarted && !quizCompleted && (
-          <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${darkMode ? 'bg-gray-900/90' : 'bg-black/50'}`}>
-            {/* ... Keep existing quiz modal code ... */}
-          </div>
-        )}
-
-        {/* Quiz Results - Keep existing */}
-        {quizCompleted && quizResults && (
-          <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${darkMode ? 'bg-gray-900/90' : 'bg-black/50'}`}>
-            {/* ... Keep existing quiz results code ... */}
-          </div>
-        )}
 
         {/* Progress Analytics */}
         <div className={`rounded-xl p-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
