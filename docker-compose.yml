@@ -76,7 +76,7 @@ services:
       - "443:443"
     volumes:
       - /etc/letsencrypt/archive/www.bitafrica.co.ke:/etc/letsencrypt/archive/www.bitafrica.co.ke:ro
-      - /etc/letsencrypt/ssl-dhparams.pem:/etc/letsencrypt/ssl-dhparams.pem:ro
+     # - /etc/letsencrypt/ssl-dhparams.pem:/etc/letsencrypt/ssl-dhparams.pem:ro
       - static_volume:/app/staticfiles:ro
     networks:
       - bitafrica_network
