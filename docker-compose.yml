@@ -34,6 +34,8 @@ services:
       - DB_PORT=3306
     expose:
       - "8000"
+    ports:
+      - "8000:8000"
     volumes:
       - ./backend:/app
       - static_volume:/app/staticfiles
