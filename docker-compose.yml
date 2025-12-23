@@ -48,11 +48,10 @@ services:
       - bitafrica_network
 
   frontend:
-    # CHANGED: Added build.args to pass environment variable during Docker build
     build:
       context: ./frontend
       args:
-        - VITE_API_BASE_URL=${VITE_API_BASE_URL}  # This passes the variable from root .env to Docker build
+        - VITE_API_BASE_URL=${VITE_API_BASE_URL}
     container_name: bitafrica_frontend
     restart: always
     depends_on:
@@ -61,6 +60,8 @@ services:
       - frontend/.env
     expose:
       - "80"
+    ports:
+      - "3000:80"  # CHANGED: Was "80:80"
     volumes:
       - static_volume:/app/staticfiles:ro
     networks:
@@ -74,14 +75,11 @@ services:
       - frontend
       - backend
     ports:
-      - "80:80"
-      - "443:443"
+      - "8081:80"   # CHANGED: Was "80:80"
+      - "8444:443"  # CHANGED: Was "443:443"
     volumes:
-      # FIXED: Changed from www.bitafrica.co.ke to bitafrica.co.ke (match Certbot output)
       - /etc/letsencrypt/archive/bitafrica.co.ke:/etc/letsencrypt/archive/bitafrica.co.ke:ro
-      # ADDED: Mount the live SSL certificates directory
       - /etc/letsencrypt/live/bitafrica.co.ke:/etc/letsencrypt/live/bitafrica.co.ke:ro
-      # ADDED: Mount the dhparam file
       - /etc/letsencrypt/ssl-dhparams.pem:/etc/letsencrypt/ssl-dhparams.pem:ro
       - static_volume:/app/staticfiles:ro
     networks:
