@@ -75,10 +75,11 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - /etc/letsencrypt/archive/www.bitafrica.co.ke:/etc/letsencrypt/archive/www.bitafrica.co.ke:ro
-      # ADDED: Mount the live SSL certificates directory (where Certbot stores current certs)
+      # FIXED: Changed from www.bitafrica.co.ke to bitafrica.co.ke (match Certbot output)
+      - /etc/letsencrypt/archive/bitafrica.co.ke:/etc/letsencrypt/archive/bitafrica.co.ke:ro
+      # ADDED: Mount the live SSL certificates directory
       - /etc/letsencrypt/live/bitafrica.co.ke:/etc/letsencrypt/live/bitafrica.co.ke:ro
-      # ADDED: Mount the dhparam file (you created this earlier)
+      # ADDED: Mount the dhparam file
       - /etc/letsencrypt/ssl-dhparams.pem:/etc/letsencrypt/ssl-dhparams.pem:ro
       - static_volume:/app/staticfiles:ro
     networks:
