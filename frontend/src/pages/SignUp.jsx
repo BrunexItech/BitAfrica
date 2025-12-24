@@ -9,9 +9,12 @@ import {
   FaCheck, 
   FaGlobe,
   FaShieldAlt,
-  FaSignInAlt 
+  FaSignInAlt,
+  FaArrowRight,
+  FaGraduationCap,
+  FaBookOpen
 } from 'react-icons/fa';
-import authService from '../services/authService';// ADDED
+import authService from '../services/authService';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -28,7 +31,7 @@ const SignUp = () => {
   });
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [errors, setErrors] = useState({});
-  const [isLoading, setIsLoading] = useState(false); // ADDED for loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   // Currencies including crypto options
   const currencies = [
@@ -104,7 +107,6 @@ const SignUp = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // UPDATED: handleSubmit function
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -112,7 +114,6 @@ const SignUp = () => {
       setIsLoading(true);
       
       try {
-        // Prepare data for backend
         const userData = {
           fullName: formData.fullName,
           email: formData.email,
@@ -123,13 +124,9 @@ const SignUp = () => {
           acceptTerms: formData.acceptTerms
         };
         
-        // Call the API through authService
         const response = await authService.register(userData);
-        
-        // Store tokens and user data
         authService.storeTokens(response);
         
-        // Redirect to signin with success message
         navigate('/signin', { 
           state: { 
             message: 'Registration successful! Please log in.',
@@ -140,7 +137,6 @@ const SignUp = () => {
       } catch (error) {
         console.error('Registration error:', error);
         
-        // Handle specific error messages from backend
         if (error.response?.data) {
           const backendErrors = error.response.data;
           setErrors({
@@ -154,11 +150,6 @@ const SignUp = () => {
         setIsLoading(false);
       }
     }
-  };
-
-  // ADDED: Login button handler
-  const handleLoginRedirect = () => {
-    navigate('/signin');
   };
 
   const getStrengthColor = (strength) => {
@@ -191,31 +182,60 @@ const SignUp = () => {
         </div>
 
         {/* Logo/Brand */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 select-none">
           <Link to="/" className="inline-block">
             <div className="flex items-center justify-center space-x-3">
               <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-xl flex items-center justify-center">
                 <span className="text-white font-bold text-2xl">B</span>
               </div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
-                BitAfrica
+                BitAfrica AI
               </h1>
             </div>
           </Link>
-          <p className="text-gray-400 mt-2">Create your cryptocurrency portfolio</p>
+          <p className="text-gray-400 mt-2">Start your tech learning journey</p>
         </div>
 
         {/* Sign Up Card */}
-        <div className="bg-gray-800/50 backdrop-blur-xl rounded-2xl border border-gray-700/50 p-8 shadow-2xl">
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-white mb-2">Create Account</h2>
-            <p className="text-gray-400">Start managing your crypto portfolio</p>
+        <div className="bg-gray-800/50 backdrop-blur-xl rounded-2xl border border-gray-700/50 p-6 md:p-8 shadow-2xl">
+          
+          {/* PROMINENT LOGIN OPTION - STACKED VERTICALLY */}
+          <div className="mb-8 p-5 bg-gradient-to-r from-blue-900/20 to-purple-900/20 rounded-xl border border-blue-500/30">
+            {/* First Row: Text Content */}
+            <div className="flex items-center space-x-3 mb-4 select-none">
+              <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                <FaSignInAlt className="text-blue-400 text-lg" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-white">Already enrolled?</h3>
+                <p className="text-gray-300 text-sm">Access your courses & continue learning</p>
+              </div>
+            </div>
+            
+            {/* Second Row: Login Button */}
+            <Link 
+              to="/signin"
+              className="group flex items-center justify-center px-5 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-[1.03] shadow-lg shadow-blue-500/20 w-full cursor-pointer"
+            >
+              <FaSignInAlt className="mr-2 group-hover:scale-110 transition-transform" />
+              Login to Account
+              <FaArrowRight className="ml-2 text-sm group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+
+          {/* Sign Up Form Section */}
+          <div className="mb-8 select-none">
+            <h2 className="text-2xl font-bold text-white mb-2 flex items-center">
+              <FaGraduationCap className="text-blue-400 mr-3" />
+              Create New Account
+            </h2>
+            <p className="text-gray-400">Join thousands mastering tech skills</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Full Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2 select-none">
                 <div className="flex items-center space-x-2">
                   <FaUser className="text-blue-400" />
                   <span>Full Name</span>
@@ -228,17 +248,17 @@ const SignUp = () => {
                 onChange={handleChange}
                 className={`w-full px-4 py-3 bg-gray-900/50 border ${
                   errors.fullName ? 'border-red-500' : 'border-gray-700'
-                } rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                } rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-text`}
                 placeholder="John Doe"
               />
               {errors.fullName && (
-                <p className="mt-1 text-sm text-red-400">{errors.fullName}</p>
+                <p className="mt-1 text-sm text-red-400 select-none">{errors.fullName}</p>
               )}
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2 select-none">
                 <div className="flex items-center space-x-2">
                   <FaEnvelope className="text-blue-400" />
                   <span>Email Address</span>
@@ -251,17 +271,17 @@ const SignUp = () => {
                 onChange={handleChange}
                 className={`w-full px-4 py-3 bg-gray-900/50 border ${
                   errors.email ? 'border-red-500' : 'border-gray-700'
-                } rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                } rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-text`}
                 placeholder="you@example.com"
               />
               {errors.email && (
-                <p className="mt-1 text-sm text-red-400">{errors.email}</p>
+                <p className="mt-1 text-sm text-red-400 select-none">{errors.email}</p>
               )}
             </div>
 
             {/* Currency Selection */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2 select-none">
                 <div className="flex items-center space-x-2">
                   <FaGlobe className="text-blue-400" />
                   <span>Preferred Currency</span>
@@ -271,22 +291,22 @@ const SignUp = () => {
                 name="currency"
                 value={formData.currency}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none"
+                className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none cursor-pointer"
               >
                 {currencies.map(currency => (
-                  <option key={currency.value} value={currency.value}>
+                  <option key={currency.value} value={currency.value} className="bg-gray-800">
                     {currency.label}
                   </option>
                 ))}
               </select>
-              <p className="mt-2 text-sm text-gray-400">
-                This will be your default currency for portfolio tracking
+              <p className="mt-2 text-sm text-gray-400 select-none">
+                This will be your default currency for payments
               </p>
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2 select-none">
                 <div className="flex items-center space-x-2">
                   <FaLock className="text-blue-400" />
                   <span>Password</span>
@@ -300,13 +320,13 @@ const SignUp = () => {
                   onChange={handleChange}
                   className={`w-full px-4 py-3 pr-12 bg-gray-900/50 border ${
                     errors.password ? 'border-red-500' : 'border-gray-700'
-                  } rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                  } rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-text`}
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors cursor-pointer"
                 >
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </button>
@@ -314,7 +334,7 @@ const SignUp = () => {
               
               {/* Password Strength Indicator */}
               {formData.password && (
-                <div className="mt-3">
+                <div className="mt-3 select-none">
                   <div className="flex justify-between text-sm mb-1">
                     <span className="text-gray-400">Password strength:</span>
                     <span className={`font-medium ${
@@ -353,13 +373,13 @@ const SignUp = () => {
                 </div>
               )}
               {errors.password && (
-                <p className="mt-1 text-sm text-red-400">{errors.password}</p>
+                <p className="mt-1 text-sm text-red-400 select-none">{errors.password}</p>
               )}
             </div>
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2 select-none">
                 Confirm Password
               </label>
               <div className="relative">
@@ -370,19 +390,19 @@ const SignUp = () => {
                   onChange={handleChange}
                   className={`w-full px-4 py-3 pr-12 bg-gray-900/50 border ${
                     errors.confirmPassword ? 'border-red-500' : 'border-gray-700'
-                  } rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                  } rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-text`}
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors cursor-pointer"
                 >
                   {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
                 </button>
               </div>
               {errors.confirmPassword && (
-                <p className="mt-1 text-sm text-red-400">{errors.confirmPassword}</p>
+                <p className="mt-1 text-sm text-red-400 select-none">{errors.confirmPassword}</p>
               )}
             </div>
 
@@ -395,21 +415,21 @@ const SignUp = () => {
                   id="acceptTerms"
                   checked={formData.acceptTerms}
                   onChange={handleChange}
-                  className="mt-1 mr-3 h-5 w-5 text-blue-500 bg-gray-900 border-gray-700 rounded focus:ring-blue-500 focus:ring-offset-gray-900"
+                  className="mt-1 mr-3 h-5 w-5 text-blue-500 bg-gray-900 border-gray-700 rounded focus:ring-blue-500 focus:ring-offset-gray-900 cursor-pointer"
                 />
-                <label htmlFor="acceptTerms" className="text-sm text-gray-300">
+                <label htmlFor="acceptTerms" className="text-sm text-gray-300 select-none cursor-pointer">
                   I agree to the{' '}
-                  <Link to="/terms" className="text-blue-400 hover:text-blue-300 transition-colors">
+                  <Link to="/terms" className="text-blue-400 hover:text-blue-300 transition-colors cursor-pointer">
                     Terms of Service
                   </Link>{' '}
                   and{' '}
-                  <Link to="/privacy" className="text-blue-400 hover:text-blue-300 transition-colors">
+                  <Link to="/privacy" className="text-blue-400 hover:text-blue-300 transition-colors cursor-pointer">
                     Privacy Policy
                   </Link>
                 </label>
               </div>
               {errors.acceptTerms && (
-                <p className="text-sm text-red-400">{errors.acceptTerms}</p>
+                <p className="text-sm text-red-400 select-none">{errors.acceptTerms}</p>
               )}
 
               <div className="flex items-start">
@@ -419,16 +439,16 @@ const SignUp = () => {
                   id="marketingEmails"
                   checked={formData.marketingEmails}
                   onChange={handleChange}
-                  className="mt-1 mr-3 h-5 w-5 text-blue-500 bg-gray-900 border-gray-700 rounded focus:ring-blue-500 focus:ring-offset-gray-900"
+                  className="mt-1 mr-3 h-5 w-5 text-blue-500 bg-gray-900 border-gray-700 rounded focus:ring-blue-500 focus:ring-offset-gray-900 cursor-pointer"
                 />
-                <label htmlFor="marketingEmails" className="text-sm text-gray-300">
+                <label htmlFor="marketingEmails" className="text-sm text-gray-300 select-none cursor-pointer">
                   Receive updates about new features, market insights, and cryptocurrency news
                 </label>
               </div>
             </div>
 
             {/* Security Note */}
-            <div className="bg-blue-900/20 border border-blue-800/30 rounded-xl p-4">
+            <div className="bg-blue-900/20 border border-blue-800/30 rounded-xl p-4 select-none">
               <div className="flex items-start space-x-3">
                 <FaShieldAlt className="text-blue-400 text-lg mt-0.5" />
                 <div>
@@ -440,9 +460,9 @@ const SignUp = () => {
               </div>
             </div>
 
-            {/* ADDED: Error display for submit errors */}
+            {/* Error display for submit errors */}
             {errors.submit && (
-              <div className="bg-red-900/30 border border-red-700/50 rounded-xl p-4">
+              <div className="bg-red-900/30 border border-red-700/50 rounded-xl p-4 select-none">
                 <p className="text-red-300 text-center">{errors.submit}</p>
               </div>
             )}
@@ -451,7 +471,7 @@ const SignUp = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3.5 px-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 shadow-lg shadow-blue-500/20 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="w-full py-3.5 px-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 shadow-lg shadow-blue-500/20 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center">
@@ -461,31 +481,24 @@ const SignUp = () => {
                   </svg>
                   Creating Account...
                 </span>
-              ) : 'Create Account'}
+              ) : (
+                <span className="flex items-center justify-center space-x-2">
+                  <FaBookOpen />
+                  <span>Start Learning Journey</span>
+                </span>
+              )}
             </button>
 
-            {/* ADDED: Login Button */}
-            <button
-              type="button"
-              onClick={handleLoginRedirect}
-              className="w-full py-3 px-4 bg-gray-700/50 hover:bg-gray-700/70 text-gray-300 font-semibold rounded-xl transition-all duration-300 border border-gray-600/50 flex items-center justify-center space-x-2"
-            >
-              <FaSignInAlt />
-              <span>Login to Existing Account</span>
-            </button>
-
-            {/* Already have account - UPDATED TO /signin */}
-            <div className="text-center pt-4 border-t border-gray-700/50">
+            {/* Additional Login Reminder */}
+            <div className="text-center pt-4 border-t border-gray-700/50 select-none">
               <p className="text-gray-400">
-                Already have an account?{' '}
+                Already enrolled?{' '}
                 <Link 
                   to="/signin" 
-                  className="text-blue-400 hover:text-blue-300 font-medium transition-colors inline-flex items-center"
+                  className="text-blue-400 hover:text-blue-300 font-medium transition-colors inline-flex items-center cursor-pointer"
                 >
                   Login here
-                  <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
+                  <FaArrowRight className="w-4 h-4 ml-1" />
                 </Link>
               </p>
             </div>
@@ -493,8 +506,8 @@ const SignUp = () => {
         </div>
 
         {/* Footer Note */}
-        <p className="text-center text-gray-500 text-sm mt-8">
-          By signing up, you agree to our secure platform for cryptocurrency portfolio management.
+        <p className="text-center text-gray-500 text-sm mt-8 select-none">
+          By signing up, you join a community of tech learners and developers.
         </p>
       </div>
     </div>

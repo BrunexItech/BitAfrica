@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, ChevronDown, Brain, Sparkles, Cpu, Globe, Shield, Code, Palette, Zap, Home, Briefcase, BookOpen, Users, Mail, FileText, Building, Server, Layers, GraduationCap, LogOut } from 'lucide-react';
+import { Menu, ChevronDown, Brain, Sparkles, Cpu, Shield, Code, Server, Zap, Home, Layers, Building, GraduationCap, Users, Mail, LogOut, Rocket } from 'lucide-react';
 import authService from '../services/authService';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [hoveredSolution, setHoveredSolution] = useState(null);
   const [openMobileItems, setOpenMobileItems] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
@@ -63,48 +62,26 @@ const Header = () => {
     };
   }, [isMenuOpen]);
 
-  const toggleMobileItem = (itemName) => {
-    setOpenMobileItems(prev => ({
-      ...prev,
-      [itemName]: !prev[itemName]
-    }));
-  };
-
-  // Logout function - FIXED to always work
+  // Logout function
   const handleLogout = async () => {
     try {
-      // Try to call the logout API
       await authService.logout();
       console.log('Logout successful');
     } catch (error) {
       console.log('Logout API failed, clearing local storage anyway:', error.message);
-      // Even if API fails, we still clear local storage
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
       localStorage.removeItem('user');
     } finally {
-      // Always update state and redirect
       setIsLoggedIn(false);
       setUser(null);
       setIsMenuOpen(false);
       
-      // Force storage event to trigger updates in other components
       window.dispatchEvent(new Event('storage'));
-      
-      // Redirect to home page
       navigate('/');
-      window.location.reload(); // Force refresh to update all components
+      window.location.reload();
     }
   };
-
-  const solutions = [
-    { icon: <Brain className="h-4 w-4" />, name: "AI Analytics", desc: "Predictive insights", color: "from-blue-500 to-cyan-500", href: "/solutions/ai-analytics" },
-    { icon: <Cpu className="h-4 w-4" />, name: "Automation", desc: "Streamline operations", color: "from-purple-500 to-blue-500", href: "/solutions/automation" },
-    { icon: <Shield className="h-4 w-4" />, name: "Cybersecurity", desc: "Threat detection", color: "from-cyan-500 to-teal-500", href: "/solutions/cybersecurity" },
-    { icon: <Code className="h-4 w-4" />, name: "Dev Solutions", desc: "AI development", color: "from-indigo-500 to-purple-500", href: "/solutions/dev-solutions" },
-    { icon: <Server className="h-4 w-4" />, name: "Machine Learning", desc: "ML models", color: "from-cyan-500 to-blue-500", href: "/solutions/machine-learning" },
-    { icon: <Zap className="h-4 w-4" />, name: "Cloud AI", desc: "Scalable AI", color: "from-blue-500 to-cyan-500", href: "/solutions/cloud-ai" },
-  ];
 
   const navItems = [
     { name: "Home", href: "/", icon: <Home className="h-3.5 w-3.5 mr-1.5" /> },
@@ -112,19 +89,8 @@ const Header = () => {
     { name: "Industries", href: "/industries", icon: <Building className="h-3.5 w-3.5 mr-1.5" /> },
     { name: "Academy", href: "/academy", icon: <GraduationCap className="h-3.5 w-3.5 mr-1.5" /> },
     { name: "Company", href: "/company", icon: <Users className="h-3.5 w-3.5 mr-1.5" /> },
+    { name: "Solutions", href: "/solutions" },
   ];
-
-  // Get user display name
-  const getUserDisplayName = () => {
-    if (!user) return 'User';
-    
-    // Try different possible name properties
-    const name = user.fullName || user.name || user.username || user.email || 'User';
-    
-    // Get first name only
-    const firstName = name.split(' ')[0];
-    return firstName;
-  };
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -182,71 +148,13 @@ const Header = () => {
               <div key={item.name} className="relative group">
                 <Link 
                   to={item.href}
-                  className="flex items-center px-2.5 py-2 text-sm text-blue-100/90 hover:text-white font-medium transition-all duration-200 rounded-lg hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 group whitespace-nowrap"
+                  className="flex items-center px-2.5 py-2 text-xs text-blue-100/90 hover:text-white font-medium transition-all duration-200 rounded-lg hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 group whitespace-nowrap"
                 >
-                  {item.icon}
+                  {item.icon && item.icon}
                   {item.name}
                 </Link>
               </div>
             ))}
-            
-            {/* Solutions Dropdown */}
-            <div 
-              className="relative group ml-1"
-              onMouseEnter={() => setHoveredSolution(0)}
-              onMouseLeave={() => setHoveredSolution(null)}
-            >
-              <Link 
-                to="/solutions"
-                className="flex items-center px-3 py-2 text-sm bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-lg hover:shadow-lg hover:scale-[1.02] transition-all duration-300 shadow-md group whitespace-nowrap"
-              >
-                <Sparkles className="h-3.5 w-3.5 mr-1.5 animate-pulse" />
-                Solutions
-                <ChevronDown className="ml-1 h-3.5 w-3.5 transition-transform duration-300 group-hover:rotate-180" />
-              </Link>
-              
-              <div className="absolute right-0 mt-1 w-[600px] bg-[#1f2937]/95 backdrop-blur-xl rounded-xl shadow-xl border border-blue-500/20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform -translate-y-2 group-hover:translate-y-0 overflow-hidden z-50">
-                <div className="p-3">
-                  <div className="grid grid-cols-2 gap-2">
-                    {solutions.map((solution, index) => (
-                      <Link
-                        key={solution.name}
-                        to={solution.href}
-                        className={`flex items-center p-2 rounded-lg transition-all duration-200 group/item ${
-                          hoveredSolution === index 
-                            ? 'bg-gradient-to-r from-blue-500/10 to-cyan-500/10 scale-[1.02]' 
-                            : 'hover:bg-gradient-to-r hover:from-blue-500/5 hover:to-cyan-500/5'
-                        }`}
-                        onMouseEnter={() => setHoveredSolution(index)}
-                      >
-                        <div className={`h-8 w-8 flex items-center justify-center rounded-md bg-gradient-to-r ${solution.color} text-white shadow-md group-hover/item:shadow-lg transition-all duration-300`}>
-                          {solution.icon}
-                        </div>
-                        <div className="ml-2 flex-1 min-w-0">
-                          <p className="font-bold text-white text-xs">{solution.name}</p>
-                          <p className="text-xs text-blue-200/70 truncate">{solution.desc}</p>
-                        </div>
-                        <ChevronDown className="ml-1 h-3 w-3 text-cyan-300/50 transform -rotate-90 opacity-0 group-hover/item:opacity-100 transition-opacity flex-shrink-0" />
-                      </Link>
-                    ))}
-                  </div>
-                  
-                  {hoveredSolution !== null && (
-                    <div className="mt-2 p-2 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-lg border border-cyan-500/30 animate-fadeIn">
-                      <div className="flex items-center">
-                        <div className={`h-6 w-6 flex items-center justify-center rounded-md bg-gradient-to-r ${solutions[hoveredSolution]?.color} text-white mr-2`}>
-                          {solutions[hoveredSolution]?.icon}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="font-bold text-white text-xs">Explore {solutions[hoveredSolution]?.name}</p>
-                          <p className="text-xs text-blue-200/70 truncate">Click for details</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
 
             {/* Conditional rendering based on login status */}
             {isLoggedIn ? (
@@ -254,46 +162,39 @@ const Header = () => {
                 {/* Dashboard Link for logged-in users */}
                 <Link 
                   to="/dashboard"
-                  className="flex items-center px-3 py-2 ml-1 text-sm text-cyan-300 font-semibold rounded-lg border border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 hover:border-cyan-400 hover:scale-[1.02] transition-all duration-300 group whitespace-nowrap"
+                  className="flex items-center ml-1 px-3 py-2 text-xs text-cyan-300 font-semibold rounded-lg border border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 hover:border-cyan-400 hover:scale-[1.02] transition-all duration-300 group whitespace-nowrap"
                 >
-                  <Sparkles className="h-3.5 w-3.5 mr-1.5 group-hover:scale-110 transition-transform" />
+                  <Sparkles className="h-3 w-3 mr-1.5 group-hover:scale-110 transition-transform" />
                   Dashboard
                 </Link>
-
-                {/* Welcome Message */}
-                <div className="flex items-center ml-2 px-3 py-2 text-sm text-blue-100/90 font-medium rounded-lg bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20">
-                  <span className="text-cyan-300 font-semibold">
-                    Welcome, {getUserDisplayName()}
-                  </span>
-                </div>
 
                 {/* Logout Button */}
                 <button
                   onClick={handleLogout}
-                  className="flex items-center ml-1 px-3 py-2 text-sm text-white font-semibold rounded-lg bg-gradient-to-r from-red-500/20 to-pink-500/20 border border-red-500/30 hover:border-red-400 hover:bg-gradient-to-r hover:from-red-500/30 hover:to-pink-500/30 hover:scale-[1.02] transition-all duration-300 group whitespace-nowrap cursor-pointer"
+                  className="flex items-center ml-1 px-3 py-2 text-xs text-white font-semibold rounded-lg bg-gradient-to-r from-red-500/20 to-pink-500/20 border border-red-500/30 hover:border-red-400 hover:bg-gradient-to-r hover:from-red-500/30 hover:to-pink-500/30 hover:scale-[1.02] transition-all duration-300 group whitespace-nowrap cursor-pointer"
                 >
-                  <LogOut className="h-3.5 w-3.5 mr-1.5 group-hover:scale-110 transition-transform" />
+                  <LogOut className="h-3 w-3 mr-1.5 group-hover:scale-110 transition-transform" />
                   Logout
                 </button>
               </>
             ) : (
               <>
-                {/* Contact Button for non-logged-in users */}
+                {/* Contact Button with space */}
                 <Link 
                   to="/contact"
-                  className="flex items-center px-3 py-2 ml-1 text-sm text-white font-semibold rounded-lg border border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 hover:border-cyan-400 hover:scale-[1.02] transition-all duration-300 group whitespace-nowrap"
+                  className="flex items-center ml-2 px-3 py-2 text-xs text-white font-semibold rounded-lg border border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 hover:border-cyan-400 hover:scale-[1.02] transition-all duration-300 group whitespace-nowrap"
                 >
-                  <Mail className="h-3.5 w-3.5 mr-1.5 group-hover:scale-110 transition-transform" />
+                  <Mail className="h-3 w-3 mr-1.5 group-hover:scale-110 transition-transform" />
                   Contact
                 </Link>
 
-                {/* Sign Up Button for non-logged-in users */}
+                {/* Get Started Button - Prominent CTA with Rocket icon */}
                 <Link 
                   to="/signup"
-                  className="flex items-center ml-1 px-3 py-2 text-sm text-blue-200 hover:text-white font-medium group overflow-hidden rounded-lg whitespace-nowrap"
+                  className="flex items-center ml-2 px-3 py-2 text-xs bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-lg hover:shadow-lg hover:scale-[1.02] transition-all duration-300 shadow-md group whitespace-nowrap"
                 >
-                  <span className="relative z-10">Sign Up</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-transparent -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
+                  <Rocket className="h-3 w-3 mr-1.5 group-hover:scale-110 transition-transform" />
+                  Get Started
                 </Link>
               </>
             )}
@@ -302,8 +203,8 @@ const Header = () => {
           {/* Mobile Menu Button */}
           <div className="lg:hidden flex items-center">
             {isLoggedIn && (
-              <div className="mr-2 text-sm text-cyan-300 font-medium">
-                Hi, {getUserDisplayName()}
+              <div className="mr-2 text-xs text-cyan-300 font-medium">
+                Account
               </div>
             )}
             <button
@@ -332,50 +233,13 @@ const Header = () => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className="flex items-center w-full px-2 py-2.5 text-sm text-blue-100/90 hover:text-white hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 rounded-lg font-medium transition-all duration-200 group"
+                  className="flex items-center w-full px-2 py-2.5 text-xs text-blue-100/90 hover:text-white hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 rounded-lg font-medium transition-all duration-200 group"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {item.icon}
+                  {item.icon && item.icon}
                   <span className="font-semibold ml-1.5">{item.name}</span>
                 </Link>
               ))}
-              
-              {/* Mobile Solutions */}
-              <div className="overflow-hidden">
-                <button
-                  onClick={() => toggleMobileItem('solutions')}
-                  className="flex items-center justify-between w-full px-2 py-2.5 text-sm text-blue-100/90 hover:text-white hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 rounded-lg font-medium transition-all duration-200 group"
-                >
-                  <div className="flex items-center">
-                    <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                    <span className="font-semibold">Solutions</span>
-                  </div>
-                  <ChevronDown className={`h-3.5 w-3.5 text-cyan-400/50 transition-transform duration-300 ${
-                    openMobileItems['solutions'] ? 'rotate-180' : ''
-                  }`} />
-                </button>
-                
-                {openMobileItems['solutions'] && (
-                  <div className="ml-4 mt-1 space-y-1 animate-slideDown">
-                    <div className="grid grid-cols-2 gap-1.5">
-                      {solutions.map((solution) => (
-                        <Link
-                          key={solution.name}
-                          to={solution.href}
-                          className="flex flex-col items-center p-2 bg-gradient-to-b from-blue-500/10 to-cyan-500/10 rounded-lg border border-blue-500/20 hover:border-cyan-500/40 hover:scale-[1.02] transition-all duration-200 group/solution"
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          <div className={`h-7 w-7 flex items-center justify-center rounded-md bg-gradient-to-r ${solution.color} text-white shadow-md group-hover/solution:shadow-lg mb-1 transition-all duration-300`}>
-                            {solution.icon}
-                          </div>
-                          <span className="text-xs font-bold text-white text-center">{solution.name}</span>
-                          <span className="text-[10px] text-blue-200/70 text-center mt-0.5">{solution.desc}</span>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
 
               {/* Conditional Mobile Menu Items based on login status */}
               {isLoggedIn ? (
@@ -383,10 +247,10 @@ const Header = () => {
                   {/* Dashboard for logged-in mobile users */}
                   <Link
                     to="/dashboard"
-                    className="flex items-center w-full px-2 py-2.5 text-sm text-cyan-300 font-semibold hover:text-white hover:bg-gradient-to-r hover:from-cyan-500/10 hover:to-blue-500/10 rounded-lg transition-all duration-200 group"
+                    className="flex items-center w-full px-2 py-2.5 text-xs text-cyan-300 font-semibold hover:text-white hover:bg-gradient-to-r hover:from-cyan-500/10 hover:to-blue-500/10 rounded-lg transition-all duration-200 group"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                    <Sparkles className="h-3 w-3 mr-1.5" />
                     <span>Dashboard</span>
                   </Link>
 
@@ -396,9 +260,9 @@ const Header = () => {
                       handleLogout();
                       setIsMenuOpen(false);
                     }}
-                    className="flex items-center w-full px-2 py-2.5 text-sm text-red-300 font-semibold hover:text-white hover:bg-gradient-to-r hover:from-red-500/10 hover:to-pink-500/10 rounded-lg transition-all duration-200 group text-left cursor-pointer"
+                    className="flex items-center w-full px-2 py-2.5 text-xs text-red-300 font-semibold hover:text-white hover:bg-gradient-to-r hover:from-red-500/10 hover:to-pink-500/10 rounded-lg transition-all duration-200 group text-left cursor-pointer"
                   >
-                    <LogOut className="h-3.5 w-3.5 mr-1.5" />
+                    <LogOut className="h-3 w-3 mr-1.5" />
                     <span>Logout</span>
                   </button>
                 </>
@@ -408,22 +272,22 @@ const Header = () => {
                   <div className="px-1 py-1">
                     <Link
                       to="/contact"
-                      className="flex items-center justify-center w-full px-2 py-2.5 text-sm text-white font-semibold rounded-lg border border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 transition-all duration-200 active:scale-95"
+                      className="flex items-center justify-center w-full px-2 py-2.5 text-xs text-white font-semibold rounded-lg border border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 transition-all duration-200 active:scale-95"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      <Mail className="h-3.5 w-3.5 mr-1.5" />
+                      <Mail className="h-3 w-3 mr-1.5" />
                       Contact
                     </Link>
                   </div>
 
-                  {/* Sign Up for non-logged-in mobile users */}
+                  {/* Get Started for non-logged-in mobile users */}
                   <div className="pt-1 px-1 pb-2 space-y-1 border-t border-blue-700/30">
                     <Link 
                       to="/signup"
-                      className="w-full text-center text-sm text-cyan-400 font-semibold py-2.5 border border-cyan-400/50 rounded-lg hover:bg-gradient-to-r hover:from-cyan-500/10 hover:to-blue-500/10 transition-all duration-200 active:scale-95 block"
+                      className="w-full text-center text-xs bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold py-2.5 rounded-lg hover:shadow-lg transition-all duration-200 active:scale-95 block"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      Sign Up
+                      Get Started
                     </Link>
                   </div>
                 </>
@@ -461,21 +325,6 @@ const Header = () => {
           overflow: hidden;
         }
         
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(5px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        .animate-fadeIn {
-          animation: fadeIn 0.2s ease-out forwards;
-        }
-        
         @media (max-width: 640px) {
           .animate-marquee-fast {
             animation: marquee-fast 10s linear infinite;
@@ -485,7 +334,6 @@ const Header = () => {
         @media (prefers-reduced-motion: reduce) {
           .animate-marquee-fast,
           .animate-slideDown,
-          .animate-fadeIn,
           .group:hover {
             animation: none;
             transition: none;

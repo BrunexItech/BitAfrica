@@ -1,13 +1,41 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { Menu, X, ChevronDown, Brain, Sparkles, Cpu, Globe, Shield, Code, Palette, Zap, Home, Briefcase, BookOpen, Users, Mail, FileText, Building, Server, Layers, GraduationCap } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Menu, X, ChevronDown, Brain, Sparkles, Cpu, Globe, Shield, Code, Palette, Zap, Home, Briefcase, BookOpen, Users, Mail, FileText, Building, Server, Layers, GraduationCap, LogOut } from 'lucide-react';
+import authService from '../services/authService';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [hoveredSolution, setHoveredSolution] = useState(null);
   const [openMobileItems, setOpenMobileItems] = useState({});
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
   const mobileMenuRef = useRef(null);
+  const navigate = useNavigate();
+
+  // Check authentication on mount and when storage changes
+  useEffect(() => {
+    const checkAuth = () => {
+      const loggedIn = authService.isAuthenticated();
+      setIsLoggedIn(loggedIn);
+      if (loggedIn) {
+        const userData = authService.getCurrentUser();
+        setUser(userData);
+      } else {
+        setUser(null);
+      }
+    };
+
+    checkAuth();
+    
+    // Listen for storage changes (e.g., login/logout from other tabs)
+    const handleStorageChange = () => {
+      checkAuth();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   // Add scroll effect
   useEffect(() => {
@@ -42,6 +70,33 @@ const Header = () => {
     }));
   };
 
+  // Logout function - FIXED to always work
+  const handleLogout = async () => {
+    try {
+      // Try to call the logout API
+      await authService.logout();
+      console.log('Logout successful');
+    } catch (error) {
+      console.log('Logout API failed, clearing local storage anyway:', error.message);
+      // Even if API fails, we still clear local storage
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('user');
+    } finally {
+      // Always update state and redirect
+      setIsLoggedIn(false);
+      setUser(null);
+      setIsMenuOpen(false);
+      
+      // Force storage event to trigger updates in other components
+      window.dispatchEvent(new Event('storage'));
+      
+      // Redirect to home page
+      navigate('/');
+      window.location.reload(); // Force refresh to update all components
+    }
+  };
+
   const solutions = [
     { icon: <Brain className="h-4 w-4" />, name: "AI Analytics", desc: "Predictive insights", color: "from-blue-500 to-cyan-500", href: "/solutions/ai-analytics" },
     { icon: <Cpu className="h-4 w-4" />, name: "Automation", desc: "Streamline operations", color: "from-purple-500 to-blue-500", href: "/solutions/automation" },
@@ -59,6 +114,18 @@ const Header = () => {
     { name: "Company", href: "/company", icon: <Users className="h-3.5 w-3.5 mr-1.5" /> },
   ];
 
+  // Get user display name
+  const getUserDisplayName = () => {
+    if (!user) return 'User';
+    
+    // Try different possible name properties
+    const name = user.fullName || user.name || user.username || user.email || 'User';
+    
+    // Get first name only
+    const firstName = name.split(' ')[0];
+    return firstName;
+  };
+
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isScrolled 
@@ -68,7 +135,7 @@ const Header = () => {
       <div className="container mx-auto px-3 sm:px-4 lg:px-6">
         <div className="flex justify-between items-center h-16">
           
-          {/* Logo - UNCHANGED */}
+          {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <div className="relative group">
               <div className="absolute -inset-1.5 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-2xl opacity-0 group-hover:opacity-100 blur transition-opacity duration-500"></div>
@@ -109,7 +176,7 @@ const Header = () => {
             </div>
           </Link>
 
-          {/* Desktop Navigation - REDUCED SPACING */}
+          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-0">
             {navItems.map((item) => (
               <div key={item.name} className="relative group">
@@ -123,7 +190,7 @@ const Header = () => {
               </div>
             ))}
             
-            {/* Solutions Dropdown - COMPACT */}
+            {/* Solutions Dropdown */}
             <div 
               className="relative group ml-1"
               onMouseEnter={() => setHoveredSolution(0)}
@@ -181,27 +248,64 @@ const Header = () => {
               </div>
             </div>
 
-            {/* Contact Button - COMPACT */}
-            <Link 
-              to="/contact"
-              className="flex items-center px-3 py-2 ml-1 text-sm text-white font-semibold rounded-lg border border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 hover:border-cyan-400 hover:scale-[1.02] transition-all duration-300 group whitespace-nowrap"
-            >
-              <Mail className="h-3.5 w-3.5 mr-1.5 group-hover:scale-110 transition-transform" />
-              Contact
-            </Link>
+            {/* Conditional rendering based on login status */}
+            {isLoggedIn ? (
+              <>
+                {/* Dashboard Link for logged-in users */}
+                <Link 
+                  to="/dashboard"
+                  className="flex items-center px-3 py-2 ml-1 text-sm text-cyan-300 font-semibold rounded-lg border border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 hover:border-cyan-400 hover:scale-[1.02] transition-all duration-300 group whitespace-nowrap"
+                >
+                  <Sparkles className="h-3.5 w-3.5 mr-1.5 group-hover:scale-110 transition-transform" />
+                  Dashboard
+                </Link>
 
-            {/* Sign Up Button - COMPACT */}
-            <Link 
-              to="/signup"
-              className="flex items-center ml-1 px-3 py-2 text-sm text-blue-200 hover:text-white font-medium group overflow-hidden rounded-lg whitespace-nowrap"
-            >
-              <span className="relative z-10">Sign Up</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-transparent -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
-            </Link>
+                {/* Welcome Message */}
+                <div className="flex items-center ml-2 px-3 py-2 text-sm text-blue-100/90 font-medium rounded-lg bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20">
+                  <span className="text-cyan-300 font-semibold">
+                    Welcome, {getUserDisplayName()}
+                  </span>
+                </div>
+
+                {/* Logout Button */}
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center ml-1 px-3 py-2 text-sm text-white font-semibold rounded-lg bg-gradient-to-r from-red-500/20 to-pink-500/20 border border-red-500/30 hover:border-red-400 hover:bg-gradient-to-r hover:from-red-500/30 hover:to-pink-500/30 hover:scale-[1.02] transition-all duration-300 group whitespace-nowrap cursor-pointer"
+                >
+                  <LogOut className="h-3.5 w-3.5 mr-1.5 group-hover:scale-110 transition-transform" />
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                {/* Contact Button for non-logged-in users */}
+                <Link 
+                  to="/contact"
+                  className="flex items-center px-3 py-2 ml-1 text-sm text-white font-semibold rounded-lg border border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 hover:border-cyan-400 hover:scale-[1.02] transition-all duration-300 group whitespace-nowrap"
+                >
+                  <Mail className="h-3.5 w-3.5 mr-1.5 group-hover:scale-110 transition-transform" />
+                  Contact
+                </Link>
+
+                {/* Sign Up Button for non-logged-in users */}
+                <Link 
+                  to="/signup"
+                  className="flex items-center ml-1 px-3 py-2 text-sm text-blue-200 hover:text-white font-medium group overflow-hidden rounded-lg whitespace-nowrap"
+                >
+                  <span className="relative z-10">Sign Up</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-transparent -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
+                </Link>
+              </>
+            )}
           </nav>
 
-          {/* Mobile Menu Button - COMPACT */}
+          {/* Mobile Menu Button */}
           <div className="lg:hidden flex items-center">
+            {isLoggedIn && (
+              <div className="mr-2 text-sm text-cyan-300 font-medium">
+                Hi, {getUserDisplayName()}
+              </div>
+            )}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="relative p-2 rounded-lg bg-gradient-to-r from-blue-500/5 to-cyan-500/5 border border-blue-500/20 hover:border-cyan-500/40 transition-all duration-300 group"
@@ -216,7 +320,7 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Mobile Menu - COMPACT */}
+        {/* Mobile Menu */}
         {isMenuOpen && (
           <div 
             ref={mobileMenuRef}
@@ -272,29 +376,58 @@ const Header = () => {
                   </div>
                 )}
               </div>
-              
-              {/* Contact Mobile */}
-              <div className="px-1 py-1">
-                <Link
-                  to="/contact"
-                  className="flex items-center justify-center w-full px-2 py-2.5 text-sm text-white font-semibold rounded-lg border border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 transition-all duration-200 active:scale-95"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <Mail className="h-3.5 w-3.5 mr-1.5" />
-                  Contact
-                </Link>
-              </div>
 
-              {/* Mobile CTA */}
-              <div className="pt-1 px-1 pb-2 space-y-1 border-t border-blue-700/30">
-                <Link 
-                  to="/signup"
-                  className="w-full text-center text-sm text-cyan-400 font-semibold py-2.5 border border-cyan-400/50 rounded-lg hover:bg-gradient-to-r hover:from-cyan-500/10 hover:to-blue-500/10 transition-all duration-200 active:scale-95 block"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign Up
-                </Link>
-              </div>
+              {/* Conditional Mobile Menu Items based on login status */}
+              {isLoggedIn ? (
+                <>
+                  {/* Dashboard for logged-in mobile users */}
+                  <Link
+                    to="/dashboard"
+                    className="flex items-center w-full px-2 py-2.5 text-sm text-cyan-300 font-semibold hover:text-white hover:bg-gradient-to-r hover:from-cyan-500/10 hover:to-blue-500/10 rounded-lg transition-all duration-200 group"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                    <span>Dashboard</span>
+                  </Link>
+
+                  {/* Logout for mobile */}
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setIsMenuOpen(false);
+                    }}
+                    className="flex items-center w-full px-2 py-2.5 text-sm text-red-300 font-semibold hover:text-white hover:bg-gradient-to-r hover:from-red-500/10 hover:to-pink-500/10 rounded-lg transition-all duration-200 group text-left cursor-pointer"
+                  >
+                    <LogOut className="h-3.5 w-3.5 mr-1.5" />
+                    <span>Logout</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  {/* Contact for non-logged-in mobile users */}
+                  <div className="px-1 py-1">
+                    <Link
+                      to="/contact"
+                      className="flex items-center justify-center w-full px-2 py-2.5 text-sm text-white font-semibold rounded-lg border border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 transition-all duration-200 active:scale-95"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <Mail className="h-3.5 w-3.5 mr-1.5" />
+                      Contact
+                    </Link>
+                  </div>
+
+                  {/* Sign Up for non-logged-in mobile users */}
+                  <div className="pt-1 px-1 pb-2 space-y-1 border-t border-blue-700/30">
+                    <Link 
+                      to="/signup"
+                      className="w-full text-center text-sm text-cyan-400 font-semibold py-2.5 border border-cyan-400/50 rounded-lg hover:bg-gradient-to-r hover:from-cyan-500/10 hover:to-blue-500/10 transition-all duration-200 active:scale-95 block"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Sign Up
+                    </Link>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}
