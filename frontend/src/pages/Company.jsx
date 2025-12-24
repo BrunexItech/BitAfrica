@@ -1,991 +1,475 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Sparkles, Brain, Cpu, Globe, Users, Award, 
-  Target, Heart, TrendingUp, ChevronRight, Star, 
-  CheckCircle, Lightbulb, Palette, Diamond, Waves, 
-  Map, Compass, Hexagon, Infinity, Shield, Lock,
-  Zap, GitBranch, Cog, Network, CircuitBoard,
-  Layers, Code, Database, Cloud, Cpu as AI,
-  BarChart, PieChart, LineChart, Activity, Building,
-  BookOpen, Shield as ShieldIcon
-} from 'lucide-react';
+import React, { useState } from 'react';
 
 function Company() {
-  const [activeYear, setActiveYear] = useState(2020);
-  
-  const visionaryTeam = [
+  const [activeService, setActiveService] = useState(0);
+
+  const leadershipTeam = [
     {
       name: "Bruno Sharif",
-      title: "CEO & Visionary Founder",
-      role: "Chief Executive Officer",
-      bio: "Architect of Africa's AI renaissance. Pioneering contextual AI systems that understand African nuances and drive continent-wide transformation.",
-      image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80",
-      color: "from-amber-500 via-orange-500 to-rose-500",
-      gradient: "bg-gradient-to-br from-amber-500 to-orange-500",
-      expertise: ["AI Strategy", "Tech Leadership", "African Innovation"],
-      signature: "AI should speak our languages, understand our rhythms.",
-      position: "top-left"
+      role: "Founder & CEO",
+      bio: "Technology visionary with extensive experience in digital transformation across African markets. Leads the strategic direction of BitAfrica AI.",
+      image: "https://i.ibb.co/SDW8mysy/IMG-20250419-WA0007-2.jpg",
+      color: "from-cyan-500 to-blue-500"
     },
     {
-      name: "Amina Diallo",
-      title: "AI Systems Architect",
+      name: "Dr. Amina Keita",
       role: "Chief Technology Officer",
-      bio: "Building Africa's most sophisticated AI infrastructure. Designed scalable neural networks that process 10x more contextual data.",
-      image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80",
-      color: "from-purple-500 via-violet-500 to-indigo-500",
-      gradient: "bg-gradient-to-br from-purple-500 to-pink-500",
-      expertise: ["Neural Networks", "System Architecture", "ML Ops"],
-      signature: "Infrastructure that grows with Africa's ambitions.",
-      position: "top-right"
+      bio: "Leading our technical research and development initiatives. Oversees AI systems and software architecture.",
+      image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800&q=80",
+      color: "from-purple-500 to-pink-500"
     },
     {
-      name: "Chijioke Okonkwo",
-      title: "Data Intelligence Pioneer",
-      role: "Chief Data Scientist",
-      bio: "Transforming Africa's data landscape into actionable intelligence. Created algorithms that understand 50+ African languages.",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80",
-      color: "from-emerald-500 via-teal-500 to-cyan-500",
-      gradient: "bg-gradient-to-br from-emerald-500 to-cyan-500",
-      expertise: ["Data Science", "Natural Language", "Predictive Models"],
-      signature: "Data tells stories. We listen to Africa's story.",
-      position: "bottom-left"
+      name: "Kofi Mensah",
+      role: "Head of Engineering Operations",
+      bio: "Manages software development lifecycle and engineering teams across regional offices.",
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800&q=80",
+      color: "from-emerald-500 to-green-500"
     },
     {
-      name: "Fatoumata Bâ",
-      title: "Innovation Ecosystem Builder",
-      role: "Chief Innovation Officer",
-      bio: "Connecting 100+ African startups with AI capabilities. Building the continent's largest AI talent pipeline.",
-      image: "https://images.unsplash.com/photo-1558898479-33c0057a5d12?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80",
-      color: "from-rose-500 via-pink-500 to-fuchsia-500",
-      gradient: "bg-gradient-to-br from-rose-500 to-fuchsia-500",
-      expertise: ["Ecosystem Growth", "Talent Development", "Strategic Partnerships"],
-      signature: "Innovation grows where community thrives.",
-      position: "bottom-right"
+      name: "Naledi Chukwu",
+      role: "Director of Educational Programs",
+      bio: "Designs and implements technology education initiatives for practical, industry-relevant technical skills.",
+      image: "https://images.unsplash.com/photo-1558898479-33c0057a5d12?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800&q=80",
+      color: "from-amber-500 to-orange-500"
     }
   ];
 
-  const aiJourney = {
-    2020: {
-      title: "The Genesis",
-      description: "Founded with a vision to democratize AI across Africa. Started with 3 engineers and a dream.",
-      achievements: ["First AI Model", "Initial Funding", "Team of 5"],
-      icon: <Sparkles className="h-8 w-8" />,
-      color: "from-blue-500 to-cyan-500",
-      metrics: { models: 1, team: 5, countries: 1 }
-    },
-    2021: {
-      title: "First Breakthrough",
-      description: "Developed Africa's first multilingual AI model. Expanded to 3 countries.",
-      achievements: ["Multilingual AI", "3 Country Expansion", "Series A Funding"],
-      icon: <Globe className="h-8 w-8" />,
-      color: "from-purple-500 to-pink-500",
-      metrics: { models: 5, team: 25, countries: 3 }
-    },
-    2022: {
-      title: "Scale & Impact",
-      description: "Launched AI solutions for agriculture and healthcare. Reached 100,000 users.",
-      achievements: ["Agri-AI Launch", "Health AI Solutions", "100K Users"],
-      icon: <Target className="h-8 w-8" />,
-      color: "from-green-500 to-emerald-500",
-      metrics: { models: 15, team: 50, countries: 8 }
-    },
-    2023: {
-      title: "AI Ecosystem",
-      description: "Built Africa's largest AI developer community. Partnered with 50+ organizations.",
-      achievements: ["Dev Community", "50+ Partners", "Pan-African Reach"],
-      icon: <Network className="h-8 w-8" />,
-      color: "from-orange-500 to-amber-500",
-      metrics: { models: 30, team: 100, countries: 12 }
-    },
-    2024: {
-      title: "The AI Revolution",
-      description: "Leading Africa's AI transformation. Deploying AI in 15+ countries with 500K+ users.",
-      achievements: ["Market Leadership", "500K+ Users", "15 Countries"],
-      icon: <Zap className="h-8 w-8" />,
-      color: "from-red-500 to-rose-500",
-      metrics: { models: 50, team: 150, countries: 15 }
-    }
-  };
-
-  const aiSolutions = [
+  const companyServices = [
     {
-      title: "Contextual Intelligence",
-      description: "AI systems that understand African contexts, languages, and cultural nuances",
-      icon: <Brain className="h-10 w-10" />,
-      gradient: "from-blue-500 to-cyan-500",
-      pattern: "neural",
-      stats: ["50+ Languages", "95% Accuracy", "Real-time Processing"],
-      shape: "hexagon"
+      title: "Custom Software Solutions",
+      description: "We develop bespoke software applications designed to solve specific business challenges in African markets.",
+      details: [
+        "Enterprise application development",
+        "Mobile and web platform creation",
+        "Legacy system modernization",
+        "Cross-platform solutions"
+      ]
     },
     {
-      title: "Predictive Ecosystems",
-      description: "AI-driven predictions for agriculture, climate, and economic planning",
-      icon: <BarChart className="h-10 w-10" />,
-      gradient: "from-purple-500 to-pink-500",
-      pattern: "waves",
-      stats: ["10M+ Predictions", "87% Success Rate", "15 Sectors"],
-      shape: "circle"
+      title: "AI & Machine Learning Systems",
+      description: "Our AI division creates intelligent systems that analyze data and automate processes for African business environments.",
+      details: [
+        "Predictive analytics platforms",
+        "Natural language processing",
+        "Computer vision applications",
+        "Automated decision support"
+      ]
     },
     {
-      title: "Intelligent Automation",
-      description: "Automating complex processes with AI that learns African workflows",
-      icon: <Cog className="h-10 w-10" />,
-      gradient: "from-green-500 to-emerald-500",
-      pattern: "circuit",
-      stats: ["500+ Processes", "70% Efficiency Gain", "24/7 Operation"],
-      shape: "triangle"
-    },
-    {
-      title: "Data Renaissance",
-      description: "Transforming Africa's data into intelligent insights and opportunities",
-      icon: <Database className="h-10 w-10" />,
-      gradient: "from-orange-500 to-amber-500",
-      pattern: "grid",
-      stats: ["1B+ Data Points", "Real-time Analytics", "50+ Data Sources"],
-      shape: "square"
+      title: "Technology Education Services",
+      description: "Through BitAfrica AI Academy, we provide comprehensive technology training programs.",
+      details: [
+        "Software development bootcamps",
+        "AI and data science workshops",
+        "Enterprise technology training",
+        "Professional development"
+      ]
     }
   ];
 
-  const innovationHubs = [
+  const operationalValues = [
     {
-      name: "Neural Nexus Nairobi",
-      focus: "AI Research & Development",
-      icon: <CircuitBoard className="h-8 w-8" />,
-      location: "Kenya",
-      projects: 12,
-      color: "bg-gradient-to-br from-blue-500/20 to-cyan-500/20",
-      gradient: "from-blue-500 to-cyan-500"
+      principle: "Contextual Innovation",
+      explanation: "Technology solutions designed with deep understanding of local contexts and African market dynamics."
     },
     {
-      name: "Data Delta Lagos",
-      focus: "Big Data & Analytics",
-      icon: <LineChart className="h-8 w-8" />,
-      location: "Nigeria",
-      projects: 18,
-      color: "bg-gradient-to-br from-purple-500/20 to-pink-500/20",
-      gradient: "from-purple-500 to-pink-500"
+      principle: "Sustainable Development",
+      explanation: "Systems built for long-term impact, prioritizing maintainability, scalability and economic viability."
     },
     {
-      name: "AI Arc Accra",
-      focus: "AI Applications & Deployment",
-      icon: <Cpu className="h-8 w-8" />,
-      location: "Ghana",
-      projects: 15,
-      color: "bg-gradient-to-br from-green-500/20 to-emerald-500/20",
-      gradient: "from-green-500 to-emerald-500"
-    },
-    {
-      name: "Innovation Sphere Cape Town",
-      focus: "AI Ethics & Governance",
-      icon: <ShieldIcon className="h-8 w-8" />,
-      location: "South Africa",
-      projects: 9,
-      color: "bg-gradient-to-br from-orange-500/20 to-amber-500/20",
-      gradient: "from-orange-500 to-amber-500"
+      principle: "Collaborative Growth",
+      explanation: "Partnering with clients and communities to foster ecosystems of innovation and knowledge sharing."
     }
   ];
 
-  const achievements = [
-    { 
-      number: "50+", 
-      label: "AI Models", 
-      icon: <Brain className="h-6 w-6" />,
-      growth: "+400%",
-      color: "blue"
+  const regionalPresence = [
+    {
+      region: "East Africa Hub",
+      location: "Nairobi, Kenya",
+      focus: "AI Research & Development Center",
+      description: "Research facility focusing on machine learning models and software innovation."
     },
-    { 
-      number: "150+", 
-      label: "AI Experts", 
-      icon: <Users className="h-6 w-6" />,
-      growth: "+800%",
-      color: "purple"
+    {
+      region: "West Africa Operations",
+      location: "Lagos, Nigeria",
+      focus: "Engineering & Deployment Center",
+      description: "Technical implementation hub for software development and deployment."
     },
-    { 
-      number: "15", 
-      label: "Countries", 
-      icon: <Globe className="h-6 w-6" />,
-      growth: "+1400%",
-      color: "green"
+    {
+      region: "Southern Africa Branch",
+      location: "Cape Town, South Africa",
+      focus: "Education & Training Facility",
+      description: "Learning center delivering technology education programs."
     },
-    { 
-      number: "500K+", 
-      label: "Users Impacted", 
-      icon: <Heart className="h-6 w-6" />,
-      growth: "+900%",
-      color: "red"
+    {
+      region: "Central Africa Office",
+      location: "Kigali, Rwanda",
+      focus: "Strategic Partnerships",
+      description: "Coordination center for regional collaborations and expansion."
     }
   ];
 
-  const companyInfoCards = [
+  const developmentApproach = [
     {
-      title: "AI Ethics & Responsibility",
-      description: "We've established Africa's first AI ethics framework, ensuring all our systems are transparent, accountable, and aligned with African values.",
-      icon: <Shield className="h-8 w-8" />,
-      gradient: "from-blue-500 to-cyan-500",
-      stats: "Ethical AI Framework"
+      phase: "Discovery & Analysis",
+      description: "Understanding business context, technical requirements, and operational environment."
     },
     {
-      title: "Talent Development",
-      description: "Over 5,000 African developers trained in AI technologies through our continent-wide education initiatives and partnerships.",
-      icon: <BookOpen className="h-8 w-8" />,
-      gradient: "from-purple-500 to-pink-500",
-      stats: "5K+ Developers Trained"
+      phase: "Design & Architecture",
+      description: "Designing solutions that balance functionality, scalability, and maintainability."
     },
     {
-      title: "Research Excellence",
-      description: "Published 50+ research papers in top AI conferences and contributed to 15 open-source AI projects benefiting the global community.",
-      icon: <Lightbulb className="h-8 w-8" />,
-      gradient: "from-green-500 to-emerald-500",
-      stats: "50+ Research Papers"
+      phase: "Development & Implementation",
+      description: "Building and testing solutions with continuous feedback and quality emphasis."
     },
     {
-      title: "Infrastructure Scale",
-      description: "Built Africa's largest AI computing infrastructure with 10,000+ GPUs powering our continent-wide AI solutions.",
-      icon: <Building className="h-8 w-8" />,
-      gradient: "from-orange-500 to-amber-500",
-      stats: "10K+ GPU Cluster"
+      phase: "Deployment & Support",
+      description: "Managing deployment and providing comprehensive post-implementation support."
     }
   ];
 
   return (
-    <main className="relative min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0">
-        {/* Neural Network Animation */}
-        <div className="absolute inset-0 opacity-10">
-          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="neural-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-                <circle cx="50" cy="50" r="2" fill="currentColor" className="text-blue-500/20">
-                  <animate attributeName="r" values="2;4;2" dur="3s" repeatCount="indefinite" />
-                </circle>
-                <circle cx="20" cy="20" r="1.5" fill="currentColor" className="text-purple-500/20">
-                  <animate attributeName="r" values="1.5;3;1.5" dur="2.5s" repeatCount="indefinite" />
-                </circle>
-                <circle cx="80" cy="80" r="2.5" fill="currentColor" className="text-green-500/20">
-                  <animate attributeName="r" values="2.5;5;2.5" dur="4s" repeatCount="indefinite" />
-                </circle>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#neural-pattern)" />
-          </svg>
+    <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 text-white">
+      {/* Hero Section */}
+      <div className="relative overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-1/2 bg-gradient-to-t from-gray-950 via-transparent to-transparent" />
         </div>
 
-        {/* Floating AI Elements */}
-        <div className="absolute top-1/4 left-10 w-32 h-32 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-10 w-40 h-40 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-3/4 left-1/3 w-24 h-24 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-full blur-3xl animate-pulse delay-500"></div>
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-20 sm:py-24">
+          <div className="text-center">
+            <div className="inline-flex items-center gap-3 mb-6 sm:mb-8">
+              <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
+              <span className="text-cyan-300 font-medium tracking-wider text-sm sm:text-base">BITAFRICA AI</span>
+              <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
+            </div>
+            
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-tight mb-6 sm:mb-8 leading-tight">
+              <span className="block opacity-90">Transforming</span>
+              <span className="block opacity-80 mt-2 sm:mt-4">African Business</span>
+              <span className="block bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent mt-2 sm:mt-4 pb-1">
+                Through Technology
+              </span>
+            </h1>
+            
+            <div className="max-w-3xl mx-auto px-4">
+              <p className="text-lg sm:text-xl text-gray-300 leading-relaxed mb-10 sm:mb-12">
+                We are a technology company specializing in software development, artificial intelligence solutions, and technology education services across African markets.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Hero Section */}
-      <section className="relative pt-24 pb-16 px-4 sm:px-6 lg:px-8">
-        <div className="container mx-auto max-w-7xl">
-          {/* Animated Title with Neural Connections */}
-          <div className="relative mb-12 text-center">
-            <div className="inline-block relative">
-              {/* Connection Dots */}
-              <div className="absolute -top-4 -left-4 w-3 h-3 bg-blue-500 rounded-full animate-ping"></div>
-              <div className="absolute -top-4 -right-4 w-3 h-3 bg-purple-500 rounded-full animate-ping delay-300"></div>
-              <div className="absolute -bottom-4 -left-8 w-3 h-3 bg-green-500 rounded-full animate-ping delay-500"></div>
-              <div className="absolute -bottom-4 -right-8 w-3 h-3 bg-orange-500 rounded-full animate-ping delay-700"></div>
-              
-              <h1 className="relative text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 tracking-tighter">
-                <span className="block bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent animate-gradient-x">
-                  AFRICA
-                </span>
-                <span className="block bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
-                  AI
-                </span>
-                <span className="block bg-gradient-to-r from-emerald-400 via-green-300 to-emerald-400 bg-clip-text text-transparent animate-gradient-x-reverse">
-                  REVOLUTION
-                </span>
-              </h1>
-            </div>
-            
-            {/* Connection Lines */}
-            <div className="absolute top-1/4 left-1/4 w-1 h-24 bg-gradient-to-b from-blue-500/50 to-transparent transform -rotate-45"></div>
-            <div className="absolute top-1/4 right-1/4 w-1 h-24 bg-gradient-to-b from-purple-500/50 to-transparent transform rotate-45"></div>
-          </div>
+      {/* Company Overview */}
+      <div className="py-16 sm:py-20 relative">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="grid lg:grid-cols-2 gap-12 sm:gap-16 items-start">
+            <div>
+              <div className="mb-10 sm:mb-12">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-light mb-6 sm:mb-8">
+                  Our <span className="text-cyan-400">Mission</span>
+                </h2>
+                <p className="text-gray-300 leading-relaxed mb-4">
+                  To empower African businesses and organizations with cutting-edge technological solutions that are both globally competitive and locally relevant.
+                </p>
+                <p className="text-gray-300 leading-relaxed">
+                  We bridge the digital divide by making advanced technology accessible, understandable, and beneficial to African enterprises.
+                </p>
+              </div>
 
-          {/* Founder Spotlight - Diamond Design */}
-          <div className="relative mb-20">
-            <div className="flex flex-col lg:flex-row items-center gap-8">
-              {/* Diamond Image Container */}
-              <div className="relative w-64 h-64">
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 transform rotate-45"></div>
-                <div className="absolute inset-2 bg-gray-900 transform rotate-45 overflow-hidden">
-                  <img 
-                    src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80"
-                    alt="Bruno Sharif"
-                    className="w-full h-full object-cover object-top transform -rotate-45 scale-125"
-                  />
-                </div>
-                {/* Floating Elements */}
-                <div className="absolute -top-4 -right-4 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                  <Brain className="h-4 w-4 text-white" />
-                </div>
-                <div className="absolute -bottom-4 -left-4 w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
-                  <Zap className="h-4 w-4 text-white" />
+              <div>
+                <h3 className="text-xl sm:text-2xl font-light mb-4 sm:mb-6 text-gray-200">Our Philosophy</h3>
+                <div className="space-y-4 sm:space-y-6">
+                  {operationalValues.map((value, index) => (
+                    <div key={index} className="relative pl-5 sm:pl-6">
+                      <div className="absolute left-0 top-2 w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-cyan-500" />
+                      <h4 className="text-lg font-medium mb-1 sm:mb-2 text-cyan-300">{value.principle}</h4>
+                      <p className="text-gray-400 leading-relaxed text-sm sm:text-base">{value.explanation}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
-              
-              {/* Founder Info */}
-              <div className="flex-1">
-                <div className="inline-flex items-center gap-3 mb-6">
-                  <div className="w-12 h-1 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full"></div>
-                  <span className="text-sm font-bold tracking-widest text-amber-400 uppercase">
-                    Visionary Leadership
-                  </span>
-                  <div className="w-12 h-1 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full"></div>
-                </div>
-                
-                <h2 className="text-4xl font-bold text-white mb-4">
-                  Bruno Sharif
-                  <span className="block text-xl text-amber-300 font-normal mt-2">
-                    CEO & Founder
-                  </span>
+            </div>
+            
+            <div className="space-y-10 sm:space-y-12">
+              <div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-light mb-6 sm:mb-8">
+                  Our <span className="text-blue-400">Services</span>
                 </h2>
                 
-                <p className="text-lg text-gray-300 mb-6 leading-relaxed">
-                  "We're not just building AI in Africa. We're building African AI—systems that understand our context, 
-                  speak our languages, and solve our unique challenges. This is more than technology; 
-                  it's a renaissance of African innovation."
-                </p>
-                
-                <div className="flex flex-wrap gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
-                      <TrendingUp className="h-4 w-4 text-blue-400" />
-                    </div>
-                    <div>
-                      <div className="text-sm text-gray-400">AI Impact</div>
-                      <div className="text-lg font-bold text-white">15 Countries</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                      <Users className="h-4 w-4 text-purple-400" />
-                    </div>
-                    <div>
-                      <div className="text-sm text-gray-400">Team Growth</div>
-                      <div className="text-lg font-bold text-white">150+ Experts</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* AI Journey Timeline - Interactive 3D */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8 border-t border-gray-800/50">
-        <div className="container mx-auto max-w-7xl">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-4 mb-6">
-              <div className="w-16 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent"></div>
-              <span className="text-sm font-bold tracking-widest text-blue-400 uppercase">
-                Our Evolution
-              </span>
-              <div className="w-16 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent"></div>
-            </div>
-            
-            <h2 className="text-5xl font-bold text-white mb-6">
-              The <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                AI Journey
-              </span>
-            </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              From vision to continental impact. Watch our story unfold.
-            </p>
-          </div>
-          
-          {/* Interactive Timeline */}
-          <div className="relative">
-            {/* Timeline Bar */}
-            <div className="relative h-2 bg-gray-800 rounded-full mb-12">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-green-500 rounded-full"></div>
-              
-              {/* Year Markers */}
-              {Object.keys(aiJourney).map((year, index) => {
-                const percentage = ((index) / (Object.keys(aiJourney).length - 1)) * 100;
-                return (
-                  <button
-                    key={year}
-                    onClick={() => setActiveYear(parseInt(year))}
-                    className={`absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-500 ${
-                      activeYear === parseInt(year) 
-                        ? 'scale-125 bg-white shadow-xl shadow-blue-500/50' 
-                        : 'bg-gray-800 hover:bg-gray-700'
-                    }`}
-                    style={{ left: `${percentage}%` }}
-                  >
-                    <span className={`text-sm font-bold ${
-                      activeYear === parseInt(year) ? 'text-gray-900' : 'text-gray-400'
-                    }`}>
-                      {year}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-            
-            {/* Active Year Display - 3D Card */}
-            <div className="relative">
-              <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-green-500/10 rounded-3xl blur-xl"></div>
-              
-              <div className="relative bg-gray-900/50 backdrop-blur-xl rounded-3xl border border-gray-800 overflow-hidden">
-                <div className="p-6 md:p-8 lg:p-12">
-                  <div className="flex flex-col lg:flex-row items-start gap-6 lg:gap-8">
-                    {/* Metrics Visualization */}
-                    <div className="lg:w-1/3">
-                      <div className={`p-4 md:p-6 rounded-2xl bg-gradient-to-br ${aiJourney[activeYear].color} bg-opacity-20 mb-6`}>
-                        <div className="flex items-center justify-between mb-4">
-                          <div className={`p-3 rounded-xl bg-gradient-to-br ${aiJourney[activeYear].color} text-white`}>
-                            {aiJourney[activeYear].icon}
-                          </div>
-                          <div className="text-xl md:text-2xl font-bold text-white">{activeYear}</div>
-                        </div>
-                        <h3 className="text-xl md:text-2xl font-bold text-white mb-2">{aiJourney[activeYear].title}</h3>
-                        <p className="text-gray-300 text-sm md:text-base">{aiJourney[activeYear].description}</p>
-                      </div>
-                      
-                      {/* Animated Metrics - Centered for mobile */}
-                      <div className="grid grid-cols-3 gap-3 md:gap-4 justify-items-center">
-                        {Object.entries(aiJourney[activeYear].metrics).map(([key, value]) => (
-                          <div key={key} className="text-center">
-                            <div className="text-xl md:text-2xl font-bold text-white mb-1">{value}</div>
-                            <div className="text-xs text-gray-400 uppercase">{key}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    {/* Achievements List */}
-                    <div className="lg:w-2/3">
-                      <div className="mb-6">
-                        <h4 className="text-lg font-bold text-white mb-4 text-center md:text-left">Key Achievements</h4>
-                        <div className="space-y-3">
-                          {aiJourney[activeYear].achievements.map((achievement, idx) => (
-                            <div 
-                              key={idx}
-                              className="flex items-center gap-3 p-3 rounded-lg bg-gray-800/50 border border-gray-700/50 hover:border-blue-500/50 transition-colors mx-auto md:mx-0 max-w-md md:max-w-none"
-                            >
-                              <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                              <span className="text-gray-300 text-sm md:text-base">{achievement}</span>
+                <div className="space-y-6 sm:space-y-8">
+                  {companyServices.map((service, index) => (
+                    <div 
+                      key={index}
+                      className={`group cursor-pointer transition-all duration-300 ${
+                        activeService === index ? 'opacity-100' : 'opacity-80 hover:opacity-100'
+                      }`}
+                      onClick={() => setActiveService(index)}
+                      onMouseEnter={() => setActiveService(index)}
+                    >
+                      <div className={`border-l-2 pl-5 sm:pl-6 py-3 sm:py-4 transition-all duration-300 ${
+                        activeService === index 
+                          ? 'border-cyan-500 bg-gradient-to-r from-cyan-500/5 to-transparent' 
+                          : 'border-gray-700 hover:border-cyan-400/50'
+                      }`}>
+                        <h3 className="text-lg sm:text-xl font-medium mb-2 sm:mb-3 text-gray-200 group-hover:text-white transition-colors">
+                          {service.title}
+                        </h3>
+                        <p className="text-gray-400 leading-relaxed mb-3 sm:mb-4 text-sm sm:text-base">
+                          {service.description}
+                        </p>
+                        <div className="space-y-1 sm:space-y-2">
+                          {service.details.map((detail, i) => (
+                            <div key={i} className="flex items-start gap-2">
+                              <div className="w-1.5 h-1.5 rounded-full bg-cyan-500/50 mt-1.5 sm:mt-2 flex-shrink-0" />
+                              <span className="text-xs sm:text-sm text-gray-400">{detail}</span>
                             </div>
                           ))}
                         </div>
                       </div>
-                      
-                      {/* Progress Visualization */}
-                      <div className="mt-6 md:mt-8">
-                        <div className="flex justify-between text-sm text-gray-400 mb-2">
-                          <span>Progress</span>
-                          <span>{((activeYear - 2020) / 4 * 100).toFixed(0)}%</span>
-                        </div>
-                        <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-green-500 rounded-full transition-all duration-1000"
-                            style={{ width: `${((activeYear - 2020) / 4 * 100)}%` }}
-                          ></div>
-                        </div>
-                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* AI Solutions - Geometric Cards */}
-      <section className="relative py-16 md:py-20 px-4 sm:px-6 lg:px-8">
-        <div className="container mx-auto max-w-7xl">
-          <div className="text-center mb-12 md:mb-16">
-            <div className="inline-flex items-center gap-3 md:gap-4 mb-6">
-              <Brain className="h-5 w-5 md:h-6 md:w-6 text-blue-400" />
-              <span className="text-sm font-bold tracking-widest text-blue-400 uppercase">
-                Our AI Solutions
-              </span>
-              <Brain className="h-5 w-5 md:h-6 md:w-6 text-blue-400" />
-            </div>
-            
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 px-2">
-              Building <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                Intelligent Africa
-              </span>
+      {/* Leadership Team */}
+      <div className="py-16 sm:py-20 relative bg-gradient-to-b from-transparent via-gray-900/20 to-transparent">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-light mb-4 sm:mb-6 text-center">
+              Our <span className="text-purple-400">Leadership Team</span>
             </h2>
-            <p className="text-gray-400 text-base md:text-xl max-w-3xl mx-auto px-2">
-              Advanced AI solutions designed specifically for African contexts and challenges
+            <p className="text-gray-400 text-center max-w-3xl mx-auto text-sm sm:text-base">
+              Experienced professionals guiding our strategic direction
             </p>
           </div>
           
-          {/* Geometric Solution Cards - Improved for mobile */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 px-2 sm:px-0">
-            {aiSolutions.map((solution, index) => (
-              <div 
-                key={index}
-                className="group perspective-1000 mx-auto w-full max-w-sm sm:max-w-none"
-              >
-                <div className="relative transform-style-3d transition-transform duration-700 group-hover:rotate-y-180 h-80">
-                  {/* Front of Card */}
-                  <div className={`absolute inset-0 backface-hidden rounded-2xl overflow-hidden ${
-                    solution.shape === 'hexagon' ? 'clip-hexagon' :
-                    solution.shape === 'circle' ? 'rounded-full' :
-                    solution.shape === 'triangle' ? 'clip-triangle' :
-                    'rounded-2xl'
-                  }`}>
-                    <div className={`absolute inset-0 bg-gradient-to-br ${solution.gradient} opacity-20`}></div>
-                    <div className="relative p-6 md:p-8 h-full flex flex-col justify-between">
-                      <div>
-                        <div className={`mb-4 md:mb-6 p-3 md:p-4 rounded-xl bg-gradient-to-br ${solution.gradient} w-fit`}>
-                          {solution.icon}
-                        </div>
-                        <h3 className="text-xl md:text-2xl font-bold text-white mb-2 md:mb-3">{solution.title}</h3>
-                        <p className="text-gray-300 text-xs md:text-sm leading-relaxed">{solution.description}</p>
-                      </div>
-                      <div className="mt-4 md:mt-6">
-                        <div className="flex items-center gap-2 text-sm text-gray-400">
-                          <span>Learn more</span>
-                          <ChevronRight className="h-3 w-3 md:h-4 md:w-4 group-hover:translate-x-1 transition-transform" />
-                        </div>
-                      </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {leadershipTeam.map((member, index) => (
+              <div key={index} className="group">
+                <div className="relative mb-4 sm:mb-6">
+                  {/* Circular Profile Frame */}
+                  <div className="relative mx-auto w-40 h-40 sm:w-48 sm:h-48">
+                    {/* Outer Glow - REMOVED WHITE BORDER */}
+                    <div className={`absolute inset-0 rounded-full bg-gradient-to-r ${member.color} opacity-0 group-hover:opacity-20 transition-opacity duration-500 blur-md`} />
+                    
+                    {/* Profile Image Container */}
+                    <div className="relative rounded-full overflow-hidden bg-gray-800">
+                      <img
+                        src={member.image}
+                        alt={member.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
                     </div>
                   </div>
-                  
-                  {/* Back of Card - Stats */}
-                  <div className={`absolute inset-0 backface-hidden rotate-y-180 ${
-                    solution.shape === 'hexagon' ? 'clip-hexagon' :
-                    solution.shape === 'circle' ? 'rounded-full' :
-                    solution.shape === 'triangle' ? 'clip-triangle' :
-                    'rounded-2xl'
-                  } bg-gray-900 border border-gray-800 p-6 md:p-8`}>
-                    <div className="h-full flex flex-col justify-center">
-                      <h4 className="text-lg font-bold text-white mb-6 text-center">Performance Metrics</h4>
-                      <div className="space-y-3 md:space-y-4">
-                        {solution.stats.map((stat, idx) => (
-                          <div key={idx} className="text-center">
-                            <div className="text-lg md:text-2xl font-bold text-white">{stat}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                </div>
+                
+                {/* Left-aligned text content */}
+                <div className="text-left px-2 sm:px-4">
+                  <h3 className="text-lg sm:text-xl font-medium text-white mb-1">{member.name}</h3>
+                  <div className="text-cyan-300 font-medium mb-3 text-xs sm:text-sm">{member.role}</div>
+                  <p className="text-gray-400 text-xs sm:text-sm leading-relaxed">
+                    {member.bio}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Visionary Team - Staggered Grid with Diagonal Connections */}
-      <section className="relative py-20 md:py-32 px-4 sm:px-6 lg:px-8 border-t border-gray-800/50">
-        <div className="container mx-auto max-w-7xl">
-          <div className="text-center mb-12 md:mb-20">
-            <div className="inline-flex items-center gap-3 md:gap-4 mb-6">
-              <Users className="h-5 w-5 md:h-6 md:w-6 text-purple-400" />
-              <span className="text-sm font-bold tracking-widest text-purple-400 uppercase">
-                The Architects
-              </span>
-              <Users className="h-5 w-5 md:h-6 md:w-6 text-purple-400" />
-            </div>
-            
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Meet Our <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Visionary Team
-              </span>
+      {/* Development Methodology */}
+      <div className="py-16 sm:py-20 relative">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-light mb-4 sm:mb-6 text-center">
+              Our <span className="text-emerald-400">Development Approach</span>
             </h2>
-            <p className="text-gray-400 text-base md:text-xl max-w-2xl mx-auto">
-              The brilliant minds architecting Africa's AI future
+            <p className="text-gray-400 text-center max-w-3xl mx-auto text-sm sm:text-base">
+              A structured methodology ensuring quality and alignment with business objectives
             </p>
           </div>
           
-          {/* Staggered Team Grid */}
           <div className="relative">
-            {/* Background Connection Lines */}
-            <div className="absolute inset-0 hidden md:block">
-              <div className="absolute top-1/4 left-1/4 w-1/2 h-1 bg-gradient-to-r from-purple-500/20 to-pink-500/20 transform rotate-45"></div>
-              <div className="absolute top-1/4 right-1/4 w-1/2 h-1 bg-gradient-to-r from-purple-500/20 to-pink-500/20 transform -rotate-45"></div>
-              <div className="absolute bottom-1/4 left-1/4 w-1/2 h-1 bg-gradient-to-r from-purple-500/20 to-pink-500/20 transform -rotate-45"></div>
-              <div className="absolute bottom-1/4 right-1/4 w-1/2 h-1 bg-gradient-to-r from-purple-500/20 to-pink-500/20 transform rotate-45"></div>
-            </div>
+            {/* Timeline Line */}
+            <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-emerald-500 via-blue-500 to-purple-500 md:left-1/2 md:-translate-x-1/2" />
             
-            {/* Team Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-4xl mx-auto">
-              {visionaryTeam.map((member, index) => (
+            <div className="space-y-8 sm:space-y-12">
+              {developmentApproach.map((step, index) => (
                 <div 
                   key={index}
-                  className={`group relative ${index % 2 === 0 ? 'md:mt-0' : 'md:mt-12'}`}
+                  className={`relative flex flex-col md:flex-row items-start gap-4 sm:gap-8 ${
+                    index % 2 === 0 ? 'md:flex-row-reverse' : ''
+                  }`}
                 >
-                  {/* Glow Effect */}
-                  <div className={`absolute -inset-4 bg-gradient-to-br ${member.color} rounded-3xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500`}></div>
-                  
-                  <div className="relative bg-gray-900/70 backdrop-blur-xl rounded-2xl overflow-hidden border border-gray-800 group-hover:border-purple-500/50 transition-all duration-500 p-6">
-                    <div className="flex flex-col md:flex-row items-center gap-6">
-                      {/* Member Image */}
-                      <div className="relative w-32 h-32 flex-shrink-0">
-                        <div className={`absolute inset-0 ${member.gradient} rounded-full transform rotate-0`}></div>
-                        <div className="absolute inset-2 bg-gray-900 rounded-full overflow-hidden">
-                          <img 
-                            src={member.image}
-                            alt={member.name}
-                            className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500"
-                          />
-                        </div>
-                        {/* Floating Icon */}
-                        <div className="absolute -top-2 -right-2 w-8 h-8 bg-gray-900 rounded-full border border-gray-700 flex items-center justify-center">
-                          <div className={`w-6 h-6 rounded-full ${member.gradient} flex items-center justify-center`}>
-                            {index === 0 && <Brain className="h-3 w-3 text-white" />}
-                            {index === 1 && <Cpu className="h-3 w-3 text-white" />}
-                            {index === 2 && <Database className="h-3 w-3 text-white" />}
-                            {index === 3 && <Network className="h-3 w-3 text-white" />}
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {/* Member Info - Always Visible */}
-                      <div className="flex-1 text-center md:text-left">
-                        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-300 transition-colors">
-                          {member.name}
-                        </h3>
-                        <p className="text-sm text-purple-400 mb-3 font-medium">{member.title}</p>
-                        <p className="text-gray-300 text-sm mb-4">{member.bio}</p>
-                        
-                        {/* Expertise Tags */}
-                        <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                          {member.expertise.map((skill, idx) => (
-                            <span 
-                              key={idx}
-                              className="px-3 py-1 bg-gray-800/50 text-gray-300 text-xs font-medium rounded-full border border-gray-700 group-hover:border-purple-500/50 transition-colors"
-                            >
-                              {skill}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
+                  {/* Step Indicator */}
+                  <div className="relative z-10 flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8">
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500" />
+                    <div className="absolute inset-1 sm:inset-1.5 rounded-full bg-gray-900" />
+                    <div className="absolute inset-0 flex items-center justify-center text-xs font-medium">
+                      {index + 1}
                     </div>
-                    
-                    {/* Connection Line Animation */}
-                    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-transparent via-purple-500 to-transparent group-hover:w-3/4 transition-all duration-700"></div>
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="flex-1">
+                    <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-xl p-4 sm:p-6 border border-gray-700/50 backdrop-blur-sm">
+                      <h3 className="text-lg sm:text-xl font-medium text-white mb-2 sm:mb-3">{step.phase}</h3>
+                      <p className="text-gray-400 leading-relaxed text-sm sm:text-base">
+                        {step.description}
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          
-          {/* Team Stats - Improved for mobile */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-16 md:mt-32 justify-items-center">
-            {achievements.map((achievement, index) => (
-              <div 
-                key={index}
-                className="relative bg-gray-900/30 backdrop-blur-sm rounded-2xl p-4 md:p-6 border border-gray-800 hover:border-blue-500/50 transition-all duration-500 group w-full max-w-xs md:max-w-none"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <div className={`p-2 md:p-3 rounded-xl ${
-                    achievement.color === 'blue' ? 'bg-blue-500/20 text-blue-400' :
-                    achievement.color === 'purple' ? 'bg-purple-500/20 text-purple-400' :
-                    achievement.color === 'green' ? 'bg-green-500/20 text-green-400' :
-                    'bg-red-500/20 text-red-400'
-                  }`}>
-                    {achievement.icon}
-                  </div>
-                  <div className="text-xs md:text-sm font-bold text-green-400">{achievement.growth}</div>
-                </div>
-                
-                <div className="text-2xl md:text-3xl font-bold text-white mb-1 text-center">{achievement.number}</div>
-                <div className="text-sm text-gray-400 text-center">{achievement.label}</div>
-                
-                {/* Growing Bar */}
-                <div className="mt-4 h-1 bg-gray-800 rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full ${
-                      achievement.color === 'blue' ? 'bg-blue-500' :
-                      achievement.color === 'purple' ? 'bg-purple-500' :
-                      achievement.color === 'green' ? 'bg-green-500' :
-                      'bg-red-500'
-                    } rounded-full group-hover:w-full transition-all duration-1000`}
-                    style={{ width: '0%' }}
-                  ></div>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
-      </section>
+      </div>
 
-      {/* Innovation Hubs - Interactive Map */}
-      <section className="relative py-16 md:py-20 px-4 sm:px-6 lg:px-8">
-        <div className="container mx-auto max-w-7xl">
-          <div className="text-center mb-12 md:mb-16">
-            <div className="inline-flex items-center gap-3 md:gap-4 mb-6">
-              <Map className="h-5 w-5 md:h-6 md:w-6 text-green-400" />
-              <span className="text-sm font-bold tracking-widest text-green-400 uppercase">
-                Our Presence
-              </span>
-              <Map className="h-5 w-5 md:h-6 md:w-6 text-green-400" />
-            </div>
-            
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              AI <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-                Innovation Hubs
-              </span>
+      {/* Regional Presence */}
+      <div className="py-16 sm:py-20 relative bg-gradient-to-b from-transparent via-gray-900/20 to-transparent">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-light mb-4 sm:mb-6 text-center">
+              Regional <span className="text-amber-400">Presence</span>
             </h2>
-            <p className="text-gray-400 text-base md:text-xl max-w-2xl mx-auto">
-              Strategic centers driving AI innovation across the continent
+            <p className="text-gray-400 text-center max-w-3xl mx-auto text-sm sm:text-base">
+              Strategically located across Africa to serve diverse markets
             </p>
           </div>
           
-          {/* Interactive Hub Cards - Now 4 cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-            {innovationHubs.map((hub, index) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {regionalPresence.map((location, index) => (
               <div 
                 key={index}
-                className="group relative mx-auto w-full max-w-sm sm:max-w-none"
+                className="group bg-gradient-to-br from-gray-800/30 to-gray-900/30 rounded-xl p-4 sm:p-6 border border-gray-700/50 hover:border-amber-500/30 transition-all duration-300 hover:translate-y-[-2px]"
               >
-                {/* Hover Effect Background */}
-                <div className="absolute -inset-4 bg-gradient-to-br from-gray-900 to-black rounded-3xl blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500"></div>
+                <div className="mb-3 sm:mb-4">
+                  <div className="text-amber-400 text-xs sm:text-sm font-medium mb-1">{location.region}</div>
+                  <div className="text-base sm:text-lg font-medium text-white">{location.location}</div>
+                </div>
                 
-                {/* Hub Card */}
-                <div className="relative bg-gray-900/50 backdrop-blur-xl rounded-2xl p-6 md:p-8 border border-gray-800 group-hover:border-green-500/50 transition-all duration-500 h-full">
-                  {/* Icon and Projects */}
-                  <div className="flex items-start justify-between mb-6 md:mb-8">
-                    <div className={`p-3 md:p-4 rounded-2xl ${hub.color}`}>
-                      <div className={`p-2 md:p-3 rounded-xl bg-gradient-to-br ${hub.gradient} text-white`}>
-                        {hub.icon}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-2xl md:text-3xl font-bold text-white">{hub.projects}</div>
-                      <div className="text-xs md:text-sm text-gray-400">Active Projects</div>
-                    </div>
-                  </div>
-                  
-                  <h3 className="text-xl md:text-2xl font-bold text-white mb-3 group-hover:text-green-300 transition-colors">
-                    {hub.name}
-                  </h3>
-                  <p className="text-gray-400 text-sm md:text-base mb-6">{hub.focus}</p>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                      <span className="text-sm text-gray-300">{hub.location}</span>
-                    </div>
-                    <div className="text-sm text-gray-500 group-hover:text-green-400 transition-colors">
-                      View Details →
-                    </div>
-                  </div>
-                  
-                  {/* Connection Line Animation */}
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-transparent via-green-500 to-transparent group-hover:w-3/4 transition-all duration-700"></div>
+                <div className="mb-3 sm:mb-4">
+                  <div className="text-cyan-300 text-xs sm:text-sm font-medium">{location.focus}</div>
+                </div>
+                
+                <p className="text-gray-400 text-xs sm:text-sm leading-relaxed">
+                  {location.description}
+                </p>
+                
+                <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-gray-700/50">
+                  <div className="text-xs text-gray-500">Operational since 2021</div>
                 </div>
               </div>
             ))}
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Company Information Section */}
-      <section className="relative py-16 md:py-32 px-4 sm:px-6 lg:px-8 border-t border-gray-800/50">
-        <div className="container mx-auto max-w-4xl text-center">
-          {/* Animated AI Brain */}
-          <div className="relative w-24 h-24 md:w-32 md:h-32 mx-auto mb-8 md:mb-12">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full opacity-20 animate-pulse"></div>
-            <div className="absolute inset-4 bg-gray-900 rounded-full flex items-center justify-center">
-              <Brain className="h-12 w-12 md:h-16 md:w-16 text-blue-400 animate-pulse" />
-            </div>
-            {/* Orbiting Elements */}
-            <div className="absolute top-0 left-1/2 w-3 h-3 md:w-4 md:h-4 bg-purple-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 animate-orbit">
-              <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full"></div>
-            </div>
-            <div className="absolute bottom-0 left-1/2 w-3 h-3 md:w-4 md:h-4 bg-green-500 rounded-full transform -translate-x-1/2 translate-y-1/2 animate-orbit-reverse">
-              <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full"></div>
-            </div>
+      {/* Technology Focus */}
+      <div className="py-16 sm:py-20 relative">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-light mb-4 sm:mb-6 text-center">
+              Technology <span className="text-blue-400">Expertise</span>
+            </h2>
+            <p className="text-gray-400 text-center max-w-3xl mx-auto text-sm sm:text-base">
+              Core technical competencies driving our solutions
+            </p>
           </div>
           
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 md:mb-8 px-2">
-            Shaping <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent animate-gradient-x">
-              Africa's Future
-            </span>
-          </h2>
-          
-          <p className="text-lg md:text-2xl text-gray-300 mb-8 md:mb-12 leading-relaxed max-w-3xl mx-auto px-2">
-            We're building more than AI systems. We're architecting Africa's digital nervous system—intelligent, 
-            responsive, and uniquely African.
-          </p>
-          
-          {/* Company Information Cards - 4 cards total */}
-          <div className="mt-12 md:mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 text-left">
-            {companyInfoCards.map((card, index) => (
-              <div 
-                key={index}
-                className="p-6 rounded-2xl bg-gray-900/30 backdrop-blur-sm border border-gray-800 hover:border-blue-500/30 transition-all duration-500 group"
-              >
-                <div className={`mb-4 p-3 rounded-xl bg-gradient-to-br ${card.gradient} bg-opacity-20 w-fit`}>
-                  <div className={`p-2 rounded-lg bg-gradient-to-br ${card.gradient} text-white`}>
-                    {card.icon}
-                  </div>
-                </div>
-                
-                <div className="text-sm font-bold text-blue-400 mb-2">{card.stats}</div>
-                <h3 className="text-lg font-bold text-white mb-3">{card.title}</h3>
-                <p className="text-gray-400 text-sm">{card.description}</p>
-                
-                {/* Hover effect line */}
-                <div className="mt-4 h-0.5 bg-gray-800 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 w-0 group-hover:w-full transition-all duration-700"></div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Contact Information - Updated */}
-          <div className="mt-16 md:mt-24 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 text-left max-w-4xl mx-auto">
-            <div className="p-6 rounded-2xl bg-gray-900/30 backdrop-blur-sm border border-gray-800">
-              <div className="text-sm text-blue-400 font-bold mb-4">OPERATIONAL HUBS</div>
-              <div className="space-y-2 text-gray-400">
-                <div>• Nairobi AI Center</div>
-                <div>• Lagos Data Lab</div>
-                <div>• Accra Innovation Hub</div>
-                <div>• Cape Town Ethics Center</div>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+            <div className="space-y-4 sm:space-y-6">
+              <h3 className="text-lg sm:text-xl font-medium text-white mb-2 sm:mb-4">Software Development</h3>
+              <ul className="space-y-2 sm:space-y-3">
+                {[
+                  "Full-stack web applications",
+                  "Mobile application development",
+                  "Enterprise software solutions",
+                  "API development & integration",
+                  "Cloud-native architectures",
+                  "Microservices implementation"
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start gap-2 sm:gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 sm:mt-2 flex-shrink-0" />
+                    <span className="text-gray-300 text-sm sm:text-base">{item}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className="p-6 rounded-2xl bg-gray-900/30 backdrop-blur-sm border border-gray-800">
-              <div className="text-sm text-purple-400 font-bold mb-4">CONTACT INFORMATION</div>
-              <div className="space-y-2 text-gray-400">
-                <div>• hello@africa-ai.com</div>
-                <div>• +254 700 123 456</div>
-                <div>• AI Research Portal</div>
-                <div>• Partnership Inquiries</div>
-              </div>
+            
+            <div className="space-y-4 sm:space-y-6">
+              <h3 className="text-lg sm:text-xl font-medium text-white mb-2 sm:mb-4">AI & Data Systems</h3>
+              <ul className="space-y-2 sm:space-y-3">
+                {[
+                  "Machine learning models",
+                  "Data analytics platforms",
+                  "Predictive systems",
+                  "Natural language processing",
+                  "Computer vision applications",
+                  "Intelligent automation"
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start gap-2 sm:gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-1.5 sm:mt-2 flex-shrink-0" />
+                    <span className="text-gray-300 text-sm sm:text-base">{item}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className="p-6 rounded-2xl bg-gray-900/30 backdrop-blur-sm border border-gray-800">
-              <div className="text-sm text-green-400 font-bold mb-4">OUR COMMITMENT</div>
-              <div className="space-y-2 text-gray-400">
-                <div>• Ethical AI Development</div>
-                <div>• Talent Empowerment</div>
-                <div>• Open Research</div>
-                <div>• Continental Impact</div>
-              </div>
+            
+            <div className="space-y-4 sm:space-y-6">
+              <h3 className="text-lg sm:text-xl font-medium text-white mb-2 sm:mb-4">Infrastructure & Platforms</h3>
+              <ul className="space-y-2 sm:space-y-3">
+                {[
+                  "Cloud infrastructure management",
+                  "DevOps & CI/CD pipelines",
+                  "System architecture design",
+                  "Performance optimization",
+                  "Security implementation",
+                  "Scalability planning"
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start gap-2 sm:gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 sm:mt-2 flex-shrink-0" />
+                    <span className="text-gray-300 text-sm sm:text-base">{item}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Custom Styles */}
-      <style jsx>{`
-        @keyframes gradient-x {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-        
-        @keyframes gradient-x-reverse {
-          0%, 100% { background-position: 100% 50%; }
-          50% { background-position: 0% 50%; }
-        }
-        
-        @keyframes orbit {
-          0% { transform: translate(-50%, -50%) rotate(0deg) translateX(45px) rotate(0deg); }
-          100% { transform: translate(-50%, -50%) rotate(360deg) translateX(45px) rotate(-360deg); }
-        }
-        
-        @keyframes orbit-reverse {
-          0% { transform: translate(-50%, 50%) rotate(0deg) translateX(45px) rotate(0deg); }
-          100% { transform: translate(-50%, 50%) rotate(-360deg) translateX(45px) rotate(360deg); }
-        }
-        
-        .animate-gradient-x {
-          background-size: 200% auto;
-          animation: gradient-x 3s ease infinite;
-        }
-        
-        .animate-gradient-x-reverse {
-          background-size: 200% auto;
-          animation: gradient-x-reverse 3s ease infinite;
-        }
-        
-        .animate-orbit {
-          animation: orbit 6s linear infinite;
-        }
-        
-        .animate-orbit-reverse {
-          animation: orbit-reverse 6s linear infinite;
-        }
-        
-        .perspective-1000 {
-          perspective: 1000px;
-        }
-        
-        .transform-style-3d {
-          transform-style: preserve-3d;
-        }
-        
-        .backface-hidden {
-          backface-visibility: hidden;
-        }
-        
-        .clip-hexagon {
-          clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-        }
-        
-        .clip-triangle {
-          clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-        }
-        
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-          .clip-hexagon, .clip-triangle {
-            clip-path: none;
-            border-radius: 1rem;
-          }
-          
-          .perspective-1000 {
-            perspective: none;
-          }
-          
-          .transform-style-3d {
-            transform-style: flat;
-          }
-          
-          .group-hover\:rotate-y-180 {
-            transform: none !important;
-          }
-          
-          .backface-hidden {
-            position: relative;
-            backface-visibility: visible;
-          }
-          
-          .rotate-y-180 {
-            display: none;
-          }
-          
-          /* Mobile-specific adjustments for better text visibility */
-          .text-balance {
-            text-wrap: balance;
-          }
-        }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-          width: 10px;
-        }
-        
-        ::-webkit-scrollbar-track {
-          background: #111827;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-          background: linear-gradient(to bottom, #3b82f6, #06b6d4);
-          border-radius: 5px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-          background: linear-gradient(to bottom, #60a5fa, #22d3ee);
-        }
-      `}</style>
-    </main>
+      {/* Closing Statement */}
+      <div className="py-16 sm:py-20 relative">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <div className="text-center">
+            <div className="inline-flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
+              <div className="h-px w-8 sm:w-16 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
+              <div className="text-cyan-400 font-medium text-sm sm:text-base">BITAFRICA AI</div>
+              <div className="h-px w-8 sm:w-16 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
+            </div>
+            
+            <p className="text-xl sm:text-2xl md:text-3xl text-gray-300 leading-relaxed mb-8 sm:mb-12 italic">
+              "We believe that technology's true value is measured by its positive impact on businesses and communities."
+            </p>
+            
+            <div className="text-gray-400">
+              <div className="text-sm sm:text-base">Contact: bitafrica.ai@gmail.com</div>
+              <div className="text-xs text-gray-500 mt-1 sm:mt-2">Nairobi • Lagos • Accra • Cape Town</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -1,1097 +1,992 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Building, Heart, ShoppingBag, Factory, GraduationCap, Shield, 
-  DollarSign, Stethoscope, Store, Users, Target, BarChart, Rocket,
-  Sparkles, Zap, Cpu, Brain, CircuitBoard, Database, Cloud, 
-  Globe, Lock, Wifi, Server, BarChart3, TrendingUp, ChevronRight,
-  ShieldCheck, Scale, Clock, Wrench, Cog, Users as Team,
-  Eye, MessageSquare, Hexagon, Layers, Grid3X3, Sparkle,
-  ArrowRight, Trophy, Target as TargetIcon, PieChart,
-  BarChart2, TrendingUp as TrendingUpIcon, Zap as ZapIcon,
-  Cpu as CpuIcon, Brain as BrainIcon, Globe as GlobeIcon,
-  Activity, CloudLightning, Cpu as CPUIcon
+  Sparkles, Brain, Cpu, Globe, Users, Award, 
+  Target, Heart, TrendingUp, ChevronRight, Star, 
+  CheckCircle, Lightbulb, Palette, Diamond, Waves, 
+  Map, Compass, Hexagon, Infinity, Shield, Lock,
+  Zap, GitBranch, Cog, Network, CircuitBoard,
+  Layers, Code, Database, Cloud, Cpu as AI,
+  BarChart, PieChart, LineChart, Activity, Building,
+  BookOpen, Shield as ShieldIcon
 } from 'lucide-react';
-import { motion } from 'framer-motion';
 
-function Industries() {
-  const [activeIndustry, setActiveIndustry] = useState("finance-banking");
-  const [isHovered, setIsHovered] = useState(null);
-
-  const technologyStack = [
-    { 
-      name: "Computer Vision", 
-      icon: <Eye className="h-6 w-6 sm:h-8 sm:w-8" />, 
-      applications: 12,
-      color: "from-cyan-500 to-blue-500",
-      description: "Real-time visual analysis"
+function Company() {
+  const [activeYear, setActiveYear] = useState(2020);
+  
+  const visionaryTeam = [
+    {
+      name: "Bruno Sharif",
+      title: "CEO & Visionary Founder",
+      role: "Chief Executive Officer",
+      bio: "Architect of Africa's AI renaissance. Pioneering contextual AI systems that understand African nuances and drive continent-wide transformation.",
+      image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80",
+      color: "from-amber-500 via-orange-500 to-rose-500",
+      gradient: "bg-gradient-to-br from-amber-500 to-orange-500",
+      expertise: ["AI Strategy", "Tech Leadership", "African Innovation"],
+      signature: "AI should speak our languages, understand our rhythms.",
+      position: "top-left"
     },
-    { 
-      name: "NLP", 
-      icon: <MessageSquare className="h-6 w-6 sm:h-8 sm:w-8" />, 
-      applications: 8,
+    {
+      name: "Amina Diallo",
+      title: "AI Systems Architect",
+      role: "Chief Technology Officer",
+      bio: "Building Africa's most sophisticated AI infrastructure. Designed scalable neural networks that process 10x more contextual data.",
+      image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80",
+      color: "from-purple-500 via-violet-500 to-indigo-500",
+      gradient: "bg-gradient-to-br from-purple-500 to-pink-500",
+      expertise: ["Neural Networks", "System Architecture", "ML Ops"],
+      signature: "Infrastructure that grows with Africa's ambitions.",
+      position: "top-right"
+    },
+    {
+      name: "Chijioke Okonkwo",
+      title: "Data Intelligence Pioneer",
+      role: "Chief Data Scientist",
+      bio: "Transforming Africa's data landscape into actionable intelligence. Created algorithms that understand 50+ African languages.",
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80",
+      color: "from-emerald-500 via-teal-500 to-cyan-500",
+      gradient: "bg-gradient-to-br from-emerald-500 to-cyan-500",
+      expertise: ["Data Science", "Natural Language", "Predictive Models"],
+      signature: "Data tells stories. We listen to Africa's story.",
+      position: "bottom-left"
+    },
+    {
+      name: "Fatoumata Bâ",
+      title: "Innovation Ecosystem Builder",
+      role: "Chief Innovation Officer",
+      bio: "Connecting 100+ African startups with AI capabilities. Building the continent's largest AI talent pipeline.",
+      image: "https://images.unsplash.com/photo-1558898479-33c0057a5d12?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80",
+      color: "from-rose-500 via-pink-500 to-fuchsia-500",
+      gradient: "bg-gradient-to-br from-rose-500 to-fuchsia-500",
+      expertise: ["Ecosystem Growth", "Talent Development", "Strategic Partnerships"],
+      signature: "Innovation grows where community thrives.",
+      position: "bottom-right"
+    }
+  ];
+
+  const aiJourney = {
+    2020: {
+      title: "The Genesis",
+      description: "Founded with a vision to democratize AI across Africa. Started with 3 engineers and a dream.",
+      achievements: ["First AI Model", "Initial Funding", "Team of 5"],
+      icon: <Sparkles className="h-8 w-8" />,
+      color: "from-blue-500 to-cyan-500",
+      metrics: { models: 1, team: 5, countries: 1 }
+    },
+    2021: {
+      title: "First Breakthrough",
+      description: "Developed Africa's first multilingual AI model. Expanded to 3 countries.",
+      achievements: ["Multilingual AI", "3 Country Expansion", "Series A Funding"],
+      icon: <Globe className="h-8 w-8" />,
       color: "from-purple-500 to-pink-500",
-      description: "Language understanding"
+      metrics: { models: 5, team: 25, countries: 3 }
     },
-    { 
-      name: "Predictive Analytics", 
-      icon: <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8" />, 
-      applications: 15,
-      color: "from-orange-500 to-red-500",
-      description: "Future insights"
-    },
-    { 
-      name: "Machine Learning", 
-      icon: <Cpu className="h-6 w-6 sm:h-8 sm:w-8" />, 
-      applications: 20,
+    2022: {
+      title: "Scale & Impact",
+      description: "Launched AI solutions for agriculture and healthcare. Reached 100,000 users.",
+      achievements: ["Agri-AI Launch", "Health AI Solutions", "100K Users"],
+      icon: <Target className="h-8 w-8" />,
       color: "from-green-500 to-emerald-500",
-      description: "Adaptive algorithms"
+      metrics: { models: 15, team: 50, countries: 8 }
+    },
+    2023: {
+      title: "AI Ecosystem",
+      description: "Built Africa's largest AI developer community. Partnered with 50+ organizations.",
+      achievements: ["Dev Community", "50+ Partners", "Pan-African Reach"],
+      icon: <Network className="h-8 w-8" />,
+      color: "from-orange-500 to-amber-500",
+      metrics: { models: 30, team: 100, countries: 12 }
+    },
+    2024: {
+      title: "The AI Revolution",
+      description: "Leading Africa's AI transformation. Deploying AI in 15+ countries with 500K+ users.",
+      achievements: ["Market Leadership", "500K+ Users", "15 Countries"],
+      icon: <Zap className="h-8 w-8" />,
+      color: "from-red-500 to-rose-500",
+      metrics: { models: 50, team: 150, countries: 15 }
+    }
+  };
+
+  const aiSolutions = [
+    {
+      title: "Contextual Intelligence",
+      description: "AI systems that understand African contexts, languages, and cultural nuances",
+      icon: <Brain className="h-10 w-10" />,
+      gradient: "from-blue-500 to-cyan-500",
+      pattern: "neural",
+      stats: ["50+ Languages", "95% Accuracy", "Real-time Processing"],
+      shape: "hexagon"
+    },
+    {
+      title: "Predictive Ecosystems",
+      description: "AI-driven predictions for agriculture, climate, and economic planning",
+      icon: <BarChart className="h-10 w-10" />,
+      gradient: "from-purple-500 to-pink-500",
+      pattern: "waves",
+      stats: ["10M+ Predictions", "87% Success Rate", "15 Sectors"],
+      shape: "circle"
+    },
+    {
+      title: "Intelligent Automation",
+      description: "Automating complex processes with AI that learns African workflows",
+      icon: <Cog className="h-10 w-10" />,
+      gradient: "from-green-500 to-emerald-500",
+      pattern: "circuit",
+      stats: ["500+ Processes", "70% Efficiency Gain", "24/7 Operation"],
+      shape: "triangle"
+    },
+    {
+      title: "Data Renaissance",
+      description: "Transforming Africa's data into intelligent insights and opportunities",
+      icon: <Database className="h-10 w-10" />,
+      gradient: "from-orange-500 to-amber-500",
+      pattern: "grid",
+      stats: ["1B+ Data Points", "Real-time Analytics", "50+ Data Sources"],
+      shape: "square"
+    }
+  ];
+
+  const innovationHubs = [
+    {
+      name: "Neural Nexus Nairobi",
+      focus: "AI Research & Development",
+      icon: <CircuitBoard className="h-8 w-8" />,
+      location: "Kenya",
+      projects: 12,
+      color: "bg-gradient-to-br from-blue-500/20 to-cyan-500/20",
+      gradient: "from-blue-500 to-cyan-500"
+    },
+    {
+      name: "Data Delta Lagos",
+      focus: "Big Data & Analytics",
+      icon: <LineChart className="h-8 w-8" />,
+      location: "Nigeria",
+      projects: 18,
+      color: "bg-gradient-to-br from-purple-500/20 to-pink-500/20",
+      gradient: "from-purple-500 to-pink-500"
+    },
+    {
+      name: "AI Arc Accra",
+      focus: "AI Applications & Deployment",
+      icon: <Cpu className="h-8 w-8" />,
+      location: "Ghana",
+      projects: 15,
+      color: "bg-gradient-to-br from-green-500/20 to-emerald-500/20",
+      gradient: "from-green-500 to-emerald-500"
+    },
+    {
+      name: "Innovation Sphere Cape Town",
+      focus: "AI Ethics & Governance",
+      icon: <ShieldIcon className="h-8 w-8" />,
+      location: "South Africa",
+      projects: 9,
+      color: "bg-gradient-to-br from-orange-500/20 to-amber-500/20",
+      gradient: "from-orange-500 to-amber-500"
+    }
+  ];
+
+  const achievements = [
+    { 
+      number: "50+", 
+      label: "AI Models", 
+      icon: <Brain className="h-6 w-6" />,
+      growth: "+400%",
+      color: "blue"
     },
     { 
-      name: "RPA", 
-      icon: <Cog className="h-6 w-6 sm:h-8 sm:w-8" />, 
-      applications: 10,
-      color: "from-yellow-500 to-amber-500",
-      description: "Automated workflows"
+      number: "150+", 
+      label: "AI Experts", 
+      icon: <Users className="h-6 w-6" />,
+      growth: "+800%",
+      color: "purple"
     },
     { 
-      name: "IoT Integration", 
-      icon: <Wifi className="h-6 w-6 sm:h-8 sm:w-8" />, 
-      applications: 7,
-      color: "from-indigo-500 to-violet-500",
-      description: "Connected systems"
+      number: "15", 
+      label: "Countries", 
+      icon: <Globe className="h-6 w-6" />,
+      growth: "+1400%",
+      color: "green"
+    },
+    { 
+      number: "500K+", 
+      label: "Users Impacted", 
+      icon: <Heart className="h-6 w-6" />,
+      growth: "+900%",
+      color: "red"
     }
   ];
 
-  const industries = [
+  const companyInfoCards = [
     {
-      id: "finance-banking",
-      title: "Finance",
-      description: "AI-powered financial intelligence transforming legacy systems into predictive engines.",
-      icon: <Database className="h-10 w-10 sm:h-12 sm:w-12" />,
-      color: "from-blue-700 via-cyan-500 to-emerald-400",
-      bgColor: "bg-gradient-to-br from-blue-900/30 to-cyan-900/20",
-      accentColor: "rgb(6, 182, 212)",
-      image: "https://images.unsplash.com/photo-1616514197671-15d99ce7a6f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-      solutions: [
-        "Fraud Detection AI",
-        "Risk Assessment",
-        "Algorithmic Trading",
-        "Personalized Banking",
-        "Regulatory Compliance"
-      ],
-      stats: { efficiency: "300%", accuracy: "99.8%", savings: "$2.5M" },
-      gradientAngle: "45deg"
+      title: "AI Ethics & Responsibility",
+      description: "We've established Africa's first AI ethics framework, ensuring all our systems are transparent, accountable, and aligned with African values.",
+      icon: <Shield className="h-8 w-8" />,
+      gradient: "from-blue-500 to-cyan-500",
+      stats: "Ethical AI Framework"
     },
     {
-      id: "healthcare",
-      title: "Healthcare",
-      description: "Life-saving AI diagnostics and predictive care revolutionizing patient outcomes.",
-      icon: <Brain className="h-10 w-10 sm:h-12 sm:w-12" />,
-      color: "from-rose-700 via-pink-500 to-purple-400",
-      bgColor: "bg-gradient-to-br from-rose-900/30 to-pink-900/20",
-      accentColor: "rgb(236, 72, 153)",
-      image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-      solutions: [
-        "Medical Imaging Analysis",
-        "Patient Risk Prediction",
-        "Drug Discovery AI",
-        "Personalized Treatment",
-        "Health Data Analytics"
-      ],
-      stats: { efficiency: "45%", accuracy: "98.7%", patients: "500K+" },
-      gradientAngle: "135deg"
+      title: "Talent Development",
+      description: "Over 5,000 African developers trained in AI technologies through our continent-wide education initiatives and partnerships.",
+      icon: <BookOpen className="h-8 w-8" />,
+      gradient: "from-purple-500 to-pink-500",
+      stats: "5K+ Developers Trained"
     },
     {
-      id: "retail-ecommerce",
-      title: "Retail",
-      description: "Hyper-personalized shopping experiences powered by behavioral AI.",
-      icon: <ShoppingBag className="h-10 w-10 sm:h-12 sm:w-12" />,
-      color: "from-amber-700 via-orange-500 to-red-400",
-      bgColor: "bg-gradient-to-br from-amber-900/30 to-orange-900/20",
-      accentColor: "rgb(251, 146, 60)",
-      image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-      solutions: [
-        "Personalized Recommendations",
-        "Inventory Optimization",
-        "Demand Forecasting",
-        "Customer Behavior Analysis",
-        "Supply Chain AI"
-      ],
-      stats: { sales: "65%", retention: "40%", revenue: "$8.3M" },
-      gradientAngle: "225deg"
+      title: "Research Excellence",
+      description: "Published 50+ research papers in top AI conferences and contributed to 15 open-source AI projects benefiting the global community.",
+      icon: <Lightbulb className="h-8 w-8" />,
+      gradient: "from-green-500 to-emerald-500",
+      stats: "50+ Research Papers"
     },
     {
-      id: "manufacturing",
-      title: "Manufacturing",
-      description: "Self-optimizing factories with AI-driven predictive maintenance.",
-      icon: <CircuitBoard className="h-10 w-10 sm:h-12 sm:w-12" />,
-      color: "from-emerald-700 via-green-500 to-teal-400",
-      bgColor: "bg-gradient-to-br from-emerald-900/30 to-green-900/20",
-      accentColor: "rgb(16, 185, 129)",
-      image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-      solutions: [
-        "Predictive Maintenance",
-        "Quality Control AI",
-        "Autonomous Logistics",
-        "Energy Optimization",
-        "Production Automation"
-      ],
-      stats: { downtime: "-70%", quality: "99.9%", output: "+85%" },
-      gradientAngle: "315deg"
-    },
-    {
-      id: "education",
-      title: "Education",
-      description: "Adaptive learning ecosystems that personalize education at scale.",
-      icon: <GraduationCap className="h-10 w-10 sm:h-12 sm:w-12" />,
-      color: "from-violet-700 via-purple-500 to-indigo-400",
-      bgColor: "bg-gradient-to-br from-violet-900/30 to-purple-900/20",
-      accentColor: "rgb(168, 85, 247)",
-      image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-      solutions: [
-        "Personalized Learning",
-        "Intelligent Tutoring",
-        "Educational Analytics",
-        "Administrative Automation",
-        "Virtual Classrooms"
-      ],
-      stats: { engagement: "120%", performance: "35%", reach: "2M+" },
-      gradientAngle: "45deg"
-    },
-    {
-      id: "government",
-      title: "Government",
-      description: "Smart city AI creating sustainable and efficient public services.",
-      icon: <ShieldCheck className="h-10 w-10 sm:h-12 sm:w-12" />,
-      color: "from-indigo-700 via-blue-500 to-cyan-400",
-      bgColor: "bg-gradient-to-br from-indigo-900/30 to-blue-900/20",
-      accentColor: "rgb(99, 102, 241)",
-      image: "https://images.unsplash.com/photo-1534531173927-aeb928d54385?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-      solutions: [
-        "Smart City Solutions",
-        "Public Safety AI",
-        "Service Automation",
-        "Traffic Optimization",
-        "Resource Management"
-      ],
-      stats: { efficiency: "55%", response: "-60%", citizens: "10M+" },
-      gradientAngle: "135deg"
-    },
-    {
-      id: "energy",
-      title: "Energy",
-      description: "AI-optimized power grids and renewable energy management systems.",
-      icon: <Zap className="h-10 w-10 sm:h-12 sm:w-12" />,
-      color: "from-yellow-600 via-amber-500 to-orange-400",
-      bgColor: "bg-gradient-to-br from-yellow-900/30 to-amber-900/20",
-      accentColor: "rgb(245, 158, 11)",
-      solutions: [
-        "Grid Optimization",
-        "Predictive Maintenance",
-        "Energy Trading AI",
-        "Renewable Integration",
-        "Consumption Analytics"
-      ],
-      stats: { efficiency: "40%", savings: "$1.2M", capacity: "+60%" }
-    },
-    {
-      id: "transportation",
-      title: "Transportation",
-      description: "Intelligent logistics and autonomous transportation networks.",
-      icon: <GlobeIcon className="h-10 w-10 sm:h-12 sm:w-12" />,
-      color: "from-teal-600 via-emerald-500 to-green-400",
-      bgColor: "bg-gradient-to-br from-teal-900/30 to-emerald-900/20",
-      accentColor: "rgb(20, 184, 166)",
-      solutions: [
-        "Route Optimization",
-        "Autonomous Vehicles",
-        "Fleet Management",
-        "Supply Chain AI",
-        "Traffic Prediction"
-      ],
-      stats: { efficiency: "50%", costs: "-35%", delivery: "+70%" }
+      title: "Infrastructure Scale",
+      description: "Built Africa's largest AI computing infrastructure with 10,000+ GPUs powering our continent-wide AI solutions.",
+      icon: <Building className="h-8 w-8" />,
+      gradient: "from-orange-500 to-amber-500",
+      stats: "10K+ GPU Cluster"
     }
   ];
-
-  const currentIndustry = industries.find(ind => ind.id === activeIndustry) || industries[0];
-
-  // AI Impact Stories Data
-  const aiImpactStories = [
-    {
-      industry: "Finance",
-      achievement: "Reduced fraudulent transactions by 92% using real-time AI monitoring",
-      technology: "Machine Learning + Computer Vision",
-      timeline: "6 months implementation"
-    },
-    {
-      industry: "Healthcare",
-      achievement: "Improved diagnostic accuracy by 45% with AI-assisted imaging analysis",
-      technology: "Deep Learning + Predictive Analytics",
-      timeline: "8 months deployment"
-    },
-    {
-      industry: "Manufacturing",
-      achievement: "Increased production efficiency by 85% through predictive maintenance",
-      technology: "IoT + AI Analytics",
-      timeline: "4 months integration"
-    },
-    {
-      industry: "Retail",
-      achievement: "Boosted customer retention by 40% with personalized AI recommendations",
-      technology: "NLP + Behavioral AI",
-      timeline: "3 months rollout"
-    }
-  ];
-
-  // Animated background grid
-  const BackgroundGrid = () => (
-    <div className="fixed inset-0 z-0 overflow-hidden opacity-10 sm:opacity-20">
-      <div className="absolute inset-0" style={{
-        backgroundImage: `linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
-                         linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-        backgroundSize: '30px 30px',
-        maskImage: 'radial-gradient(circle at center, black, transparent 70%)'
-      }} />
-      {/* Animated hexagons */}
-      {[...Array(12)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute border border-cyan-500/10 rounded-lg"
-          style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            width: '60px',
-            height: '60px',
-            rotate: '30deg'
-          }}
-          animate={{
-            rotate: [30, 390],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 20 + Math.random() * 20,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-      ))}
-    </div>
-  );
 
   return (
-    <main className="pt-16 sm:pt-20 min-h-screen bg-gradient-to-br from-gray-950 via-black to-gray-950 overflow-x-hidden">
-      <BackgroundGrid />
+    <main className="relative min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0">
+        {/* Neural Network Animation */}
+        <div className="absolute inset-0 opacity-10">
+          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="neural-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+                <circle cx="50" cy="50" r="2" fill="currentColor" className="text-blue-500/20">
+                  <animate attributeName="r" values="2;4;2" dur="3s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="20" cy="20" r="1.5" fill="currentColor" className="text-purple-500/20">
+                  <animate attributeName="r" values="1.5;3;1.5" dur="2.5s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="80" cy="80" r="2.5" fill="currentColor" className="text-green-500/20">
+                  <animate attributeName="r" values="2.5;5;2.5" dur="4s" repeatCount="indefinite" />
+                </circle>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#neural-pattern)" />
+          </svg>
+        </div>
 
-      {/* Decorative floating elements */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-32 h-32 sm:w-64 sm:h-64 rounded-full blur-3xl"
-            style={{
-              background: `radial-gradient(circle, rgba(var(--accent-rgb), 0.1) 0%, transparent 70%)`,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              x: [0, Math.sin(i) * 50],
-              y: [0, Math.cos(i) * 50],
-            }}
-            transition={{
-              duration: 20 + i * 2,
-              repeat: Infinity,
-              repeatType: "reverse"
-            }}
-          />
-        ))}
+        {/* Floating AI Elements */}
+        <div className="absolute top-1/4 left-10 w-32 h-32 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-10 w-40 h-40 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-3/4 left-1/3 w-24 h-24 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-full blur-3xl animate-pulse delay-500"></div>
       </div>
 
-      <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-12 relative z-10">
-        {/* Hero Section - Made More Compact */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-center mb-16 sm:mb-24 relative"
-        >
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 100 }}
-            className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-black/50 border border-cyan-500/30 mb-6 sm:mb-8 backdrop-blur-xl"
-          >
-            <div className="relative">
-              <Sparkle className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-400 animate-spin-slow" />
+      {/* Hero Section */}
+      <section className="relative pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto max-w-7xl">
+          {/* Animated Title with Neural Connections */}
+          <div className="relative mb-12 text-center">
+            <div className="inline-block relative">
+              {/* Connection Dots */}
+              <div className="absolute -top-4 -left-4 w-3 h-3 bg-blue-500 rounded-full animate-ping"></div>
+              <div className="absolute -top-4 -right-4 w-3 h-3 bg-purple-500 rounded-full animate-ping delay-300"></div>
+              <div className="absolute -bottom-4 -left-8 w-3 h-3 bg-green-500 rounded-full animate-ping delay-500"></div>
+              <div className="absolute -bottom-4 -right-8 w-3 h-3 bg-orange-500 rounded-full animate-ping delay-700"></div>
+              
+              <h1 className="relative text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 tracking-tighter">
+                <span className="block bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent animate-gradient-x">
+                  AFRICA
+                </span>
+                <span className="block bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
+                  AI
+                </span>
+                <span className="block bg-gradient-to-r from-emerald-400 via-green-300 to-emerald-400 bg-clip-text text-transparent animate-gradient-x-reverse">
+                  REVOLUTION
+                </span>
+              </h1>
             </div>
-            <span className="text-xs sm:text-sm font-bold text-cyan-400 tracking-wider sm:tracking-widest">INDUSTRY TRANSFORMATION</span>
-          </motion.div>
-          
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-black text-white mb-4 sm:mb-8 leading-tight">
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
-              AI-POWERED
-            </span>
-            <br />
-            <span className="text-white text-3xl sm:text-5xl md:text-6xl">SOLUTIONS</span>
-          </h1>
-          
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="text-gray-400 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed px-4"
-          >
-            Transforming industries with intelligent AI systems that learn, adapt, and optimize in real-time.
-          </motion.p>
-          
-          {/* Interactive Stats - Made Responsive */}
-          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-12 px-4">
-            {[
-              { value: "50+", label: "Industries", color: "cyan" },
-              { value: "99.7%", label: "Accuracy", color: "blue" },
-              { value: "200+", label: "Solutions", color: "purple" },
-              { value: "45%", label: "Avg. ROI", color: "pink" }
-            ].map((stat, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 + idx * 0.1 }}
-                whileHover={{ scale: 1.05 }}
-                className="relative group"
-              >
-                <div className="relative p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-black/30 backdrop-blur-xl border border-white/10 overflow-hidden min-w-[100px] sm:min-w-[120px]">
-                  <div className="relative">
-                    <div className={`text-2xl sm:text-3xl md:text-4xl font-black bg-gradient-to-r from-${stat.color}-400 to-${stat.color}-600 bg-clip-text text-transparent`}>
-                      {stat.value}
-                    </div>
-                    <div className="text-gray-500 text-xs sm:text-sm font-medium tracking-wider mt-1 sm:mt-2">
-                      {stat.label}
-                    </div>
-                  </div>
+            
+            {/* Connection Lines */}
+            <div className="absolute top-1/4 left-1/4 w-1 h-24 bg-gradient-to-b from-blue-500/50 to-transparent transform -rotate-45"></div>
+            <div className="absolute top-1/4 right-1/4 w-1 h-24 bg-gradient-to-b from-purple-500/50 to-transparent transform rotate-45"></div>
+          </div>
+
+          {/* Founder Spotlight - Diamond Design */}
+          <div className="relative mb-20">
+            <div className="flex flex-col lg:flex-row items-center gap-8">
+              {/* Diamond Image Container */}
+              <div className="relative w-64 h-64">
+                <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 transform rotate-45"></div>
+                <div className="absolute inset-2 bg-gray-900 transform rotate-45 overflow-hidden">
+                  <img 
+                    src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80"
+                    alt="Bruno Sharif"
+                    className="w-full h-full object-cover object-top transform -rotate-45 scale-125"
+                  />
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Mobile-Friendly Industry Navigation - FIXED FOR MOBILE */}
-        <div className="mb-12 sm:mb-20 relative">
-          {/* Mobile horizontal scroll for industry buttons - IMPROVED VISIBILITY */}
-          <div className="lg:hidden overflow-x-auto pb-4 mb-8 px-2">
-            <div className="flex gap-2 min-w-max px-2">
-              {industries.slice(0, 6).map((industry) => (
-                <button
-                  key={industry.id}
-                  onClick={() => setActiveIndustry(industry.id)}
-                  className={`px-4 py-3 rounded-lg font-medium text-sm transition-all duration-300 whitespace-nowrap flex-shrink-0 min-w-[100px] ${
-                    activeIndustry === industry.id
-                      ? `bg-gradient-to-r ${industry.color} text-white shadow-lg`
-                      : 'bg-gray-800/80 text-gray-300 hover:bg-gray-800'
-                  }`}
-                  style={{
-                    border: activeIndustry === industry.id 
-                      ? `1px solid ${industry.accentColor}`
-                      : '1px solid rgba(255, 255, 255, 0.1)',
-                    backdropFilter: 'blur(10px)'
-                  }}
-                >
-                  <div className="flex flex-col items-center gap-1">
-                    <div className={`${activeIndustry === industry.id ? 'text-white' : 'text-gray-400'}`}>
-                      {React.cloneElement(industry.icon, { className: 'h-5 w-5' })}
-                    </div>
-                    <span className="font-semibold">{industry.title}</span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Desktop Circular Navigation */}
-          <div className="hidden lg:block relative">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <svg className="w-full h-full" viewBox="0 0 100 100">
-                <motion.path
-                  d="M10,50 Q50,10 90,50 Q50,90 10,50"
-                  stroke="url(#gradient)"
-                  strokeWidth="0.5"
-                  fill="none"
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: 1 }}
-                  transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
-                />
-                <defs>
-                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.5" />
-                    <stop offset="50%" stopColor="#3b82f6" stopOpacity="0.5" />
-                    <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.5" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
-
-            <div className="relative">
-              <motion.div 
-                className="relative mx-auto w-64 h-64 sm:w-96 sm:h-96 rounded-full"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-              >
-                {industries.slice(0, 6).map((industry, idx) => {
-                  const angle = (idx / 6) * 2 * Math.PI;
-                  const x = 48 + 35 * Math.cos(angle);
-                  const y = 48 + 35 * Math.sin(angle);
-                  
-                  return (
-                    <motion.button
-                      key={industry.id}
-                      onClick={() => setActiveIndustry(industry.id)}
-                      className={`absolute w-14 h-14 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center transition-all duration-500 ${
-                        activeIndustry === industry.id
-                          ? 'scale-125 shadow-2xl'
-                          : 'scale-100'
-                      }`}
-                      style={{
-                        left: `${x}%`,
-                        top: `${y}%`,
-                        transform: `translate(-50%, -50%)`,
-                        background: activeIndustry === industry.id 
-                          ? `linear-gradient(135deg, ${industry.accentColor}20, ${industry.accentColor}40)`
-                          : 'rgba(0, 0, 0, 0.3)',
-                        border: activeIndustry === industry.id
-                          ? `2px solid ${industry.accentColor}`
-                          : '1px solid rgba(255, 255, 255, 0.1)',
-                        backdropFilter: 'blur(10px)'
-                      }}
-                      whileHover={{ scale: 1.2, rotate: 5 }}
-                    >
-                      <div className={`${activeIndustry === industry.id ? 'text-white' : 'text-gray-400'}`}>
-                        {React.cloneElement(industry.icon, { className: 'h-6 w-6 sm:h-8 sm:w-8' })}
-                      </div>
-                    </motion.button>
-                  );
-                })}
-              </motion.div>
-
-              <div className="absolute inset-0 flex items-center justify-center">
-                <motion.div 
-                  key={activeIndustry}
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="text-center px-4"
-                >
-                  <div className="text-2xl sm:text-4xl font-black text-white mb-2">
-                    {currentIndustry.title}
-                  </div>
-                  <div className="text-gray-400 text-xs sm:text-sm max-w-xs mx-auto">
-                    {currentIndustry.description}
-                  </div>
-                </motion.div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Industry Showcase - FIXED FOR MOBILE VISIBILITY */}
-        <motion.div 
-          key={activeIndustry}
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="relative mb-16 sm:mb-32"
-        >
-          <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden backdrop-blur-xl mx-2 sm:mx-0"
-            style={{
-              background: 'rgba(0, 0, 0, 0.25)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: `
-                0 0 40px ${currentIndustry.accentColor}20,
-                inset 0 1px 0 rgba(255, 255, 255, 0.1)
-              `
-            }}
-          >
-            <div className="relative p-4 sm:p-8 lg:p-12">
-              {/* Mobile Title - Better visibility */}
-              <div className="lg:hidden mb-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="relative">
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                      className="absolute inset-0 border-2 border-dashed rounded-full border-cyan-500/30"
-                    />
-                    <div className="p-3 rounded-2xl bg-gradient-to-br from-black/50 to-transparent backdrop-blur-sm">
-                      {currentIndustry.icon}
-                    </div>
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-black text-white">
-                      {currentIndustry.title}
-                      <span className="text-cyan-400 ml-2">AI</span>
-                    </h2>
-                    <div className="text-gray-500 text-xs font-medium tracking-wider">
-                      INTELLIGENT TRANSFORMATION
-                    </div>
-                  </div>
+                {/* Floating Elements */}
+                <div className="absolute -top-4 -right-4 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                  <Brain className="h-4 w-4 text-white" />
                 </div>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  {currentIndustry.description}
-                </p>
-              </div>
-
-              <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                {/* Left - Data Visualization - FIXED FOR MOBILE */}
-                <div>
-                  <div className="mb-6 sm:mb-8">
-                    {/* Desktop Title */}
-                    <div className="hidden lg:flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-                      <div className="relative">
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                          className="absolute inset-0 border-2 border-dashed rounded-full border-cyan-500/30"
-                        />
-                        <div className="p-3 sm:p-4 rounded-2xl bg-gradient-to-br from-black/50 to-transparent backdrop-blur-sm">
-                          {currentIndustry.icon}
-                        </div>
-                      </div>
-                      <div>
-                        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white">
-                          {currentIndustry.title}
-                          <span className="text-cyan-400 ml-2">AI</span>
-                        </h2>
-                        <div className="text-gray-500 text-xs sm:text-sm font-medium tracking-wider">
-                          INTELLIGENT TRANSFORMATION
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Animated progress rings - IMPROVED MOBILE SIZE */}
-                    <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
-                      {Object.entries(currentIndustry.stats).map(([key, value], idx) => (
-                        <div key={key} className="text-center">
-                          <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2">
-                            <svg className="w-full h-full" viewBox="0 0 100 100">
-                              <circle
-                                cx="50"
-                                cy="50"
-                                r="40"
-                                fill="none"
-                                stroke="rgba(255,255,255,0.1)"
-                                strokeWidth="8"
-                              />
-                              <motion.circle
-                                cx="50"
-                                cy="50"
-                                r="40"
-                                fill="none"
-                                stroke={currentIndustry.accentColor}
-                                strokeWidth="8"
-                                strokeLinecap="round"
-                                initial={{ pathLength: 0 }}
-                                animate={{ pathLength: 0.7 }}
-                                transition={{ duration: 1.5, delay: idx * 0.2 }}
-                                transform="rotate(-90 50 50)"
-                              />
-                            </svg>
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <div className="text-xl sm:text-2xl md:text-3xl font-black text-white">{value}</div>
-                            </div>
-                          </div>
-                          <div className="text-xs text-gray-500 uppercase tracking-wider">
-                            {key}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Solutions Grid - Made Responsive */}
-                  <div className="relative">
-                    <div className="text-gray-400 text-xs sm:text-sm font-medium tracking-wider mb-3 sm:mb-4">
-                      CORE SOLUTIONS
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                      {currentIndustry.solutions.map((solution, idx) => (
-                        <motion.div
-                          key={idx}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: idx * 0.1 }}
-                          whileHover={{ scale: 1.02, backgroundColor: `${currentIndustry.accentColor}10` }}
-                          className="p-3 sm:p-4 rounded-lg sm:rounded-xl border border-white/5 bg-black/30 backdrop-blur-sm"
-                        >
-                          <div className="flex items-center gap-2 sm:gap-3">
-                            <div className="h-2 w-2 rounded-full bg-cyan-500" />
-                            <span className="text-white text-sm">{solution}</span>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
+                <div className="absolute -bottom-4 -left-4 w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                  <Zap className="h-4 w-4 text-white" />
                 </div>
-
-                {/* Right - Interactive 3D Effect - FIXED FOR MOBILE VISIBILITY */}
-                <div className="relative mt-8 lg:mt-0">
-                  <div className="relative h-72 sm:h-80 md:h-96 rounded-xl sm:rounded-2xl overflow-hidden"
-                    style={{
-                      background: `linear-gradient(45deg, ${currentIndustry.accentColor}15, transparent)`,
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      minHeight: '280px'
-                    }}
-                  >
-                    {/* Floating data points - VISIBLE ON MOBILE */}
-                    {[...Array(15)].map((_, i) => (
-                      <motion.div
-                        key={i}
-                        className="absolute w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full"
-                        style={{
-                          background: currentIndustry.accentColor,
-                          left: `${Math.random() * 100}%`,
-                          top: `${Math.random() * 100}%`,
-                          filter: 'drop-shadow(0 0 4px currentColor)'
-                        }}
-                        animate={{
-                          y: [0, -20, 0],
-                          opacity: [0.3, 0.8, 0.3],
-                          scale: [1, 1.2, 1]
-                        }}
-                        transition={{
-                          duration: 2 + Math.random() * 2,
-                          repeat: Infinity,
-                          delay: Math.random() * 2,
-                        }}
-                      />
-                    ))}
-
-                    {/* Central visualization - VISIBLE ON MOBILE */}
-                    <div className="absolute inset-0 flex items-center justify-center p-4">
-                      <motion.div
-                        animate={{ 
-                          rotateY: [0, 180, 360],
-                          scale: [1, 1.1, 1]
-                        }}
-                        transition={{ 
-                          duration: 20, 
-                          repeat: Infinity,
-                          ease: "linear"
-                        }}
-                        className="relative w-56 h-56 sm:w-64 sm:h-64"
-                      >
-                        <div className="absolute inset-0 border-2 border-dashed rounded-full border-cyan-500/40" />
-                        <div className="absolute inset-6 sm:inset-8 border-2 border-dashed rounded-full border-blue-500/40" />
-                        <div className="absolute inset-12 sm:inset-16 border-2 border-dashed rounded-full border-purple-500/40" />
-                        
-                        {/* Pulsing center - VISIBLE ON MOBILE */}
-                        <motion.div
-                          animate={{ 
-                            scale: [1, 1.4, 1],
-                            opacity: [0.8, 1, 0.8]
-                          }}
-                          transition={{ 
-                            duration: 2, 
-                            repeat: Infinity,
-                            ease: "easeInOut"
-                          }}
-                          className="absolute inset-16 sm:inset-20 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"
-                          style={{
-                            boxShadow: `
-                              0 0 40px ${currentIndustry.accentColor},
-                              inset 0 0 20px rgba(255, 255, 255, 0.3)
-                            `
-                          }}
-                        />
-                        
-                        {/* Glow effect around the center */}
-                        <motion.div
-                          animate={{ 
-                            scale: [1, 1.6, 1],
-                            opacity: [0, 0.4, 0]
-                          }}
-                          transition={{ 
-                            duration: 3, 
-                            repeat: Infinity,
-                            ease: "easeInOut"
-                          }}
-                          className="absolute inset-10 sm:inset-14 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 rounded-full blur-sm"
-                        />
-                      </motion.div>
-                    </div>
-                    
-                    {/* Animated rings around the visualization */}
-                    <motion.div
-                      animate={{ 
-                        rotate: 360,
-                        scale: [1, 1.05, 1]
-                      }}
-                      transition={{ 
-                        duration: 25, 
-                        repeat: Infinity,
-                        ease: "linear"
-                      }}
-                      className="absolute inset-4 sm:ins-6 border border-cyan-500/20 rounded-full"
-                    />
-                  </div>
-
-                  {/* Real-time metrics - Made Responsive */}
-                  <div className="mt-4 sm:mt-6 grid grid-cols-3 gap-2 sm:gap-4">
-                    {[
-                      { label: "AI Processing", value: "24/7", trend: "+" },
-                      { label: "Data Points", value: "2.4M", trend: "↑" },
-                      { label: "Accuracy", value: "99.8%", trend: "↗" }
-                    ].map((metric, idx) => (
-                      <div key={idx} className="text-center p-3 sm:p-4 rounded-lg sm:rounded-xl bg-black/30 backdrop-blur-sm border border-white/5">
-                        <div className="text-lg sm:text-xl md:text-2xl font-black text-white">{metric.value}</div>
-                        <div className="text-xs text-gray-500 mt-1">{metric.label}</div>
-                        <div className="text-green-400 text-xs mt-1">{metric.trend} Live</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* AI Transformation Stories Section - New Section */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="relative mb-16 sm:mb-32"
-        >
-          {/* Background with subtle animation */}
-          <div className="absolute inset-0 rounded-2xl sm:rounded-3xl overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-blue-500/5 to-purple-500/5" />
-            {[...Array(8)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-32 h-32 rounded-full blur-3xl"
-                style={{
-                  background: `radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, transparent 70%)`,
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                }}
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.3, 0.6, 0.3],
-                }}
-                transition={{
-                  duration: 4 + Math.random() * 2,
-                  repeat: Infinity,
-                }}
-              />
-            ))}
-          </div>
-
-          <div className="relative p-6 sm:p-8 md:p-12 rounded-2xl sm:rounded-3xl backdrop-blur-sm border border-white/10 bg-black/40">
-            <div className="text-center mb-8 sm:mb-12">
-              <div className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 rounded-full bg-black/50 border border-cyan-500/30 mb-4 backdrop-blur-xl">
-                <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-400" />
-                <span className="text-xs sm:text-sm font-bold text-cyan-400 tracking-wider">AI TRANSFORMATION IMPACT</span>
               </div>
               
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-4">
-                How <span className="text-cyan-400">AI</span> Transforms Industries
-              </h2>
-              
-              <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto px-4">
-                Real-world applications of artificial intelligence driving measurable business outcomes across sectors
-              </p>
-            </div>
-
-            {/* AI Impact Stories Grid */}
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              {aiImpactStories.map((story, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ y: -5 }}
-                  className="group relative"
-                >
-                  <div className="relative p-5 sm:p-6 rounded-xl sm:rounded-2xl bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-sm border border-white/10 overflow-hidden h-full">
-                    {/* Animated background effect */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    
-                    <div className="relative">
-                      {/* Industry badge */}
-                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/30 mb-4">
-                        <div className="h-2 w-2 rounded-full bg-cyan-500" />
-                        <span className="text-xs font-bold text-cyan-400">{story.industry}</span>
-                      </div>
-                      
-                      {/* Achievement */}
-                      <h3 className="text-white font-bold text-sm sm:text-base mb-3 leading-relaxed">
-                        {story.achievement}
-                      </h3>
-                      
-                      {/* Technology used */}
-                      <div className="mb-4">
-                        <div className="text-gray-500 text-xs mb-2">TECHNOLOGY STACK</div>
-                        <div className="text-cyan-400 text-xs font-medium">{story.technology}</div>
-                      </div>
-                      
-                      {/* Timeline */}
-                      <div className="pt-3 border-t border-white/10">
-                        <div className="text-gray-500 text-xs">IMPLEMENTATION</div>
-                        <div className="text-gray-300 text-sm font-medium">{story.timeline}</div>
-                      </div>
-                    </div>
-                    
-                    {/* Corner accents */}
-                    <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-cyan-500/30" />
-                    <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-cyan-500/30" />
-                    <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-cyan-500/30" />
-                    <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-cyan-500/30" />
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* AI Process Visualization */}
-            <div className="mt-10 sm:mt-12 pt-8 sm:pt-10 border-t border-white/10">
-              <div className="text-center mb-6 sm:mb-8">
-                <h3 className="text-lg sm:text-xl font-bold text-white mb-2">The AI Transformation Process</h3>
-                <p className="text-gray-400 text-sm sm:text-base">From data to actionable intelligence</p>
-              </div>
-              
-              <div className="relative">
-                {/* Process steps - Responsive layout */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  {[
-                    { step: "01", title: "Data Analysis", desc: "Pattern recognition", icon: <Database className="h-5 w-5" /> },
-                    { step: "02", title: "AI Modeling", desc: "Algorithm training", icon: <Brain className="h-5 w-5" /> },
-                    { step: "03", title: "Integration", desc: "System deployment", icon: <CircuitBoard className="h-5 w-5" /> },
-                    { step: "04", title: "Optimization", desc: "Continuous learning", icon: <TrendingUp className="h-5 w-5" /> }
-                  ].map((process, idx) => (
-                    <div key={idx} className="text-center">
-                      <div className="relative inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 mb-3">
-                        <div className="text-cyan-400">{process.icon}</div>
-                        <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-black border border-cyan-500/50 flex items-center justify-center">
-                          <span className="text-xs font-bold text-cyan-400">{process.step}</span>
-                        </div>
-                      </div>
-                      <div className="text-white font-bold text-sm sm:text-base">{process.title}</div>
-                      <div className="text-gray-500 text-xs mt-1">{process.desc}</div>
-                    </div>
-                  ))}
+              {/* Founder Info */}
+              <div className="flex-1">
+                <div className="inline-flex items-center gap-3 mb-6">
+                  <div className="w-12 h-1 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full"></div>
+                  <span className="text-sm font-bold tracking-widest text-amber-400 uppercase">
+                    Visionary Leadership
+                  </span>
+                  <div className="w-12 h-1 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full"></div>
                 </div>
                 
-                {/* Connecting lines for desktop */}
-                <div className="hidden sm:block absolute top-6 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 -z-10" />
-                <div className="hidden sm:block absolute top-6 left-2/4 right-1/4 h-0.5 bg-gradient-to-r from-blue-500/30 to-purple-500/30 -z-10" />
-                <div className="hidden sm:block absolute top-6 left-3/4 right-1/4 h-0.5 bg-gradient-to-r from-purple-500/30 to-pink-500/30 -z-10" />
+                <h2 className="text-4xl font-bold text-white mb-4">
+                  Bruno Sharif
+                  <span className="block text-xl text-amber-300 font-normal mt-2">
+                    CEO & Founder
+                  </span>
+                </h2>
+                
+                <p className="text-lg text-gray-300 mb-6 leading-relaxed">
+                  "We're not just building AI in Africa. We're building African AI—systems that understand our context, 
+                  speak our languages, and solve our unique challenges. This is more than technology; 
+                  it's a renaissance of African innovation."
+                </p>
+                
+                <div className="flex flex-wrap gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                      <TrendingUp className="h-4 w-4 text-blue-400" />
+                    </div>
+                    <div>
+                      <div className="text-sm text-gray-400">AI Impact</div>
+                      <div className="text-lg font-bold text-white">15 Countries</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                      <Users className="h-4 w-4 text-purple-400" />
+                    </div>
+                    <div>
+                      <div className="text-sm text-gray-400">Team Growth</div>
+                      <div className="text-lg font-bold text-white">150+ Experts</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
+      </section>
 
-        {/* Technology Stack - Made Responsive */}
-        <div className="mb-16 sm:mb-32">
-          <div className="text-center mb-8 sm:mb-12">
-            <div className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 rounded-full bg-black/50 border border-cyan-500/30 mb-4 backdrop-blur-xl">
-              <Cpu className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-400" />
-              <span className="text-xs sm:text-sm font-bold text-cyan-400 tracking-wider">TECHNOLOGY MATRIX</span>
+      {/* AI Journey Timeline - Interactive 3D */}
+      <section className="relative py-20 px-4 sm:px-6 lg:px-8 border-t border-gray-800/50">
+        <div className="container mx-auto max-w-7xl">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-4 mb-6">
+              <div className="w-16 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent"></div>
+              <span className="text-sm font-bold tracking-widest text-blue-400 uppercase">
+                Our Evolution
+              </span>
+              <div className="w-16 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent"></div>
             </div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-4">
-              Neural <span className="text-cyan-400">Architecture</span>
+            
+            <h2 className="text-5xl font-bold text-white mb-6">
+              The <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                AI Journey
+              </span>
             </h2>
-            <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto px-4">
-              Advanced AI technologies powering industry transformation
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+              From vision to continental impact. Watch our story unfold.
             </p>
           </div>
-
-          {/* Tech hex grid - Made Responsive */}
-          <div className="relative px-2 sm:px-0">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
-              {technologyStack.map((tech, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5, delay: idx * 0.1 }}
-                  whileHover={{ 
-                    y: -5,
-                    transition: { type: "spring", stiffness: 300 }
-                  }}
-                  className="relative group"
-                >
-                  {/* Hexagon shape */}
-                  <div className="relative h-40 sm:h-48"
-                    style={{
-                      clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'
-                    }}
+          
+          {/* Interactive Timeline */}
+          <div className="relative">
+            {/* Timeline Bar */}
+            <div className="relative h-2 bg-gray-800 rounded-full mb-12">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-green-500 rounded-full"></div>
+              
+              {/* Year Markers */}
+              {Object.keys(aiJourney).map((year, index) => {
+                const percentage = ((index) / (Object.keys(aiJourney).length - 1)) * 100;
+                return (
+                  <button
+                    key={year}
+                    onClick={() => setActiveYear(parseInt(year))}
+                    className={`absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-500 ${
+                      activeYear === parseInt(year) 
+                        ? 'scale-125 bg-white shadow-xl shadow-blue-500/50' 
+                        : 'bg-gray-800 hover:bg-gray-700'
+                    }`}
+                    style={{ left: `${percentage}%` }}
                   >
-                    <div className="absolute inset-0 bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-xl border border-white/10 group-hover:border-cyan-500/50 transition-colors" />
-                    
-                    <div className="absolute inset-0 p-4 sm:p-6 flex flex-col items-center justify-center">
-                      <motion.div
-                        animate={{ rotate: [0, 360] }}
-                        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                        className="absolute inset-3 sm:inset-4 border border-cyan-500/20 rounded-full"
-                      />
-                      
-                      <div className={`p-3 sm:p-4 rounded-2xl bg-gradient-to-br ${tech.color} bg-opacity-20 mb-3 sm:mb-4`}>
-                        <div className="text-white">{tech.icon}</div>
+                    <span className={`text-sm font-bold ${
+                      activeYear === parseInt(year) ? 'text-gray-900' : 'text-gray-400'
+                    }`}>
+                      {year}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            
+            {/* Active Year Display - 3D Card */}
+            <div className="relative">
+              <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-green-500/10 rounded-3xl blur-xl"></div>
+              
+              <div className="relative bg-gray-900/50 backdrop-blur-xl rounded-3xl border border-gray-800 overflow-hidden">
+                <div className="p-6 md:p-8 lg:p-12">
+                  <div className="flex flex-col lg:flex-row items-start gap-6 lg:gap-8">
+                    {/* Metrics Visualization */}
+                    <div className="lg:w-1/3">
+                      <div className={`p-4 md:p-6 rounded-2xl bg-gradient-to-br ${aiJourney[activeYear].color} bg-opacity-20 mb-6`}>
+                        <div className="flex items-center justify-between mb-4">
+                          <div className={`p-3 rounded-xl bg-gradient-to-br ${aiJourney[activeYear].color} text-white`}>
+                            {aiJourney[activeYear].icon}
+                          </div>
+                          <div className="text-xl md:text-2xl font-bold text-white">{activeYear}</div>
+                        </div>
+                        <h3 className="text-xl md:text-2xl font-bold text-white mb-2">{aiJourney[activeYear].title}</h3>
+                        <p className="text-gray-300 text-sm md:text-base">{aiJourney[activeYear].description}</p>
                       </div>
                       
-                      <h3 className="text-white font-bold text-center text-sm sm:text-base mb-1 sm:mb-2">{tech.name}</h3>
-                      <p className="text-gray-400 text-xs text-center mb-2 sm:mb-3">{tech.description}</p>
+                      {/* Animated Metrics - Centered for mobile */}
+                      <div className="grid grid-cols-3 gap-3 md:gap-4 justify-items-center">
+                        {Object.entries(aiJourney[activeYear].metrics).map(([key, value]) => (
+                          <div key={key} className="text-center">
+                            <div className="text-xl md:text-2xl font-bold text-white mb-1">{value}</div>
+                            <div className="text-xs text-gray-400 uppercase">{key}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {/* Achievements List */}
+                    <div className="lg:w-2/3">
+                      <div className="mb-6">
+                        <h4 className="text-lg font-bold text-white mb-4 text-center md:text-left">Key Achievements</h4>
+                        <div className="space-y-3">
+                          {aiJourney[activeYear].achievements.map((achievement, idx) => (
+                            <div 
+                              key={idx}
+                              className="flex items-center gap-3 p-3 rounded-lg bg-gray-800/50 border border-gray-700/50 hover:border-blue-500/50 transition-colors mx-auto md:mx-0 max-w-md md:max-w-none"
+                            >
+                              <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                              <span className="text-gray-300 text-sm md:text-base">{achievement}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                       
-                      <div className="text-cyan-400 text-xs sm:text-sm font-bold">
-                        {tech.applications}+ applications
+                      {/* Progress Visualization */}
+                      <div className="mt-6 md:mt-8">
+                        <div className="flex justify-between text-sm text-gray-400 mb-2">
+                          <span>Progress</span>
+                          <span>{((activeYear - 2020) / 4 * 100).toFixed(0)}%</span>
+                        </div>
+                        <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-green-500 rounded-full transition-all duration-1000"
+                            style={{ width: `${((activeYear - 2020) / 4 * 100)}%` }}
+                          ></div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </motion.div>
-              ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* All Industries Overview - Grid Layout */}
-        <div className="mb-16 sm:mb-24">
-          <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-4">
-              Industry <span className="text-cyan-400">Solutions</span>
+      {/* AI Solutions - Geometric Cards */}
+      <section className="relative py-16 md:py-20 px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto max-w-7xl">
+          <div className="text-center mb-12 md:mb-16">
+            <div className="inline-flex items-center gap-3 md:gap-4 mb-6">
+              <Brain className="h-5 w-5 md:h-6 md:w-6 text-blue-400" />
+              <span className="text-sm font-bold tracking-widest text-blue-400 uppercase">
+                Our AI Solutions
+              </span>
+              <Brain className="h-5 w-5 md:h-6 md:w-6 text-blue-400" />
+            </div>
+            
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 px-2">
+              Building <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                Intelligent Africa
+              </span>
             </h2>
-            <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto px-4">
-              Comprehensive AI solutions tailored to specific industry challenges
+            <p className="text-gray-400 text-base md:text-xl max-w-3xl mx-auto px-2">
+              Advanced AI solutions designed specifically for African contexts and challenges
             </p>
           </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-            {industries.map((industry) => (
-              <motion.div
-                key={industry.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                whileHover={{ y: -5 }}
-                className="group relative"
+          
+          {/* Geometric Solution Cards - Improved for mobile */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 px-2 sm:px-0">
+            {aiSolutions.map((solution, index) => (
+              <div 
+                key={index}
+                className="group perspective-1000 mx-auto w-full max-w-sm sm:max-w-none"
               >
-                <div className="relative p-5 sm:p-6 rounded-xl sm:rounded-2xl bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-sm border border-white/10 overflow-hidden h-full">
-                  {/* Hover gradient effect */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  
-                  <div className="relative">
-                    {/* Icon and Title */}
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className={`p-2.5 sm:p-3 rounded-xl bg-gradient-to-br ${industry.color} bg-opacity-20`}>
-                        <div className="text-white">{React.cloneElement(industry.icon, { className: 'h-5 w-5 sm:h-6 sm:w-6' })}</div>
-                      </div>
-                      <h3 className="text-white font-bold text-lg sm:text-xl">{industry.title}</h3>
-                    </div>
-                    
-                    {/* Description */}
-                    <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-                      {industry.description}
-                    </p>
-                    
-                    {/* Stats Preview */}
-                    <div className="flex items-center gap-4 mb-4">
-                      {Object.entries(industry.stats).slice(0, 2).map(([key, value]) => (
-                        <div key={key} className="text-center">
-                          <div className="text-lg sm:text-xl font-bold text-white">{value}</div>
-                          <div className="text-gray-500 text-xs capitalize">{key}</div>
+                <div className="relative transform-style-3d transition-transform duration-700 group-hover:rotate-y-180 h-80">
+                  {/* Front of Card */}
+                  <div className={`absolute inset-0 backface-hidden rounded-2xl overflow-hidden ${
+                    solution.shape === 'hexagon' ? 'clip-hexagon' :
+                    solution.shape === 'circle' ? 'rounded-full' :
+                    solution.shape === 'triangle' ? 'clip-triangle' :
+                    'rounded-2xl'
+                  }`}>
+                    <div className={`absolute inset-0 bg-gradient-to-br ${solution.gradient} opacity-20`}></div>
+                    <div className="relative p-6 md:p-8 h-full flex flex-col justify-between">
+                      <div>
+                        <div className={`mb-4 md:mb-6 p-3 md:p-4 rounded-xl bg-gradient-to-br ${solution.gradient} w-fit`}>
+                          {solution.icon}
                         </div>
-                      ))}
+                        <h3 className="text-xl md:text-2xl font-bold text-white mb-2 md:mb-3">{solution.title}</h3>
+                        <p className="text-gray-300 text-xs md:text-sm leading-relaxed">{solution.description}</p>
+                      </div>
+                      <div className="mt-4 md:mt-6">
+                        <div className="flex items-center gap-2 text-sm text-gray-400">
+                          <span>Learn more</span>
+                          <ChevronRight className="h-3 w-3 md:h-4 md:w-4 group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      </div>
                     </div>
-                    
-                    {/* Solutions Preview */}
-                    <div className="pt-4 border-t border-white/10">
-                      <div className="text-gray-500 text-xs mb-2">KEY SOLUTIONS</div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {industry.solutions.slice(0, 3).map((solution, idx) => (
-                          <span key={idx} className="px-2 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs">
-                            {solution}
-                          </span>
+                  </div>
+                  
+                  {/* Back of Card - Stats */}
+                  <div className={`absolute inset-0 backface-hidden rotate-y-180 ${
+                    solution.shape === 'hexagon' ? 'clip-hexagon' :
+                    solution.shape === 'circle' ? 'rounded-full' :
+                    solution.shape === 'triangle' ? 'clip-triangle' :
+                    'rounded-2xl'
+                  } bg-gray-900 border border-gray-800 p-6 md:p-8`}>
+                    <div className="h-full flex flex-col justify-center">
+                      <h4 className="text-lg font-bold text-white mb-6 text-center">Performance Metrics</h4>
+                      <div className="space-y-3 md:space-y-4">
+                        {solution.stats.map((stat, idx) => (
+                          <div key={idx} className="text-center">
+                            <div className="text-lg md:text-2xl font-bold text-white">{stat}</div>
+                          </div>
                         ))}
                       </div>
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* CSS Animations */}
-      <style>{`
-        @keyframes gradientShift {
+      {/* Visionary Team - Staggered Grid with Diagonal Connections */}
+      <section className="relative py-20 md:py-32 px-4 sm:px-6 lg:px-8 border-t border-gray-800/50">
+        <div className="container mx-auto max-w-7xl">
+          <div className="text-center mb-12 md:mb-20">
+            <div className="inline-flex items-center gap-3 md:gap-4 mb-6">
+              <Users className="h-5 w-5 md:h-6 md:w-6 text-purple-400" />
+              <span className="text-sm font-bold tracking-widest text-purple-400 uppercase">
+                The Architects
+              </span>
+              <Users className="h-5 w-5 md:h-6 md:w-6 text-purple-400" />
+            </div>
+            
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Meet Our <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Visionary Team
+              </span>
+            </h2>
+            <p className="text-gray-400 text-base md:text-xl max-w-2xl mx-auto">
+              The brilliant minds architecting Africa's AI future
+            </p>
+          </div>
+          
+          {/* Staggered Team Grid */}
+          <div className="relative">
+            {/* Background Connection Lines */}
+            <div className="absolute inset-0 hidden md:block">
+              <div className="absolute top-1/4 left-1/4 w-1/2 h-1 bg-gradient-to-r from-purple-500/20 to-pink-500/20 transform rotate-45"></div>
+              <div className="absolute top-1/4 right-1/4 w-1/2 h-1 bg-gradient-to-r from-purple-500/20 to-pink-500/20 transform -rotate-45"></div>
+              <div className="absolute bottom-1/4 left-1/4 w-1/2 h-1 bg-gradient-to-r from-purple-500/20 to-pink-500/20 transform -rotate-45"></div>
+              <div className="absolute bottom-1/4 right-1/4 w-1/2 h-1 bg-gradient-to-r from-purple-500/20 to-pink-500/20 transform rotate-45"></div>
+            </div>
+            
+            {/* Team Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-4xl mx-auto">
+              {visionaryTeam.map((member, index) => (
+                <div 
+                  key={index}
+                  className={`group relative ${index % 2 === 0 ? 'md:mt-0' : 'md:mt-12'}`}
+                >
+                  {/* Glow Effect */}
+                  <div className={`absolute -inset-4 bg-gradient-to-br ${member.color} rounded-3xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500`}></div>
+                  
+                  <div className="relative bg-gray-900/70 backdrop-blur-xl rounded-2xl overflow-hidden border border-gray-800 group-hover:border-purple-500/50 transition-all duration-500 p-6">
+                    <div className="flex flex-col md:flex-row items-center gap-6">
+                      {/* Member Image */}
+                      <div className="relative w-32 h-32 flex-shrink-0">
+                        <div className={`absolute inset-0 ${member.gradient} rounded-full transform rotate-0`}></div>
+                        <div className="absolute inset-2 bg-gray-900 rounded-full overflow-hidden">
+                          <img 
+                            src={member.image}
+                            alt={member.name}
+                            className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500"
+                          />
+                        </div>
+                        {/* Floating Icon */}
+                        <div className="absolute -top-2 -right-2 w-8 h-8 bg-gray-900 rounded-full border border-gray-700 flex items-center justify-center">
+                          <div className={`w-6 h-6 rounded-full ${member.gradient} flex items-center justify-center`}>
+                            {index === 0 && <Brain className="h-3 w-3 text-white" />}
+                            {index === 1 && <Cpu className="h-3 w-3 text-white" />}
+                            {index === 2 && <Database className="h-3 w-3 text-white" />}
+                            {index === 3 && <Network className="h-3 w-3 text-white" />}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Member Info - Always Visible */}
+                      <div className="flex-1 text-center md:text-left">
+                        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-300 transition-colors">
+                          {member.name}
+                        </h3>
+                        <p className="text-sm text-purple-400 mb-3 font-medium">{member.title}</p>
+                        <p className="text-gray-300 text-sm mb-4">{member.bio}</p>
+                        
+                        {/* Expertise Tags */}
+                        <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+                          {member.expertise.map((skill, idx) => (
+                            <span 
+                              key={idx}
+                              className="px-3 py-1 bg-gray-800/50 text-gray-300 text-xs font-medium rounded-full border border-gray-700 group-hover:border-purple-500/50 transition-colors"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Connection Line Animation */}
+                    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-transparent via-purple-500 to-transparent group-hover:w-3/4 transition-all duration-700"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Team Stats - Improved for mobile */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-16 md:mt-32 justify-items-center">
+            {achievements.map((achievement, index) => (
+              <div 
+                key={index}
+                className="relative bg-gray-900/30 backdrop-blur-sm rounded-2xl p-4 md:p-6 border border-gray-800 hover:border-blue-500/50 transition-all duration-500 group w-full max-w-xs md:max-w-none"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className={`p-2 md:p-3 rounded-xl ${
+                    achievement.color === 'blue' ? 'bg-blue-500/20 text-blue-400' :
+                    achievement.color === 'purple' ? 'bg-purple-500/20 text-purple-400' :
+                    achievement.color === 'green' ? 'bg-green-500/20 text-green-400' :
+                    'bg-red-500/20 text-red-400'
+                  }`}>
+                    {achievement.icon}
+                  </div>
+                  <div className="text-xs md:text-sm font-bold text-green-400">{achievement.growth}</div>
+                </div>
+                
+                <div className="text-2xl md:text-3xl font-bold text-white mb-1 text-center">{achievement.number}</div>
+                <div className="text-sm text-gray-400 text-center">{achievement.label}</div>
+                
+                {/* Growing Bar */}
+                <div className="mt-4 h-1 bg-gray-800 rounded-full overflow-hidden">
+                  <div 
+                    className={`h-full ${
+                      achievement.color === 'blue' ? 'bg-blue-500' :
+                      achievement.color === 'purple' ? 'bg-purple-500' :
+                      achievement.color === 'green' ? 'bg-green-500' :
+                      'bg-red-500'
+                    } rounded-full group-hover:w-full transition-all duration-1000`}
+                    style={{ width: '0%' }}
+                  ></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Innovation Hubs - Interactive Map */}
+      <section className="relative py-16 md:py-20 px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto max-w-7xl">
+          <div className="text-center mb-12 md:mb-16">
+            <div className="inline-flex items-center gap-3 md:gap-4 mb-6">
+              <Map className="h-5 w-5 md:h-6 md:w-6 text-green-400" />
+              <span className="text-sm font-bold tracking-widest text-green-400 uppercase">
+                Our Presence
+              </span>
+              <Map className="h-5 w-5 md:h-6 md:w-6 text-green-400" />
+            </div>
+            
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              AI <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+                Innovation Hubs
+              </span>
+            </h2>
+            <p className="text-gray-400 text-base md:text-xl max-w-2xl mx-auto">
+              Strategic centers driving AI innovation across the continent
+            </p>
+          </div>
+          
+          {/* Interactive Hub Cards - Now 4 cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            {innovationHubs.map((hub, index) => (
+              <div 
+                key={index}
+                className="group relative mx-auto w-full max-w-sm sm:max-w-none"
+              >
+                {/* Hover Effect Background */}
+                <div className="absolute -inset-4 bg-gradient-to-br from-gray-900 to-black rounded-3xl blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500"></div>
+                
+                {/* Hub Card */}
+                <div className="relative bg-gray-900/50 backdrop-blur-xl rounded-2xl p-6 md:p-8 border border-gray-800 group-hover:border-green-500/50 transition-all duration-500 h-full">
+                  {/* Icon and Projects */}
+                  <div className="flex items-start justify-between mb-6 md:mb-8">
+                    <div className={`p-3 md:p-4 rounded-2xl ${hub.color}`}>
+                      <div className={`p-2 md:p-3 rounded-xl bg-gradient-to-br ${hub.gradient} text-white`}>
+                        {hub.icon}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl md:text-3xl font-bold text-white">{hub.projects}</div>
+                      <div className="text-xs md:text-sm text-gray-400">Active Projects</div>
+                    </div>
+                  </div>
+                  
+                  <h3 className="text-xl md:text-2xl font-bold text-white mb-3 group-hover:text-green-300 transition-colors">
+                    {hub.name}
+                  </h3>
+                  <p className="text-gray-400 text-sm md:text-base mb-6">{hub.focus}</p>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                      <span className="text-sm text-gray-300">{hub.location}</span>
+                    </div>
+                    <div className="text-sm text-gray-500 group-hover:text-green-400 transition-colors">
+                      View Details →
+                    </div>
+                  </div>
+                  
+                  {/* Connection Line Animation */}
+                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-transparent via-green-500 to-transparent group-hover:w-3/4 transition-all duration-700"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Company Information Section */}
+      <section className="relative py-16 md:py-32 px-4 sm:px-6 lg:px-8 border-t border-gray-800/50">
+        <div className="container mx-auto max-w-4xl text-center">
+          {/* Animated AI Brain */}
+          <div className="relative w-24 h-24 md:w-32 md:h-32 mx-auto mb-8 md:mb-12">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full opacity-20 animate-pulse"></div>
+            <div className="absolute inset-4 bg-gray-900 rounded-full flex items-center justify-center">
+              <Brain className="h-12 w-12 md:h-16 md:w-16 text-blue-400 animate-pulse" />
+            </div>
+            {/* Orbiting Elements */}
+            <div className="absolute top-0 left-1/2 w-3 h-3 md:w-4 md:h-4 bg-purple-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 animate-orbit">
+              <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full"></div>
+            </div>
+            <div className="absolute bottom-0 left-1/2 w-3 h-3 md:w-4 md:h-4 bg-green-500 rounded-full transform -translate-x-1/2 translate-y-1/2 animate-orbit-reverse">
+              <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full"></div>
+            </div>
+          </div>
+          
+          <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 md:mb-8 px-2">
+            Shaping <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent animate-gradient-x">
+              Africa's Future
+            </span>
+          </h2>
+          
+          <p className="text-lg md:text-2xl text-gray-300 mb-8 md:mb-12 leading-relaxed max-w-3xl mx-auto px-2">
+            We're building more than AI systems. We're architecting Africa's digital nervous system—intelligent, 
+            responsive, and uniquely African.
+          </p>
+          
+          {/* Company Information Cards - 4 cards total */}
+          <div className="mt-12 md:mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 text-left">
+            {companyInfoCards.map((card, index) => (
+              <div 
+                key={index}
+                className="p-6 rounded-2xl bg-gray-900/30 backdrop-blur-sm border border-gray-800 hover:border-blue-500/30 transition-all duration-500 group"
+              >
+                <div className={`mb-4 p-3 rounded-xl bg-gradient-to-br ${card.gradient} bg-opacity-20 w-fit`}>
+                  <div className={`p-2 rounded-lg bg-gradient-to-br ${card.gradient} text-white`}>
+                    {card.icon}
+                  </div>
+                </div>
+                
+                <div className="text-sm font-bold text-blue-400 mb-2">{card.stats}</div>
+                <h3 className="text-lg font-bold text-white mb-3">{card.title}</h3>
+                <p className="text-gray-400 text-sm">{card.description}</p>
+                
+                {/* Hover effect line */}
+                <div className="mt-4 h-0.5 bg-gray-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 w-0 group-hover:w-full transition-all duration-700"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Contact Information - Updated */}
+          <div className="mt-16 md:mt-24 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 text-left max-w-4xl mx-auto">
+            <div className="p-6 rounded-2xl bg-gray-900/30 backdrop-blur-sm border border-gray-800">
+              <div className="text-sm text-blue-400 font-bold mb-4">OPERATIONAL HUBS</div>
+              <div className="space-y-2 text-gray-400">
+                <div>• Nairobi AI Center</div>
+                <div>• Lagos Data Lab</div>
+                <div>• Accra Innovation Hub</div>
+                <div>• Cape Town Ethics Center</div>
+              </div>
+            </div>
+            <div className="p-6 rounded-2xl bg-gray-900/30 backdrop-blur-sm border border-gray-800">
+              <div className="text-sm text-purple-400 font-bold mb-4">CONTACT INFORMATION</div>
+              <div className="space-y-2 text-gray-400">
+                <div>• hello@africa-ai.com</div>
+                <div>• +254 700 123 456</div>
+                <div>• AI Research Portal</div>
+                <div>• Partnership Inquiries</div>
+              </div>
+            </div>
+            <div className="p-6 rounded-2xl bg-gray-900/30 backdrop-blur-sm border border-gray-800">
+              <div className="text-sm text-green-400 font-bold mb-4">OUR COMMITMENT</div>
+              <div className="space-y-2 text-gray-400">
+                <div>• Ethical AI Development</div>
+                <div>• Talent Empowerment</div>
+                <div>• Open Research</div>
+                <div>• Continental Impact</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Custom Styles */}
+      <style jsx>{`
+        @keyframes gradient-x {
           0%, 100% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
         }
         
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
+        @keyframes gradient-x-reverse {
+          0%, 100% { background-position: 100% 50%; }
+          50% { background-position: 0% 50%; }
         }
         
-        @keyframes spin-slow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
+        @keyframes orbit {
+          0% { transform: translate(-50%, -50%) rotate(0deg) translateX(45px) rotate(0deg); }
+          100% { transform: translate(-50%, -50%) rotate(360deg) translateX(45px) rotate(-360deg); }
         }
         
-        .animate-spin-slow {
-          animation: spin-slow 8s linear infinite;
+        @keyframes orbit-reverse {
+          0% { transform: translate(-50%, 50%) rotate(0deg) translateX(45px) rotate(0deg); }
+          100% { transform: translate(-50%, 50%) rotate(-360deg) translateX(45px) rotate(360deg); }
         }
         
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
+        .animate-gradient-x {
+          background-size: 200% auto;
+          animation: gradient-x 3s ease infinite;
         }
         
-        .line-clamp-2 {
-          overflow: hidden;
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 2;
+        .animate-gradient-x-reverse {
+          background-size: 200% auto;
+          animation: gradient-x-reverse 3s ease infinite;
         }
         
-        /* Hide scrollbar for horizontal scroll on mobile */
-        .overflow-x-auto {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
+        .animate-orbit {
+          animation: orbit 6s linear infinite;
         }
         
-        .overflow-x-auto::-webkit-scrollbar {
-          display: none;
+        .animate-orbit-reverse {
+          animation: orbit-reverse 6s linear infinite;
         }
         
-        /* Custom scrollbar */
-        @media (min-width: 640px) {
-          ::-webkit-scrollbar {
-            width: 10px;
+        .perspective-1000 {
+          perspective: 1000px;
+        }
+        
+        .transform-style-3d {
+          transform-style: preserve-3d;
+        }
+        
+        .backface-hidden {
+          backface-visibility: hidden;
+        }
+        
+        .clip-hexagon {
+          clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        }
+        
+        .clip-triangle {
+          clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+          .clip-hexagon, .clip-triangle {
+            clip-path: none;
+            border-radius: 1rem;
           }
           
-          ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.3);
+          .perspective-1000 {
+            perspective: none;
           }
           
-          ::-webkit-scrollbar-thumb {
-            background: linear-gradient(to bottom, #06b6d4, #3b82f6);
-            border-radius: 5px;
+          .transform-style-3d {
+            transform-style: flat;
           }
           
-          ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+          .group-hover\:rotate-y-180 {
+            transform: none !important;
+          }
+          
+          .backface-hidden {
+            position: relative;
+            backface-visibility: visible;
+          }
+          
+          .rotate-y-180 {
+            display: none;
+          }
+          
+          /* Mobile-specific adjustments for better text visibility */
+          .text-balance {
+            text-wrap: balance;
           }
         }
         
-        /* Text selection */
-        ::selection {
-          background: rgba(6, 182, 212, 0.3);
-          color: white;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+          width: 10px;
         }
         
-        /* Smooth transitions */
-        * {
-          scroll-behavior: smooth;
+        ::-webkit-scrollbar-track {
+          background: #111827;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+          background: linear-gradient(to bottom, #3b82f6, #06b6d4);
+          border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(to bottom, #60a5fa, #22d3ee);
         }
       `}</style>
     </main>
   );
 }
 
-export default Industries;
+export default Company;
