@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Zap, Sparkles, Brain, Cpu, Globe, Shield, Code, Terminal, Rocket, CpuIcon, Network } from 'lucide-react';
+import { Zap, Brain, Cpu, Globe, Shield, Code, Terminal, Rocket, Network } from 'lucide-react';
 import gsap from 'gsap';
 
 const Hero = () => {
@@ -258,7 +258,7 @@ const Hero = () => {
       charSpan.style.cssText = `
         display: inline-block;
         opacity: 0;
-        font-size: clamp(2.5rem, 7vw, 4.5rem);
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
         font-weight: 900;
         letter-spacing: 0.2em;
         color: ${colors.primary};
@@ -277,7 +277,7 @@ const Hero = () => {
       charSpan.style.cssText = `
         display: inline-block;
         opacity: 0;
-        font-size: clamp(2.5rem, 7vw, 4.5rem);
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
         font-weight: 900;
         letter-spacing: 0.2em;
         color: ${colors.secondary};
@@ -509,7 +509,7 @@ const Hero = () => {
       position: relative;
     `;
 
-    // Enhanced BITAFRICA letters
+    // BITAFRICA letters with reduced size for desktop
     "BITAFRICA".split('').forEach((char, i) => {
       const charSpan = document.createElement('span');
       charSpan.className = 'char-clean';
@@ -518,7 +518,7 @@ const Hero = () => {
         display: inline-block;
         color: ${colors.primary};
         font-weight: 900;
-        font-size: clamp(2.8rem, 8vw, 5rem);
+        font-size: clamp(2.2rem, 6vw, 3.5rem);
         letter-spacing: 0.15em;
         margin: 0 0.03em;
         opacity: 0;
@@ -529,7 +529,7 @@ const Hero = () => {
       bitafricaWord.appendChild(charSpan);
     });
 
-    // Enhanced AI letters
+    // AI letters with reduced size for desktop
     "AI".split('').forEach((char, i) => {
       const charSpan = document.createElement('span');
       charSpan.className = 'char-clean';
@@ -538,7 +538,7 @@ const Hero = () => {
         display: inline-block;
         color: ${colors.secondary};
         font-weight: 900;
-        font-size: clamp(2.8rem, 8vw, 5rem);
+        font-size: clamp(2.2rem, 6vw, 3.5rem);
         letter-spacing: 0.15em;
         margin: 0 0.03em;
         opacity: 0;
@@ -767,7 +767,7 @@ const Hero = () => {
   return (
     <section 
       ref={heroRef}
-      className="relative min-h-[70vh] overflow-hidden"
+      className="relative min-h-[65vh] overflow-hidden"
       style={{ 
         opacity: 0,
         background: `
@@ -787,7 +787,7 @@ const Hero = () => {
       {/* Enhanced Grid Floor */}
       <div 
         ref={gridRef}
-        className="absolute bottom-0 left-0 right-0 h-56"
+        className="absolute bottom-0 left-0 right-0 h-52"
         style={{
           background: `linear-gradient(to top, ${colors.backgroundDark}ee, transparent)`,
           perspective: '800px',
@@ -814,9 +814,9 @@ const Hero = () => {
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-16">
         <div className="max-w-7xl mx-auto text-center">
         
-          {/* Enhanced Holographic Badge */}
+          {/* Enhanced Holographic Badge - Fixed spacing */}
           <div 
-            className="inline-flex items-center px-4 sm:px-6 py-2 rounded-full bg-white/15 backdrop-blur-xl border border-cyan-500/40 mb-8 sm:mb-10 overflow-hidden group"
+            className="inline-flex items-center px-4 sm:px-6 py-2 rounded-full bg-white/15 backdrop-blur-xl border border-cyan-500/40 mb-10 sm:mb-12 overflow-hidden group"
             style={{
               opacity: animationStage === 'splash' ? 0 : 1,
               transition: 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s',
@@ -826,7 +826,7 @@ const Hero = () => {
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
             <Zap className="h-3.5 sm:h-4 w-3.5 sm:w-4 text-cyan-300 mr-2 animate-pulse" />
             <span className="text-sm font-bold bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-300 bg-clip-text text-transparent tracking-widest">
-              HOLOGRAPHIC AI LAUNCHPAD
+              SOFTWARE & TECH EDUCATION HUB
             </span>
           </div>
           
@@ -850,7 +850,7 @@ const Hero = () => {
           {/* Subtitle */}
           <div ref={subtitleRef} className="mb-8 sm:mb-10" />
           
-          {/* Enhanced Stats */}
+          {/* Enhanced Stats - 2 per row on mobile */}
           <div 
             className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-10"
             style={{
@@ -867,7 +867,7 @@ const Hero = () => {
             ].map((stat, i) => (
               <div key={i} className="relative group">
                 <div 
-                  className="text-2xl sm:text-3xl md:text-4xl font-black mb-2 transition-all duration-500 group-hover:scale-110 group-hover:-translate-y-1"
+                  className="text-xl sm:text-2xl md:text-3xl font-black mb-2 transition-all duration-500 group-hover:scale-110 group-hover:-translate-y-1"
                   style={{
                     color: stat.color,
                     textShadow: `0 0 20px ${stat.color}60`
@@ -875,7 +875,7 @@ const Hero = () => {
                 >
                   {stat.value}
                 </div>
-                <div className="text-sm text-gray-300/90 font-medium tracking-wider px-2">{stat.label}</div>
+                <div className="text-xs sm:text-sm text-gray-300/90 font-medium tracking-wider px-2">{stat.label}</div>
                 <div 
                   className="absolute -bottom-1 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-transparent via-current to-transparent opacity-30 group-hover:opacity-80 transition-all duration-500 group-hover:scale-110"
                   style={{ color: stat.color }}
@@ -884,7 +884,7 @@ const Hero = () => {
             ))}
           </div>
           
-          {/* Enhanced CTA Buttons */}
+          {/* Display Elements - Not buttons */}
           <div 
             className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-10 sm:mb-12"
             style={{
@@ -893,7 +893,8 @@ const Hero = () => {
               transform: animationStage === 'final' ? 'translateY(0)' : 'translateY(40px)'
             }}
           >
-            <button className="group relative px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl overflow-hidden transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+            {/* First Display Element */}
+            <div className="group relative px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl overflow-hidden">
               <div 
                 className="absolute inset-0 rounded-2xl"
                 style={{
@@ -906,13 +907,13 @@ const Hero = () => {
                 style={{ filter: 'blur(12px)' }}
               />
               <span className="relative z-10 flex items-center justify-center text-white font-bold text-base sm:text-lg tracking-wider">
-                <Rocket className="mr-2 h-4.5 w-4.5 sm:h-5 sm:w-5 group-hover:rotate-45 transition-transform duration-500" />
-                INITIATE DEPLOYMENT
-                <ArrowRight className="ml-2 h-4.5 w-4.5 sm:h-5 sm:w-5 group-hover:translate-x-2 transition-transform duration-500" />
+                <Rocket className="mr-2 h-4.5 w-4.5 sm:h-5 sm:w-5" />
+                SOFTWARE DEVELOPMENT
               </span>
-            </button>
+            </div>
             
-            <button className="group relative px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl border-2 backdrop-blur-xl overflow-hidden transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+            {/* Second Display Element */}
+            <div className="group relative px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl border-2 backdrop-blur-xl overflow-hidden">
               <div 
                 className="absolute inset-0 rounded-2xl border-2"
                 style={{
@@ -928,9 +929,9 @@ const Hero = () => {
                 }}
               >
                 <Terminal className="mr-2 h-4.5 w-4.5 sm:h-5 sm:w-5" />
-                ACCESS TERMINAL
+                TECH EDUCATION
               </span>
-            </button>
+            </div>
           </div>
           
           {/* Enhanced Tech Stack */}
@@ -1010,7 +1011,7 @@ const Hero = () => {
         }
         
         .title-clean-container {
-          font-size: clamp(2.8rem, 8vw, 5rem);
+          font-size: clamp(2.2rem, 6vw, 3.5rem);
           font-weight: 900;
           letter-spacing: 0.15em;
           position: relative;
@@ -1036,15 +1037,15 @@ const Hero = () => {
         }
         
         .subtitle-container {
-          font-size: clamp(1rem, 2.8vw, 1.6rem);
-          letter-spacing: 0.2em;
+          font-size: clamp(0.95rem, 2.5vw, 1.4rem);
+          letter-spacing: 0.15em;
           font-weight: 500;
           color: ${colors.accent};
-          margin-bottom: 2rem;
+          margin-bottom: 1.5rem;
           opacity: 0.95;
-          padding: 0 1.5rem;
-          line-height: 1.5;
-          max-width: 900px;
+          padding: 0 1rem;
+          line-height: 1.4;
+          max-width: 800px;
           margin-left: auto;
           margin-right: auto;
           text-shadow: 0 0 15px ${colors.accent}80;
@@ -1058,12 +1059,7 @@ const Hero = () => {
           will-change: transform;
         }
         
-        /* Smooth cursor */
-        * {
-          cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="none" stroke="${colors.primary}" stroke-width="2"/><circle cx="10" cy="10" r="2" fill="${colors.primary}"/></svg>') 10 10, auto;
-        }
-        
-        /* Mobile responsiveness with smooth scaling */
+        /* Mobile responsiveness */
         @media (max-width: 640px) {
           .title-clean-container {
             letter-spacing: 0.12em;
@@ -1075,26 +1071,36 @@ const Hero = () => {
           
           .subtitle-container {
             letter-spacing: 0.12em;
-            font-size: 1.1rem;
-            line-height: 1.4;
-            padding: 0 1rem;
+            font-size: 1rem;
+            line-height: 1.3;
+            padding: 0 0.8rem;
           }
           
           .char-clean {
             margin: 0 0.02em;
-            font-size: clamp(2.2rem, 6vw, 3.5rem);
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+          }
+          
+          /* Ensure 2 items per row on mobile for stats */
+          .grid-cols-2 > div {
+            margin-bottom: 0.5rem;
+          }
+          
+          /* Better mobile layout for display elements */
+          .flex-col > div {
+            width: 100%;
           }
         }
         
         @media (max-width: 480px) {
           .title-clean-container {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             letter-spacing: 0.1em;
-            gap: 0.3em;
+            gap: 0.2em;
           }
           
           .subtitle-container {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             letter-spacing: 0.1em;
           }
         }
@@ -1117,15 +1123,6 @@ const Hero = () => {
           @keyframes gridFloat {
             0% { transform: rotateX(75deg) translateZ(-150px); }
           }
-        }
-        
-        /* Performance optimizations */
-        .char-clean,
-        .data-stream,
-        canvas {
-          will-change: transform, opacity;
-          backface-visibility: hidden;
-          -webkit-backface-visibility: hidden;
         }
       `}</style>
     </section>
