@@ -1,909 +1,1032 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { 
-  Brain, Cloud, Cpu, Layers, Shield, Zap, Globe, Users, 
-  Server, Database, Sparkles, ArrowRight, PlayCircle,
-  Target, BarChart, Clock, CheckCircle, Video, Headphones,
-  Terminal, Award, Wifi, Code, ShieldCheck, Database as DbIcon,
-  Network, CloudLightning, CpuIcon, Settings, Zap as Bolt,
-  MessageSquare, Calendar, TrendingUp, Users as UsersIcon,
-  Building2, Smartphone, Globe as Earth, Rocket,
-  ChevronRight, ChevronLeft, Maximize2, Eye, Star,
-  BarChart3, Smartphone as Mobile, Cctv, Bot, BrainCircuit,
-  CircuitBoard, Atom, Cpu as AiChip, Sparkle, Infinity,
-  Workflow, CloudCog, Brain as AiBrain, Lock, ZapOff,
-  LineChart, Network as AiNetwork, Fingerprint, Binary,
-  Globe as WebIcon, Shield as SecurityIcon, GitBranch as ApiIcon,
-  Smartphone as MobileIcon, Palette, Database as DataIcon,
-  Cloud as CloudIcon, Code as CodeIcon, Zap as ZapIcon
+  Building, Heart, ShoppingBag, Factory, GraduationCap, Shield, 
+  DollarSign, Stethoscope, Store, Users, Target, BarChart, Rocket,
+  Sparkles, Zap, Cpu, Brain, CircuitBoard, Database, Cloud, 
+  Globe, Lock, Wifi, Server, BarChart3, TrendingUp, ChevronRight,
+  ShieldCheck, Scale, Clock, Wrench, Cog, Users as Team,
+  Eye, MessageSquare, Hexagon, Layers, Grid3X3, Sparkle,
+  ArrowRight, Trophy, Target as TargetIcon, PieChart,
+  BarChart2, TrendingUp as TrendingUpIcon, Zap as ZapIcon,
+  Cpu as CpuIcon, Brain as BrainIcon, Globe as GlobeIcon,
+  Activity, CloudLightning, Cpu as CPUIcon
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-const Services = () => {
-  const [activeService, setActiveService] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const sliderRef = useRef(null);
-  const containerRef = useRef(null);
+function Industries() {
+  const [activeIndustry, setActiveIndustry] = useState("finance-banking");
+  const [isHovered, setIsHovered] = useState(null);
 
-  // Service categories with enhanced AI focus
-  const serviceCategories = [
-    {
-      id: "ai-agents",
-      title: "AI Agents & Autonomous Systems",
-      description: "Deploy intelligent agents that learn, adapt, and execute complex tasks autonomously.",
-      icon: <Bot className="h-8 w-8" />,
-      color: "from-cyan-500 to-blue-600",
-      gradient: "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)",
-      tech: ["Multi-Agent Systems", "Reinforcement Learning", "Autonomous Decision Making"]
-    },
-    {
-      id: "machine-learning",
-      title: "Machine Learning Solutions",
-      description: "Advanced ML models that transform data into actionable business intelligence.",
-      icon: <BrainCircuit className="h-8 w-8" />,
-      color: "from-purple-500 to-pink-600",
-      gradient: "linear-gradient(135deg, #8b5cf6 0%, #db2777 100%)",
-      tech: ["Predictive Analytics", "Neural Networks", "Deep Learning"]
-    },
-    {
-      id: "automation",
-      title: "Intelligent Automation",
-      description: "End-to-end process automation powered by AI and cognitive technologies.",
-      icon: <Workflow className="h-8 w-8" />,
-      color: "from-emerald-500 to-teal-600",
-      gradient: "linear-gradient(135deg, #10b981 0%, #0d9488 100%)",
-      tech: ["RPA 2.0", "Cognitive Automation", "Workflow Optimization"]
-    },
-    {
-      id: "cloud-ai",
-      title: "AI-Powered Cloud",
-      description: "Scalable cloud infrastructure optimized for AI workloads and big data processing.",
-      icon: <CloudCog className="h-8 w-8" />,
-      color: "from-amber-500 to-orange-600",
-      gradient: "linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)",
-      tech: ["AI-Optimized Infra", "GPU Clusters", "Distributed Computing"]
-    }
-  ];
-
-  // Keep only first 4 services for single row display
-  const services = [
-    {
-      id: "ai-agents-enterprise",
-      title: "Enterprise AI Agents",
-      description: "Deploy autonomous AI agents that handle customer service, data analysis, and complex decision-making processes 24/7. Our agents learn from interactions and improve over time.",
-      features: [
-        "Autonomous Customer Support Agents",
-        "Predictive Maintenance Systems",
-        "Intelligent Process Automation",
-        "Real-time Market Analysis Agents",
-        "Self-Optimizing Supply Chain AI"
-      ],
-      icon: <Bot className="h-10 w-10" />,
+  const technologyStack = [
+    { 
+      name: "Computer Vision", 
+      icon: <Eye className="h-6 w-6 sm:h-8 sm:w-8" />, 
+      applications: 12,
       color: "from-cyan-500 to-blue-500",
-      gradient: "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)",
-      stats: { efficiency: "↑300%", accuracy: "99.7%", uptime: "24/7" },
-      image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop&auto=format",
-      category: "ai-agents",
-      tech: ["GPT-4 Integration", "Computer Vision", "NLP", "Reinforcement Learning"]
+      description: "Real-time visual analysis"
     },
-    {
-      id: "deep-learning-platform",
-      title: "Deep Learning Solutions",
-      description: "Advanced neural network architectures for complex pattern recognition, natural language understanding, and predictive analytics.",
-      features: [
-        "Custom CNN/RNN Architectures",
-        "Transfer Learning Implementation",
-        "Real-time Inference Systems",
-        "Model Optimization & Quantization",
-        "AutoML Pipelines"
-      ],
-      icon: <BrainCircuit className="h-10 w-10" />,
+    { 
+      name: "NLP", 
+      icon: <MessageSquare className="h-6 w-6 sm:h-8 sm:w-8" />, 
+      applications: 8,
       color: "from-purple-500 to-pink-500",
-      gradient: "linear-gradient(135deg, #8b5cf6 0%, #db2777 100%)",
-      stats: { performance: "↑5x", training: "80% faster", models: "1000+" },
-      image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&h=600&fit=crop&auto=format",
-      category: "machine-learning",
-      tech: ["TensorFlow", "PyTorch", "Keras", "CUDA Optimization"]
+      description: "Language understanding"
     },
-    {
-      id: "hyperautomation",
-      title: "Hyperautomation Suite",
-      description: "Combine RPA, AI, and machine learning to automate complex business processes end-to-end.",
-      features: [
-        "Intelligent Document Processing",
-        "Cognitive Workflow Automation",
-        "Process Mining & Discovery",
-        "Self-healing Automation",
-        "API Integration Ecosystems"
-      ],
-      icon: <Workflow className="h-10 w-10" />,
-      color: "from-emerald-500 to-teal-500",
-      gradient: "linear-gradient(135deg, #10b981 0%, #0d9488 100%)",
-      stats: { cost: "↓60%", speed: "↑400%", errors: "↓95%" },
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop&auto=format",
-      category: "automation",
-      tech: ["UiPath", "Automation Anywhere", "ML Ops", "API Gateway"]
-    },
-    {
-      id: "ai-cloud-infrastructure",
-      title: "AI-Optimized Cloud",
-      description: "High-performance cloud infrastructure specifically designed for AI/ML workloads and big data processing.",
-      features: [
-        "GPU-Accelerated Computing",
-        "Distributed Training Clusters",
-        "Model Serving Infrastructure",
-        "Data Pipeline Orchestration",
-        "Cost-Optimized Scaling"
-      ],
-      icon: <CloudCog className="h-10 w-10" />,
-      color: "from-amber-500 to-orange-500",
-      gradient: "linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)",
-      stats: { latency: "<10ms", scale: "∞", savings: "45%" },
-      image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=600&fit=crop&auto=format",
-      category: "cloud-ai",
-      tech: ["NVIDIA DGX", "Kubernetes", "TensorRT", "Ray Cluster"]
-    }
-    // Removed the last 2 services to keep only 4
-  ];
-
-  // Additional services for infinite slider
-  const additionalServices = [
-    {
-      id: "web-development",
-      title: "Website Development",
-      description: "Modern, responsive websites and web applications with cutting-edge technologies.",
-      icon: <WebIcon className="h-10 w-10" />,
-      color: "from-blue-500 to-indigo-500",
-      gradient: "linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)",
-      features: ["React/Next.js", "Progressive Web Apps", "E-commerce", "SEO Optimized"],
-      stats: { speed: "95+ Score", mobile: "100%", seo: "Top Rankings" }
-    },
-    {
-      id: "cyber-security",
-      title: "Cyber Security",
-      description: "Comprehensive security solutions to protect your digital assets and data.",
-      icon: <SecurityIcon className="h-10 w-10" />,
-      color: "from-emerald-500 to-green-500",
-      gradient: "linear-gradient(135deg, #10b981 0%, #22c55e 100%)",
-      features: ["Threat Detection", "Data Encryption", "Compliance", "24/7 Monitoring"],
-      stats: { protection: "99.99%", response: "<5min", audits: "100%" }
-    },
-    {
-      id: "api-integration",
-      title: "API Integration",
-      description: "Seamlessly connect your systems with robust API solutions and microservices.",
-      icon: <ApiIcon className="h-10 w-10" />,
-      color: "from-purple-500 to-violet-500",
-      gradient: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
-      features: ["REST & GraphQL", "WebSocket APIs", "Third-party Integrations", "API Gateway"],
-      stats: { uptime: "99.99%", latency: "<50ms", integrations: "100+" }
-    },
-    {
-      id: "mobile-development",
-      title: "Mobile Development",
-      description: "Native and cross-platform mobile applications for iOS and Android.",
-      icon: <MobileIcon className="h-10 w-10" />,
-      color: "from-pink-500 to-rose-500",
-      gradient: "linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)",
-      features: ["React Native", "Flutter", "iOS & Android", "App Store Optimization"],
-      stats: { downloads: "50K+", rating: "4.8★", stores: "Both" }
-    },
-    {
-      id: "ui-ux-design",
-      title: "UI/UX Design",
-      description: "Beautiful, intuitive user interfaces that drive engagement and conversions.",
-      icon: <Palette className="h-10 w-10" />,
-      color: "from-amber-500 to-yellow-500",
-      gradient: "linear-gradient(135deg, #f59e0b 0%, #eab308 100%)",
-      features: ["User Research", "Wireframing", "Prototyping", "Design Systems"],
-      stats: { engagement: "↑70%", conversion: "↑45%", satisfaction: "95%" }
-    },
-    {
-      id: "data-analytics",
-      title: "Data Analytics",
-      description: "Transform raw data into actionable insights and business intelligence.",
-      icon: <DataIcon className="h-10 w-10" />,
-      color: "from-teal-500 to-cyan-500",
-      gradient: "linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%)",
-      features: ["Real-time Dashboards", "Predictive Analytics", "Data Visualization", "ETL Pipelines"],
-      stats: { insights: "1000+/day", accuracy: "98.5%", speed: "Real-time" }
-    },
-    {
-      id: "cloud-solutions",
-      title: "Cloud Solutions",
-      description: "Scalable cloud infrastructure and migration services for businesses of all sizes.",
-      icon: <CloudIcon className="h-10 w-10" />,
+    { 
+      name: "Predictive Analytics", 
+      icon: <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8" />, 
+      applications: 15,
       color: "from-orange-500 to-red-500",
-      gradient: "linear-gradient(135deg, #f97316 0%, #ef4444 100%)",
-      features: ["AWS/Azure/GCP", "Serverless", "Containerization", "Cost Optimization"],
-      stats: { savings: "40%", scale: "Auto", reliability: "99.9%" }
+      description: "Future insights"
     },
-    {
-      id: "devops-solutions",
-      title: "DevOps Solutions",
-      description: "Streamline development and operations with automated CI/CD pipelines.",
-      icon: <CodeIcon className="h-10 w-10" />,
-      color: "from-indigo-500 to-blue-500",
-      gradient: "linear-gradient(135deg, #6366f1 0%, #3b82f6 100%)",
-      features: ["CI/CD Pipelines", "Infrastructure as Code", "Monitoring", "Kubernetes"],
-      stats: { deployment: "90% faster", errors: "↓80%", uptime: "99.95%" }
+    { 
+      name: "Machine Learning", 
+      icon: <Cpu className="h-6 w-6 sm:h-8 sm:w-8" />, 
+      applications: 20,
+      color: "from-green-500 to-emerald-500",
+      description: "Adaptive algorithms"
+    },
+    { 
+      name: "RPA", 
+      icon: <Cog className="h-6 w-6 sm:h-8 sm:w-8" />, 
+      applications: 10,
+      color: "from-yellow-500 to-amber-500",
+      description: "Automated workflows"
+    },
+    { 
+      name: "IoT Integration", 
+      icon: <Wifi className="h-6 w-6 sm:h-8 sm:w-8" />, 
+      applications: 7,
+      color: "from-indigo-500 to-violet-500",
+      description: "Connected systems"
     }
   ];
 
-  // Duplicate items for seamless infinite scrolling
-  const infiniteServices = [...additionalServices, ...additionalServices, ...additionalServices];
-
-  // Tech stats
-  const stats = [
-    { icon: <CircuitBoard className="h-6 w-6" />, value: "500+", label: "AI Models Deployed", color: "text-cyan-400" },
-    { icon: <Atom className="h-6 w-6" />, value: "99.9%", label: "System Uptime", color: "text-emerald-400" },
-    { icon: <AiChip className="h-6 w-6" />, value: "10x", label: "Performance Gain", color: "text-purple-400" },
-    { icon: <Infinity className="h-6 w-6" />, value: "24/7", label: "AI Monitoring", color: "text-amber-400" }
+  const industries = [
+    {
+      id: "finance-banking",
+      title: "Finance",
+      description: "AI-powered financial intelligence transforming legacy systems into predictive engines.",
+      icon: <Database className="h-10 w-10 sm:h-12 sm:w-12" />,
+      color: "from-blue-700 via-cyan-500 to-emerald-400",
+      bgColor: "bg-gradient-to-br from-blue-900/30 to-cyan-900/20",
+      accentColor: "rgb(6, 182, 212)",
+      image: "https://images.unsplash.com/photo-1616514197671-15d99ce7a6f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+      solutions: [
+        "Fraud Detection AI",
+        "Risk Assessment",
+        "Algorithmic Trading",
+        "Personalized Banking",
+        "Regulatory Compliance"
+      ],
+      stats: { efficiency: "300%", accuracy: "99.8%", savings: "$2.5M" },
+      gradientAngle: "45deg"
+    },
+    {
+      id: "healthcare",
+      title: "Healthcare",
+      description: "Life-saving AI diagnostics and predictive care revolutionizing patient outcomes.",
+      icon: <Brain className="h-10 w-10 sm:h-12 sm:w-12" />,
+      color: "from-rose-700 via-pink-500 to-purple-400",
+      bgColor: "bg-gradient-to-br from-rose-900/30 to-pink-900/20",
+      accentColor: "rgb(236, 72, 153)",
+      image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+      solutions: [
+        "Medical Imaging Analysis",
+        "Patient Risk Prediction",
+        "Drug Discovery AI",
+        "Personalized Treatment",
+        "Health Data Analytics"
+      ],
+      stats: { efficiency: "45%", accuracy: "98.7%", patients: "500K+" },
+      gradientAngle: "135deg"
+    },
+    {
+      id: "retail-ecommerce",
+      title: "Retail",
+      description: "Hyper-personalized shopping experiences powered by behavioral AI.",
+      icon: <ShoppingBag className="h-10 w-10 sm:h-12 sm:w-12" />,
+      color: "from-amber-700 via-orange-500 to-red-400",
+      bgColor: "bg-gradient-to-br from-amber-900/30 to-orange-900/20",
+      accentColor: "rgb(251, 146, 60)",
+      image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+      solutions: [
+        "Personalized Recommendations",
+        "Inventory Optimization",
+        "Demand Forecasting",
+        "Customer Behavior Analysis",
+        "Supply Chain AI"
+      ],
+      stats: { sales: "65%", retention: "40%", revenue: "$8.3M" },
+      gradientAngle: "225deg"
+    },
+    {
+      id: "manufacturing",
+      title: "Manufacturing",
+      description: "Self-optimizing factories with AI-driven predictive maintenance.",
+      icon: <CircuitBoard className="h-10 w-10 sm:h-12 sm:w-12" />,
+      color: "from-emerald-700 via-green-500 to-teal-400",
+      bgColor: "bg-gradient-to-br from-emerald-900/30 to-green-900/20",
+      accentColor: "rgb(16, 185, 129)",
+      image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+      solutions: [
+        "Predictive Maintenance",
+        "Quality Control AI",
+        "Autonomous Logistics",
+        "Energy Optimization",
+        "Production Automation"
+      ],
+      stats: { downtime: "-70%", quality: "99.9%", output: "+85%" },
+      gradientAngle: "315deg"
+    },
+    {
+      id: "education",
+      title: "Education",
+      description: "Adaptive learning ecosystems that personalize education at scale.",
+      icon: <GraduationCap className="h-10 w-10 sm:h-12 sm:w-12" />,
+      color: "from-violet-700 via-purple-500 to-indigo-400",
+      bgColor: "bg-gradient-to-br from-violet-900/30 to-purple-900/20",
+      accentColor: "rgb(168, 85, 247)",
+      image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+      solutions: [
+        "Personalized Learning",
+        "Intelligent Tutoring",
+        "Educational Analytics",
+        "Administrative Automation",
+        "Virtual Classrooms"
+      ],
+      stats: { engagement: "120%", performance: "35%", reach: "2M+" },
+      gradientAngle: "45deg"
+    },
+    {
+      id: "government",
+      title: "Government",
+      description: "Smart city AI creating sustainable and efficient public services.",
+      icon: <ShieldCheck className="h-10 w-10 sm:h-12 sm:w-12" />,
+      color: "from-indigo-700 via-blue-500 to-cyan-400",
+      bgColor: "bg-gradient-to-br from-indigo-900/30 to-blue-900/20",
+      accentColor: "rgb(99, 102, 241)",
+      image: "https://images.unsplash.com/photo-1534531173927-aeb928d54385?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+      solutions: [
+        "Smart City Solutions",
+        "Public Safety AI",
+        "Service Automation",
+        "Traffic Optimization",
+        "Resource Management"
+      ],
+      stats: { efficiency: "55%", response: "-60%", citizens: "10M+" },
+      gradientAngle: "135deg"
+    },
+    {
+      id: "energy",
+      title: "Energy",
+      description: "AI-optimized power grids and renewable energy management systems.",
+      icon: <Zap className="h-10 w-10 sm:h-12 sm:w-12" />,
+      color: "from-yellow-600 via-amber-500 to-orange-400",
+      bgColor: "bg-gradient-to-br from-yellow-900/30 to-amber-900/20",
+      accentColor: "rgb(245, 158, 11)",
+      solutions: [
+        "Grid Optimization",
+        "Predictive Maintenance",
+        "Energy Trading AI",
+        "Renewable Integration",
+        "Consumption Analytics"
+      ],
+      stats: { efficiency: "40%", savings: "$1.2M", capacity: "+60%" }
+    },
+    {
+      id: "transportation",
+      title: "Transportation",
+      description: "Intelligent logistics and autonomous transportation networks.",
+      icon: <GlobeIcon className="h-10 w-10 sm:h-12 sm:w-12" />,
+      color: "from-teal-600 via-emerald-500 to-green-400",
+      bgColor: "bg-gradient-to-br from-teal-900/30 to-emerald-900/20",
+      accentColor: "rgb(20, 184, 166)",
+      solutions: [
+        "Route Optimization",
+        "Autonomous Vehicles",
+        "Fleet Management",
+        "Supply Chain AI",
+        "Traffic Prediction"
+      ],
+      stats: { efficiency: "50%", costs: "-35%", delivery: "+70%" }
+    }
   ];
 
-  // Mouse move effect
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        setMousePosition({ x, y });
-      }
-    };
+  const currentIndustry = industries.find(ind => ind.id === activeIndustry) || industries[0];
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  // AI Impact Stories Data
+  const aiImpactStories = [
+    {
+      industry: "Finance",
+      achievement: "Reduced fraudulent transactions by 92% using real-time AI monitoring",
+      technology: "Machine Learning + Computer Vision",
+      timeline: "6 months implementation"
+    },
+    {
+      industry: "Healthcare",
+      achievement: "Improved diagnostic accuracy by 45% with AI-assisted imaging analysis",
+      technology: "Deep Learning + Predictive Analytics",
+      timeline: "8 months deployment"
+    },
+    {
+      industry: "Manufacturing",
+      achievement: "Increased production efficiency by 85% through predictive maintenance",
+      technology: "IoT + AI Analytics",
+      timeline: "4 months integration"
+    },
+    {
+      industry: "Retail",
+      achievement: "Boosted customer retention by 40% with personalized AI recommendations",
+      technology: "NLP + Behavioral AI",
+      timeline: "3 months rollout"
+    }
+  ];
 
-  // Auto-rotate service showcase
-  useEffect(() => {
-    if (!isPlaying) return;
-    
-    const interval = setInterval(() => {
-      setActiveService((prev) => (prev + 1) % services.length);
-    }, 4000);
-    
-    return () => clearInterval(interval);
-  }, [isPlaying, services.length]);
+  // Animated background grid
+  const BackgroundGrid = () => (
+    <div className="fixed inset-0 z-0 overflow-hidden opacity-10 sm:opacity-20">
+      <div className="absolute inset-0" style={{
+        backgroundImage: `linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
+                         linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+        backgroundSize: '30px 30px',
+        maskImage: 'radial-gradient(circle at center, black, transparent 70%)'
+      }} />
+      {/* Animated hexagons */}
+      {[...Array(12)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute border border-cyan-500/10 rounded-lg"
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            width: '60px',
+            height: '60px',
+            rotate: '30deg'
+          }}
+          animate={{
+            rotate: [30, 390],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 20 + Math.random() * 20,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+      ))}
+    </div>
+  );
 
   return (
-    <main 
-      ref={containerRef}
-      className="pt-20 min-h-screen bg-gradient-to-br from-[#0a0a1a] via-[#0f172a] to-[#0a0a1a] overflow-hidden relative"
-      style={{
-        '--mouse-x': `${mousePosition.x}%`,
-        '--mouse-y': `${mousePosition.y}%`,
-      }}
-    >
-      {/* Animated Background with Mouse Interaction */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        {/* Dynamic gradient that follows mouse */}
-        <div 
-          className="absolute inset-0 opacity-30 transition-opacity duration-1000"
-          style={{
-            background: `radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(6, 182, 212, 0.15) 0%, rgba(139, 92, 246, 0.1) 25%, transparent 50%)`,
-          }}
-        />
-        
-        {/* Grid pattern */}
-        <div 
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `linear-gradient(rgba(6, 182, 212, 0.3) 1px, transparent 1px),
-                             linear-gradient(90deg, rgba(6, 182, 212, 0.3) 1px, transparent 1px)`,
-            backgroundSize: '50px 50px',
-          }}
-        />
-        
-        {/* Floating particles */}
-        {Array.from({ length: 20 }).map((_, i) => (
-          <div
+    <main className="pt-16 sm:pt-20 min-h-screen bg-gradient-to-br from-gray-950 via-black to-gray-950 overflow-x-hidden">
+      <BackgroundGrid />
+
+      {/* Decorative floating elements */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        {[...Array(6)].map((_, i) => (
+          <motion.div
             key={i}
-            className="absolute rounded-full bg-cyan-500/10 animate-float-3d"
+            className="absolute w-32 h-32 sm:w-64 sm:h-64 rounded-full blur-3xl"
             style={{
+              background: `radial-gradient(circle, rgba(var(--accent-rgb), 0.1) 0%, transparent 70%)`,
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              width: `${Math.random() * 4 + 1}px`,
-              height: `${Math.random() * 4 + 1}px`,
-              animationDelay: `${i * 0.5}s`,
-              animationDuration: `${Math.random() * 10 + 15}s`,
+            }}
+            animate={{
+              x: [0, Math.sin(i) * 50],
+              y: [0, Math.cos(i) * 50],
+            }}
+            transition={{
+              duration: 20 + i * 2,
+              repeat: Infinity,
+              repeatType: "reverse"
             }}
           />
         ))}
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-24">
-        {/* Hero Section with 3D effect */}
-        <div className="text-center mb-20 lg:mb-32 relative">
-          {/* Decorative elements */}
-          <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl" />
+      <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-12 relative z-10">
+        {/* Hero Section - Made More Compact */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="text-center mb-16 sm:mb-24 relative"
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 100 }}
+            className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-black/50 border border-cyan-500/30 mb-6 sm:mb-8 backdrop-blur-xl"
+          >
+            <div className="relative">
+              <Sparkle className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-400 animate-spin-slow" />
+            </div>
+            <span className="text-xs sm:text-sm font-bold text-cyan-400 tracking-wider sm:tracking-widest">INDUSTRY TRANSFORMATION</span>
+          </motion.div>
           
-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 backdrop-blur-sm mb-8 group hover:scale-105 transition-all duration-300 animate-pulse">
-            <Sparkle className="h-5 w-5 text-cyan-400 animate-spin-slow" />
-            <span className="text-sm font-bold text-cyan-400 tracking-wider">AI-POWERED INNOVATION</span>
-          </div>
-          
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
-            <span className="bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent animate-gradient-shift">
-              Intelligent
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-black text-white mb-4 sm:mb-8 leading-tight">
+            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+              AI-POWERED
             </span>
             <br />
-            <span className="text-white">
-              Technology <span className="text-cyan-400">Solutions</span>
-            </span>
+            <span className="text-white text-3xl sm:text-5xl md:text-6xl">SOLUTIONS</span>
           </h1>
           
-          <p className="text-gray-300 text-xl lg:text-2xl max-w-3xl mx-auto leading-relaxed mb-12">
-            We engineer AI agents, automation systems, and machine learning solutions 
-            that transform businesses and redefine what's possible.
-          </p>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="text-gray-400 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed px-4"
+          >
+            Transforming industries with intelligent AI systems that learn, adapt, and optimize in real-time.
+          </motion.p>
           
-          {/* Interactive Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-4xl mx-auto mb-16">
-            {stats.map((stat, index) => (
-              <div
-                key={index}
-                className="group p-6 rounded-2xl bg-gradient-to-br from-white/5 to-white/2 border border-white/10 backdrop-blur-sm hover:border-cyan-500/50 transition-all duration-500 hover:scale-105 cursor-pointer"
-                style={{
-                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-                }}
+          {/* Interactive Stats - Made Responsive */}
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-12 px-4">
+            {[
+              { value: "50+", label: "Industries", color: "cyan" },
+              { value: "99.7%", label: "Accuracy", color: "blue" },
+              { value: "200+", label: "Solutions", color: "purple" },
+              { value: "45%", label: "Avg. ROI", color: "pink" }
+            ].map((stat, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 + idx * 0.1 }}
+                whileHover={{ scale: 1.05 }}
+                className="relative group"
               >
-                <div className={`${stat.color} mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                  {stat.icon}
-                </div>
-                <div className={`text-4xl font-bold ${stat.color} mb-2`}>{stat.value}</div>
-                <div className="text-gray-400 text-sm font-medium tracking-wide">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Service Category Filter */}
-        <div className="mb-16">
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
-            {serviceCategories.map((category) => (
-              <button
-                key={category.id}
-                className="group px-6 py-4 rounded-xl bg-gradient-to-br from-white/5 to-transparent border border-white/10 backdrop-blur-sm hover:border-cyan-500/50 transition-all duration-300 flex items-center gap-3"
-                style={{
-                  background: `linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)`,
-                }}
-              >
-                <div className={`h-10 w-10 rounded-lg bg-gradient-to-r ${category.color} flex items-center justify-center`}>
-                  <div className="text-white">{category.icon}</div>
-                </div>
-                <div className="text-left">
-                  <div className="text-white font-semibold group-hover:text-cyan-300 transition-colors">
-                    {category.title}
+                <div className="relative p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-black/30 backdrop-blur-xl border border-white/10 overflow-hidden min-w-[100px] sm:min-w-[120px]">
+                  <div className="relative">
+                    <div className={`text-2xl sm:text-3xl md:text-4xl font-black bg-gradient-to-r from-${stat.color}-400 to-${stat.color}-600 bg-clip-text text-transparent`}>
+                      {stat.value}
+                    </div>
+                    <div className="text-gray-500 text-xs sm:text-sm font-medium tracking-wider mt-1 sm:mt-2">
+                      {stat.label}
+                    </div>
                   </div>
-                  <div className="text-xs text-gray-400">{category.tech.length} Technologies</div>
                 </div>
-              </button>
+              </motion.div>
             ))}
+          </div>
+        </motion.div>
+
+        {/* Mobile-Friendly Industry Navigation - FIXED FOR MOBILE */}
+        <div className="mb-12 sm:mb-20 relative">
+          {/* Mobile horizontal scroll for industry buttons - IMPROVED VISIBILITY */}
+          <div className="lg:hidden overflow-x-auto pb-4 mb-8 px-2">
+            <div className="flex gap-2 min-w-max px-2">
+              {industries.slice(0, 6).map((industry) => (
+                <button
+                  key={industry.id}
+                  onClick={() => setActiveIndustry(industry.id)}
+                  className={`px-4 py-3 rounded-lg font-medium text-sm transition-all duration-300 whitespace-nowrap flex-shrink-0 min-w-[100px] ${
+                    activeIndustry === industry.id
+                      ? `bg-gradient-to-r ${industry.color} text-white shadow-lg`
+                      : 'bg-gray-800/80 text-gray-300 hover:bg-gray-800'
+                  }`}
+                  style={{
+                    border: activeIndustry === industry.id 
+                      ? `1px solid ${industry.accentColor}`
+                      : '1px solid rgba(255, 255, 255, 0.1)',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                >
+                  <div className="flex flex-col items-center gap-1">
+                    <div className={`${activeIndustry === industry.id ? 'text-white' : 'text-gray-400'}`}>
+                      {React.cloneElement(industry.icon, { className: 'h-5 w-5' })}
+                    </div>
+                    <span className="font-semibold">{industry.title}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop Circular Navigation */}
+          <div className="hidden lg:block relative">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <svg className="w-full h-full" viewBox="0 0 100 100">
+                <motion.path
+                  d="M10,50 Q50,10 90,50 Q50,90 10,50"
+                  stroke="url(#gradient)"
+                  strokeWidth="0.5"
+                  fill="none"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+                />
+                <defs>
+                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.5" />
+                    <stop offset="50%" stopColor="#3b82f6" stopOpacity="0.5" />
+                    <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.5" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+
+            <div className="relative">
+              <motion.div 
+                className="relative mx-auto w-64 h-64 sm:w-96 sm:h-96 rounded-full"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+              >
+                {industries.slice(0, 6).map((industry, idx) => {
+                  const angle = (idx / 6) * 2 * Math.PI;
+                  const x = 48 + 35 * Math.cos(angle);
+                  const y = 48 + 35 * Math.sin(angle);
+                  
+                  return (
+                    <motion.button
+                      key={industry.id}
+                      onClick={() => setActiveIndustry(industry.id)}
+                      className={`absolute w-14 h-14 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center transition-all duration-500 ${
+                        activeIndustry === industry.id
+                          ? 'scale-125 shadow-2xl'
+                          : 'scale-100'
+                      }`}
+                      style={{
+                        left: `${x}%`,
+                        top: `${y}%`,
+                        transform: `translate(-50%, -50%)`,
+                        background: activeIndustry === industry.id 
+                          ? `linear-gradient(135deg, ${industry.accentColor}20, ${industry.accentColor}40)`
+                          : 'rgba(0, 0, 0, 0.3)',
+                        border: activeIndustry === industry.id
+                          ? `2px solid ${industry.accentColor}`
+                          : '1px solid rgba(255, 255, 255, 0.1)',
+                        backdropFilter: 'blur(10px)'
+                      }}
+                      whileHover={{ scale: 1.2, rotate: 5 }}
+                    >
+                      <div className={`${activeIndustry === industry.id ? 'text-white' : 'text-gray-400'}`}>
+                        {React.cloneElement(industry.icon, { className: 'h-6 w-6 sm:h-8 sm:w-8' })}
+                      </div>
+                    </motion.button>
+                  );
+                })}
+              </motion.div>
+
+              <div className="absolute inset-0 flex items-center justify-center">
+                <motion.div 
+                  key={activeIndustry}
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="text-center px-4"
+                >
+                  <div className="text-2xl sm:text-4xl font-black text-white mb-2">
+                    {currentIndustry.title}
+                  </div>
+                  <div className="text-gray-400 text-xs sm:text-sm max-w-xs mx-auto">
+                    {currentIndustry.description}
+                  </div>
+                </motion.div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Featured Service Showcase with Glass Morphism */}
-        <div className="mb-24">
-          <div 
-            className="relative overflow-hidden rounded-3xl border border-white/20 backdrop-blur-xl"
+        {/* Main Industry Showcase - FIXED FOR MOBILE VISIBILITY */}
+        <motion.div 
+          key={activeIndustry}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="relative mb-16 sm:mb-32"
+        >
+          <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden backdrop-blur-xl mx-2 sm:mx-0"
             style={{
-              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)',
-              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+              background: 'rgba(0, 0, 0, 0.25)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              boxShadow: `
+                0 0 40px ${currentIndustry.accentColor}20,
+                inset 0 1px 0 rgba(255, 255, 255, 0.1)
+              `
             }}
           >
-            {/* Animated border */}
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/20 to-cyan-500/0 animate-shimmer" />
-            
-            <div className="relative p-8 lg:p-12">
-              <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-                {/* Service Image with Hover Effect */}
-                <div className="lg:w-1/2">
-                  <div className="relative rounded-2xl overflow-hidden group">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 mix-blend-overlay" />
-                    <img 
-                      src={services[activeService].image} 
-                      alt={services[activeService].title}
-                      className="w-full h-64 lg:h-96 object-cover group-hover:scale-110 transition-transform duration-1000"
+            <div className="relative p-4 sm:p-8 lg:p-12">
+              {/* Mobile Title - Better visibility */}
+              <div className="lg:hidden mb-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="relative">
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                      className="absolute inset-0 border-2 border-dashed rounded-full border-cyan-500/30"
                     />
-                    {/* Floating tech badges */}
-                    <div className="absolute -top-3 -right-3 flex gap-2">
-                      {services[activeService].tech.slice(0, 2).map((tech, idx) => (
-                        <span 
-                          key={idx}
-                          className="text-xs px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 border border-cyan-500/30 backdrop-blur-sm animate-float"
-                          style={{ animationDelay: `${idx * 0.2}s` }}
-                        >
-                          {tech}
-                        </span>
-                      ))}
+                    <div className="p-3 rounded-2xl bg-gradient-to-br from-black/50 to-transparent backdrop-blur-sm">
+                      {currentIndustry.icon}
+                    </div>
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-black text-white">
+                      {currentIndustry.title}
+                      <span className="text-cyan-400 ml-2">AI</span>
+                    </h2>
+                    <div className="text-gray-500 text-xs font-medium tracking-wider">
+                      INTELLIGENT TRANSFORMATION
                     </div>
                   </div>
                 </div>
-                
-                {/* Service Details */}
-                <div className="lg:w-1/2">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div 
-                      className="h-16 w-16 rounded-2xl flex items-center justify-center shadow-2xl"
-                      style={{ background: services[activeService].gradient }}
-                    >
-                      <div className="text-white">{services[activeService].icon}</div>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  {currentIndustry.description}
+                </p>
+              </div>
+
+              <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                {/* Left - Data Visualization - FIXED FOR MOBILE */}
+                <div>
+                  <div className="mb-6 sm:mb-8">
+                    {/* Desktop Title */}
+                    <div className="hidden lg:flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                      <div className="relative">
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                          className="absolute inset-0 border-2 border-dashed rounded-full border-cyan-500/30"
+                        />
+                        <div className="p-3 sm:p-4 rounded-2xl bg-gradient-to-br from-black/50 to-transparent backdrop-blur-sm">
+                          {currentIndustry.icon}
+                        </div>
+                      </div>
+                      <div>
+                        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white">
+                          {currentIndustry.title}
+                          <span className="text-cyan-400 ml-2">AI</span>
+                        </h2>
+                        <div className="text-gray-500 text-xs sm:text-sm font-medium tracking-wider">
+                          INTELLIGENT TRANSFORMATION
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <h2 className="text-3xl lg:text-4xl font-bold text-white mb-2">
-                        {services[activeService].title}
-                      </h2>
-                      <div className="flex flex-wrap gap-4">
-                        {Object.entries(services[activeService].stats).map(([key, value], idx) => (
-                          <div key={key} className="flex items-center gap-2">
-                            <div className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
-                            <span className="text-sm text-gray-300 capitalize">{key}:</span>
-                            <span className="text-sm font-bold text-cyan-300">{value}</span>
+
+                    {/* Animated progress rings - IMPROVED MOBILE SIZE */}
+                    <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
+                      {Object.entries(currentIndustry.stats).map(([key, value], idx) => (
+                        <div key={key} className="text-center">
+                          <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2">
+                            <svg className="w-full h-full" viewBox="0 0 100 100">
+                              <circle
+                                cx="50"
+                                cy="50"
+                                r="40"
+                                fill="none"
+                                stroke="rgba(255,255,255,0.1)"
+                                strokeWidth="8"
+                              />
+                              <motion.circle
+                                cx="50"
+                                cy="50"
+                                r="40"
+                                fill="none"
+                                stroke={currentIndustry.accentColor}
+                                strokeWidth="8"
+                                strokeLinecap="round"
+                                initial={{ pathLength: 0 }}
+                                animate={{ pathLength: 0.7 }}
+                                transition={{ duration: 1.5, delay: idx * 0.2 }}
+                                transform="rotate(-90 50 50)"
+                              />
+                            </svg>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="text-xl sm:text-2xl md:text-3xl font-black text-white">{value}</div>
+                            </div>
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <p className="text-gray-300 text-lg mb-8 leading-relaxed">
-                    {services[activeService].description}
-                  </p>
-                  
-                  <ul className="space-y-4 mb-8">
-                    {services[activeService].features.map((feature, idx) => (
-                      <li 
-                        key={idx}
-                        className="flex items-center text-gray-300 group cursor-pointer transform hover:translate-x-2 transition-transform duration-300"
-                      >
-                        <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-cyan-500/20 to-blue-500/20 flex items-center justify-center mr-4 group-hover:scale-110 transition-transform">
-                          <CheckCircle className="h-4 w-4 text-emerald-400" />
+                          <div className="text-xs text-gray-500 uppercase tracking-wider">
+                            {key}
+                          </div>
                         </div>
-                        <span className="group-hover:text-white transition-colors">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <button
-                      onClick={() => setIsPlaying(!isPlaying)}
-                      className="px-8 py-4 border-2 border-white/20 text-white rounded-xl hover:bg-white/5 transition-all duration-300 backdrop-blur-sm"
-                    >
-                      <div className="flex items-center justify-center gap-2">
-                        {isPlaying ? '⏸️' : '▶️'}
-                        <span>{isPlaying ? 'Pause Demo' : 'Play Demo'}</span>
-                      </div>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Service Navigation */}
-              <div className="flex justify-center gap-3 mt-12">
-                {services.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      setActiveService(index);
-                      setIsPlaying(false);
-                    }}
-                    className={`h-2 rounded-full transition-all duration-500 ${
-                      activeService === index 
-                        ? 'w-12 bg-gradient-to-r from-cyan-500 to-blue-500' 
-                        : 'w-2 bg-gray-700 hover:bg-gray-500'
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* AI Services Grid - Now 4 cards in one row */}
-        <div className="mb-24">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 mb-4">
-              <Sparkle className="h-4 w-4 text-purple-400" />
-              <span className="text-sm font-semibold text-purple-400">AI & AUTOMATION PORTFOLIO</span>
-            </div>
-            <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">
-              Next-Generation <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                AI Solutions
-              </span>
-            </h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Harness the power of artificial intelligence and automation to transform your business operations.
-            </p>
-          </div>
-          
-          {/* Grid with 4 columns for single row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-            {services.map((service, index) => {
-              // Find the category for this service
-              const serviceCategory = serviceCategories.find(cat => cat.id === service.category);
-              
-              return (
-                <div
-                  key={service.id}
-                  className="group relative overflow-hidden rounded-2xl border border-white/10 backdrop-blur-sm hover:border-cyan-500/50 transition-all duration-500 hover:scale-[1.02]"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%)',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-                  }}
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                >
-                  {/* Holographic effect on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  
-                  {/* Service Image */}
-                  <div className="relative h-56 overflow-hidden">
-                    <img 
-                      src={service.image} 
-                      alt={service.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-                    
-                    {/* Category badge */}
-                    <div className="absolute top-4 left-4">
-                      <div 
-                        className="px-3 py-1.5 rounded-full text-xs font-medium text-white backdrop-blur-sm"
-                        style={{ 
-                          background: serviceCategory?.gradient || service.gradient 
-                        }}
-                      >
-                        {serviceCategory?.title || 'AI'}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Service Content */}
-                  <div className="p-6 relative">
-                    <div className="flex items-start justify-between mb-4">
-                      <div 
-                        className="h-12 w-12 rounded-xl flex items-center justify-center shadow-lg"
-                        style={{ background: service.gradient }}
-                      >
-                        <div className="text-white">{service.icon}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-2xl font-bold text-white" style={{ background: service.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                          {Object.values(service.stats)[0]}
-                        </div>
-                        <div className="text-xs text-gray-400">{Object.keys(service.stats)[0]}</div>
-                      </div>
-                    </div>
-                    
-                    <h3 className="text-xl font-bold text-white mb-3 group-hover:text-cyan-300 transition-colors">
-                      {service.title}
-                    </h3>
-                    
-                    <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-                      {service.description}
-                    </p>
-                    
-                    {/* Tech Stack */}
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {service.tech.slice(0, 3).map((tech, idx) => (
-                        <span 
-                          key={idx}
-                          className="text-xs px-3 py-1.5 rounded-lg bg-white/5 text-gray-300 border border-white/10 group-hover:border-cyan-500/30 transition-colors"
-                        >
-                          {tech}
-                        </span>
                       ))}
                     </div>
-                    
-                    <div className="pt-4 border-t border-white/10">
-                      <Link
-                        to={`/services/${service.id}`}
-                        className="text-cyan-400 hover:text-cyan-300 transition-colors font-medium flex items-center group/link"
-                      >
-                        <span>View AI Implementation</span>
-                        <ArrowRight className="ml-2 h-4 w-4 group-hover/link:translate-x-2 transition-transform" />
-                      </Link>
+                  </div>
+
+                  {/* Solutions Grid - Made Responsive */}
+                  <div className="relative">
+                    <div className="text-gray-400 text-xs sm:text-sm font-medium tracking-wider mb-3 sm:mb-4">
+                      CORE SOLUTIONS
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                      {currentIndustry.solutions.map((solution, idx) => (
+                        <motion.div
+                          key={idx}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: idx * 0.1 }}
+                          whileHover={{ scale: 1.02, backgroundColor: `${currentIndustry.accentColor}10` }}
+                          className="p-3 sm:p-4 rounded-lg sm:rounded-xl border border-white/5 bg-black/30 backdrop-blur-sm"
+                        >
+                          <div className="flex items-center gap-2 sm:gap-3">
+                            <div className="h-2 w-2 rounded-full bg-cyan-500" />
+                            <span className="text-white text-sm">{solution}</span>
+                          </div>
+                        </motion.div>
+                      ))}
                     </div>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        </div>
 
-        {/* AI Capabilities Showcase */}
-        <div className="mb-24">
-          <div className="bg-gradient-to-br from-white/5 to-transparent border border-white/20 rounded-3xl p-8 lg:p-12 backdrop-blur-xl">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-white mb-4">
-                <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                  AI Capabilities
-                </span> & Expertise
+                {/* Right - Interactive 3D Effect - FIXED FOR MOBILE VISIBILITY */}
+                <div className="relative mt-8 lg:mt-0">
+                  <div className="relative h-72 sm:h-80 md:h-96 rounded-xl sm:rounded-2xl overflow-hidden"
+                    style={{
+                      background: `linear-gradient(45deg, ${currentIndustry.accentColor}15, transparent)`,
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      minHeight: '280px'
+                    }}
+                  >
+                    {/* Floating data points - VISIBLE ON MOBILE */}
+                    {[...Array(15)].map((_, i) => (
+                      <motion.div
+                        key={i}
+                        className="absolute w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full"
+                        style={{
+                          background: currentIndustry.accentColor,
+                          left: `${Math.random() * 100}%`,
+                          top: `${Math.random() * 100}%`,
+                          filter: 'drop-shadow(0 0 4px currentColor)'
+                        }}
+                        animate={{
+                          y: [0, -20, 0],
+                          opacity: [0.3, 0.8, 0.3],
+                          scale: [1, 1.2, 1]
+                        }}
+                        transition={{
+                          duration: 2 + Math.random() * 2,
+                          repeat: Infinity,
+                          delay: Math.random() * 2,
+                        }}
+                      />
+                    ))}
+
+                    {/* Central visualization - VISIBLE ON MOBILE */}
+                    <div className="absolute inset-0 flex items-center justify-center p-4">
+                      <motion.div
+                        animate={{ 
+                          rotateY: [0, 180, 360],
+                          scale: [1, 1.1, 1]
+                        }}
+                        transition={{ 
+                          duration: 20, 
+                          repeat: Infinity,
+                          ease: "linear"
+                        }}
+                        className="relative w-56 h-56 sm:w-64 sm:h-64"
+                      >
+                        <div className="absolute inset-0 border-2 border-dashed rounded-full border-cyan-500/40" />
+                        <div className="absolute inset-6 sm:inset-8 border-2 border-dashed rounded-full border-blue-500/40" />
+                        <div className="absolute inset-12 sm:inset-16 border-2 border-dashed rounded-full border-purple-500/40" />
+                        
+                        {/* Pulsing center - VISIBLE ON MOBILE */}
+                        <motion.div
+                          animate={{ 
+                            scale: [1, 1.4, 1],
+                            opacity: [0.8, 1, 0.8]
+                          }}
+                          transition={{ 
+                            duration: 2, 
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                          }}
+                          className="absolute inset-16 sm:inset-20 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"
+                          style={{
+                            boxShadow: `
+                              0 0 40px ${currentIndustry.accentColor},
+                              inset 0 0 20px rgba(255, 255, 255, 0.3)
+                            `
+                          }}
+                        />
+                        
+                        {/* Glow effect around the center */}
+                        <motion.div
+                          animate={{ 
+                            scale: [1, 1.6, 1],
+                            opacity: [0, 0.4, 0]
+                          }}
+                          transition={{ 
+                            duration: 3, 
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                          }}
+                          className="absolute inset-10 sm:inset-14 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 rounded-full blur-sm"
+                        />
+                      </motion.div>
+                    </div>
+                    
+                    {/* Animated rings around the visualization */}
+                    <motion.div
+                      animate={{ 
+                        rotate: 360,
+                        scale: [1, 1.05, 1]
+                      }}
+                      transition={{ 
+                        duration: 25, 
+                        repeat: Infinity,
+                        ease: "linear"
+                      }}
+                      className="absolute inset-4 sm:ins-6 border border-cyan-500/20 rounded-full"
+                    />
+                  </div>
+
+                  {/* Real-time metrics - Made Responsive */}
+                  <div className="mt-4 sm:mt-6 grid grid-cols-3 gap-2 sm:gap-4">
+                    {[
+                      { label: "AI Processing", value: "24/7", trend: "+" },
+                      { label: "Data Points", value: "2.4M", trend: "↑" },
+                      { label: "Accuracy", value: "99.8%", trend: "↗" }
+                    ].map((metric, idx) => (
+                      <div key={idx} className="text-center p-3 sm:p-4 rounded-lg sm:rounded-xl bg-black/30 backdrop-blur-sm border border-white/5">
+                        <div className="text-lg sm:text-xl md:text-2xl font-black text-white">{metric.value}</div>
+                        <div className="text-xs text-gray-500 mt-1">{metric.label}</div>
+                        <div className="text-green-400 text-xs mt-1">{metric.trend} Live</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* AI Transformation Stories Section - New Section */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="relative mb-16 sm:mb-32"
+        >
+          {/* Background with subtle animation */}
+          <div className="absolute inset-0 rounded-2xl sm:rounded-3xl overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-blue-500/5 to-purple-500/5" />
+            {[...Array(8)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-32 h-32 rounded-full blur-3xl"
+                style={{
+                  background: `radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, transparent 70%)`,
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                }}
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.3, 0.6, 0.3],
+                }}
+                transition={{
+                  duration: 4 + Math.random() * 2,
+                  repeat: Infinity,
+                }}
+              />
+            ))}
+          </div>
+
+          <div className="relative p-6 sm:p-8 md:p-12 rounded-2xl sm:rounded-3xl backdrop-blur-sm border border-white/10 bg-black/40">
+            <div className="text-center mb-8 sm:mb-12">
+              <div className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 rounded-full bg-black/50 border border-cyan-500/30 mb-4 backdrop-blur-xl">
+                <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-400" />
+                <span className="text-xs sm:text-sm font-bold text-cyan-400 tracking-wider">AI TRANSFORMATION IMPACT</span>
+              </div>
+              
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-4">
+                How <span className="text-cyan-400">AI</span> Transforms Industries
               </h2>
-              <p className="text-gray-300 max-w-2xl mx-auto">
-                Our comprehensive suite of AI and automation technologies
+              
+              <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto px-4">
+                Real-world applications of artificial intelligence driving measurable business outcomes across sectors
               </p>
             </div>
-            
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                {
-                  title: "Natural Language Processing",
-                  desc: "Advanced text understanding and generation",
-                  icon: <MessageSquare className="h-8 w-8" />,
-                  stats: "98% Accuracy",
-                  color: "from-blue-500 to-cyan-500"
-                },
-                {
-                  title: "Computer Vision",
-                  desc: "Image and video analysis at scale",
-                  icon: <Eye className="h-8 w-8" />,
-                  stats: "120 FPS Processing",
-                  color: "from-purple-500 to-pink-500"
-                },
-                {
-                  title: "Predictive Analytics",
-                  desc: "Forecast trends and behaviors",
-                  icon: <TrendingUp className="h-8 w-8" />,
-                  stats: "95% Forecast Accuracy",
-                  color: "from-emerald-500 to-teal-500"
-                },
-                {
-                  title: "Autonomous Agents",
-                  desc: "Self-learning decision systems",
-                  icon: <Bot className="h-8 w-8" />,
-                  stats: "24/7 Operation",
-                  color: "from-amber-500 to-orange-500"
-                }
-              ].map((capability, index) => (
-                <div
+
+            {/* AI Impact Stories Grid */}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              {aiImpactStories.map((story, index) => (
+                <motion.div
                   key={index}
-                  className="group p-6 rounded-2xl bg-gradient-to-br from-white/5 to-transparent border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-105"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  whileHover={{ y: -5 }}
+                  className="group relative"
                 >
-                  <div className={`h-14 w-14 rounded-xl bg-gradient-to-r ${capability.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                    <div className="text-white">{capability.icon}</div>
+                  <div className="relative p-5 sm:p-6 rounded-xl sm:rounded-2xl bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-sm border border-white/10 overflow-hidden h-full">
+                    {/* Animated background effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    
+                    <div className="relative">
+                      {/* Industry badge */}
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/30 mb-4">
+                        <div className="h-2 w-2 rounded-full bg-cyan-500" />
+                        <span className="text-xs font-bold text-cyan-400">{story.industry}</span>
+                      </div>
+                      
+                      {/* Achievement */}
+                      <h3 className="text-white font-bold text-sm sm:text-base mb-3 leading-relaxed">
+                        {story.achievement}
+                      </h3>
+                      
+                      {/* Technology used */}
+                      <div className="mb-4">
+                        <div className="text-gray-500 text-xs mb-2">TECHNOLOGY STACK</div>
+                        <div className="text-cyan-400 text-xs font-medium">{story.technology}</div>
+                      </div>
+                      
+                      {/* Timeline */}
+                      <div className="pt-3 border-t border-white/10">
+                        <div className="text-gray-500 text-xs">IMPLEMENTATION</div>
+                        <div className="text-gray-300 text-sm font-medium">{story.timeline}</div>
+                      </div>
+                    </div>
+                    
+                    {/* Corner accents */}
+                    <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-cyan-500/30" />
+                    <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-cyan-500/30" />
+                    <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-cyan-500/30" />
+                    <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-cyan-500/30" />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-2">{capability.title}</h3>
-                  <p className="text-gray-400 text-sm mb-3">{capability.desc}</p>
-                  <div className="text-sm font-medium text-cyan-300">{capability.stats}</div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* AI Process Visualization */}
+            <div className="mt-10 sm:mt-12 pt-8 sm:pt-10 border-t border-white/10">
+              <div className="text-center mb-6 sm:mb-8">
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-2">The AI Transformation Process</h3>
+                <p className="text-gray-400 text-sm sm:text-base">From data to actionable intelligence</p>
+              </div>
+              
+              <div className="relative">
+                {/* Process steps - Responsive layout */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  {[
+                    { step: "01", title: "Data Analysis", desc: "Pattern recognition", icon: <Database className="h-5 w-5" /> },
+                    { step: "02", title: "AI Modeling", desc: "Algorithm training", icon: <Brain className="h-5 w-5" /> },
+                    { step: "03", title: "Integration", desc: "System deployment", icon: <CircuitBoard className="h-5 w-5" /> },
+                    { step: "04", title: "Optimization", desc: "Continuous learning", icon: <TrendingUp className="h-5 w-5" /> }
+                  ].map((process, idx) => (
+                    <div key={idx} className="text-center">
+                      <div className="relative inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 mb-3">
+                        <div className="text-cyan-400">{process.icon}</div>
+                        <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-black border border-cyan-500/50 flex items-center justify-center">
+                          <span className="text-xs font-bold text-cyan-400">{process.step}</span>
+                        </div>
+                      </div>
+                      <div className="text-white font-bold text-sm sm:text-base">{process.title}</div>
+                      <div className="text-gray-500 text-xs mt-1">{process.desc}</div>
+                    </div>
+                  ))}
                 </div>
+                
+                {/* Connecting lines for desktop */}
+                <div className="hidden sm:block absolute top-6 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 -z-10" />
+                <div className="hidden sm:block absolute top-6 left-2/4 right-1/4 h-0.5 bg-gradient-to-r from-blue-500/30 to-purple-500/30 -z-10" />
+                <div className="hidden sm:block absolute top-6 left-3/4 right-1/4 h-0.5 bg-gradient-to-r from-purple-500/30 to-pink-500/30 -z-10" />
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Technology Stack - Made Responsive */}
+        <div className="mb-16 sm:mb-32">
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 rounded-full bg-black/50 border border-cyan-500/30 mb-4 backdrop-blur-xl">
+              <Cpu className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-400" />
+              <span className="text-xs sm:text-sm font-bold text-cyan-400 tracking-wider">TECHNOLOGY MATRIX</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-4">
+              Neural <span className="text-cyan-400">Architecture</span>
+            </h2>
+            <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto px-4">
+              Advanced AI technologies powering industry transformation
+            </p>
+          </div>
+
+          {/* Tech hex grid - Made Responsive */}
+          <div className="relative px-2 sm:px-0">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
+              {technologyStack.map((tech, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: idx * 0.1 }}
+                  whileHover={{ 
+                    y: -5,
+                    transition: { type: "spring", stiffness: 300 }
+                  }}
+                  className="relative group"
+                >
+                  {/* Hexagon shape */}
+                  <div className="relative h-40 sm:h-48"
+                    style={{
+                      clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-xl border border-white/10 group-hover:border-cyan-500/50 transition-colors" />
+                    
+                    <div className="absolute inset-0 p-4 sm:p-6 flex flex-col items-center justify-center">
+                      <motion.div
+                        animate={{ rotate: [0, 360] }}
+                        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-3 sm:inset-4 border border-cyan-500/20 rounded-full"
+                      />
+                      
+                      <div className={`p-3 sm:p-4 rounded-2xl bg-gradient-to-br ${tech.color} bg-opacity-20 mb-3 sm:mb-4`}>
+                        <div className="text-white">{tech.icon}</div>
+                      </div>
+                      
+                      <h3 className="text-white font-bold text-center text-sm sm:text-base mb-1 sm:mb-2">{tech.name}</h3>
+                      <p className="text-gray-400 text-xs text-center mb-2 sm:mb-3">{tech.description}</p>
+                      
+                      <div className="text-cyan-400 text-xs sm:text-sm font-bold">
+                        {tech.applications}+ applications
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* NEW: Infinite Sliding Services Section */}
-        <div className="relative mb-24">
-          {/* Section Header */}
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-gradient-to-r from-cyan-500/20 to-blue-500/20 mb-4">
-              <Sparkle className="h-4 w-4 text-cyan-400" />
-              <span className="text-sm font-semibold text-cyan-400">COMPLETE TECHNOLOGY STACK</span>
-            </div>
-            <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">
-              Comprehensive <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Digital Services
-              </span>
+        {/* All Industries Overview - Grid Layout */}
+        <div className="mb-16 sm:mb-24">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-4">
+              Industry <span className="text-cyan-400">Solutions</span>
             </h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              From web development to cybersecurity, we provide end-to-end solutions for your digital transformation.
+            <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto px-4">
+              Comprehensive AI solutions tailored to specific industry challenges
             </p>
           </div>
 
-          {/* Sliding Background Container */}
-          <div 
-            className="relative overflow-hidden rounded-3xl border border-white/20 backdrop-blur-xl py-12"
-            style={{
-              background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.7) 100%)',
-              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
-            }}
-          >
-            {/* Background Pattern */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute inset-0" style={{
-                backgroundImage: `radial-gradient(circle at 25% 25%, rgba(6, 182, 212, 0.2) 0%, transparent 50%),
-                                  radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.2) 0%, transparent 50%)`,
-              }} />
-            </div>
-
-            {/* Infinite Slider Container */}
-            <div className="relative">
-              {/* First Slider Track */}
-              <div 
-                ref={sliderRef}
-                className="flex animate-infinite-slider"
-                style={{ animationDuration: '40s' }}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+            {industries.map((industry) => (
+              <motion.div
+                key={industry.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                whileHover={{ y: -5 }}
+                className="group relative"
               >
-                {infiniteServices.map((service, index) => (
-                  <div
-                    key={`${service.id}-${index}`}
-                    className="flex-shrink-0 w-80 mx-4"
-                  >
-                    <div className="group relative overflow-hidden rounded-2xl border border-white/10 backdrop-blur-sm hover:border-cyan-500/50 transition-all duration-500 hover:scale-105 h-full"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)',
-                        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
-                      }}
-                    >
-                      {/* Service Icon */}
-                      <div className="absolute -top-6 -right-6 opacity-20">
-                        <div className="h-24 w-24 rounded-full" style={{ background: service.gradient }} />
+                <div className="relative p-5 sm:p-6 rounded-xl sm:rounded-2xl bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-sm border border-white/10 overflow-hidden h-full">
+                  {/* Hover gradient effect */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  <div className="relative">
+                    {/* Icon and Title */}
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className={`p-2.5 sm:p-3 rounded-xl bg-gradient-to-br ${industry.color} bg-opacity-20`}>
+                        <div className="text-white">{React.cloneElement(industry.icon, { className: 'h-5 w-5 sm:h-6 sm:w-6' })}</div>
                       </div>
-                      
-                      <div className="p-6">
-                        <div className="flex items-center gap-4 mb-6">
-                          <div 
-                            className="h-14 w-14 rounded-xl flex items-center justify-center shadow-lg"
-                            style={{ background: service.gradient }}
-                          >
-                            <div className="text-white">{service.icon}</div>
-                          </div>
-                          <div>
-                            <h3 className="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors">
-                              {service.title}
-                            </h3>
-                            <div className="flex items-center gap-2 mt-1">
-                              {Object.entries(service.stats).map(([key, value], idx) => (
-                                <div key={key} className="flex items-center gap-1">
-                                  <span className="text-xs text-gray-400">{key}:</span>
-                                  <span className="text-xs font-bold text-cyan-300">{value}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
+                      <h3 className="text-white font-bold text-lg sm:text-xl">{industry.title}</h3>
+                    </div>
+                    
+                    {/* Description */}
+                    <p className="text-gray-400 text-sm mb-4 line-clamp-2">
+                      {industry.description}
+                    </p>
+                    
+                    {/* Stats Preview */}
+                    <div className="flex items-center gap-4 mb-4">
+                      {Object.entries(industry.stats).slice(0, 2).map(([key, value]) => (
+                        <div key={key} className="text-center">
+                          <div className="text-lg sm:text-xl font-bold text-white">{value}</div>
+                          <div className="text-gray-500 text-xs capitalize">{key}</div>
                         </div>
-                        
-                        <p className="text-gray-400 text-sm mb-6 line-clamp-2">
-                          {service.description}
-                        </p>
-                        
-                        {/* Features */}
-                        <div className="flex flex-wrap gap-2 mb-6">
-                          {service.features.slice(0, 3).map((feature, idx) => (
-                            <span 
-                              key={idx}
-                              className="text-xs px-3 py-1.5 rounded-lg bg-white/5 text-gray-300 border border-white/10"
-                            >
-                              {feature}
-                            </span>
-                          ))}
-                        </div>
-                        
-                        <div className="pt-4 border-t border-white/10">
-                          <button className="text-cyan-400 hover:text-cyan-300 transition-colors font-medium flex items-center group/link">
-                            <span>Learn More</span>
-                            <ArrowRight className="ml-2 h-4 w-4 group-hover/link:translate-x-2 transition-transform" />
-                          </button>
-                        </div>
+                      ))}
+                    </div>
+                    
+                    {/* Solutions Preview */}
+                    <div className="pt-4 border-t border-white/10">
+                      <div className="text-gray-500 text-xs mb-2">KEY SOLUTIONS</div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {industry.solutions.slice(0, 3).map((solution, idx) => (
+                          <span key={idx} className="px-2 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs">
+                            {solution}
+                          </span>
+                        ))}
                       </div>
-                      
-                      {/* Hover Effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     </div>
                   </div>
-                ))}
-              </div>
-
-              {/* Second Slider Track (Reversed for seamless effect) */}
-              <div 
-                className="flex animate-infinite-slider-reverse mt-8"
-                style={{ animationDuration: '35s' }}
-              >
-                {infiniteServices.slice().reverse().map((service, index) => (
-                  <div
-                    key={`reverse-${service.id}-${index}`}
-                    className="flex-shrink-0 w-80 mx-4"
-                  >
-                    <div className="group relative overflow-hidden rounded-2xl border border-white/10 backdrop-blur-sm hover:border-purple-500/50 transition-all duration-500 hover:scale-105 h-full"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)',
-                        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
-                      }}
-                    >
-                      {/* Service Icon */}
-                      <div className="absolute -top-6 -right-6 opacity-20">
-                        <div className="h-24 w-24 rounded-full" style={{ background: service.gradient }} />
-                      </div>
-                      
-                      <div className="p-6">
-                        <div className="flex items-center gap-4 mb-6">
-                          <div 
-                            className="h-14 w-14 rounded-xl flex items-center justify-center shadow-lg"
-                            style={{ background: service.gradient }}
-                          >
-                            <div className="text-white">{service.icon}</div>
-                          </div>
-                          <div>
-                            <h3 className="text-xl font-bold text-white group-hover:text-purple-300 transition-colors">
-                              {service.title}
-                            </h3>
-                            <div className="flex items-center gap-2 mt-1">
-                              {Object.entries(service.stats).map(([key, value], idx) => (
-                                <div key={key} className="flex items-center gap-1">
-                                  <span className="text-xs text-gray-400">{key}:</span>
-                                  <span className="text-xs font-bold text-purple-300">{value}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <p className="text-gray-400 text-sm mb-6 line-clamp-2">
-                          {service.description}
-                        </p>
-                        
-                        {/* Features */}
-                        <div className="flex flex-wrap gap-2 mb-6">
-                          {service.features.slice(0, 3).map((feature, idx) => (
-                            <span 
-                              key={idx}
-                              className="text-xs px-3 py-1.5 rounded-lg bg-white/5 text-gray-300 border border-white/10"
-                            >
-                              {feature}
-                            </span>
-                          ))}
-                        </div>
-                        
-                        <div className="pt-4 border-t border-white/10">
-                          <button className="text-purple-400 hover:text-purple-300 transition-colors font-medium flex items-center group/link">
-                            <span>Learn More</span>
-                            <ArrowRight className="ml-2 h-4 w-4 group-hover/link:translate-x-2 transition-transform" />
-                          </button>
-                        </div>
-                      </div>
-                      
-                      {/* Hover Effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-purple-500/5 to-purple-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Gradient Fades for Smooth Edges */}
-            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#1e293b] to-transparent pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#1e293b] to-transparent pointer-events-none" />
-          </div>
-
-          {/* CTA below slider - Removed "Discuss Your Project Requirements" */}
-          <div className="text-center mt-12">
-            <p className="text-gray-300 text-lg mb-6">
-              Need a specific solution not listed? Our experts can customize any service to fit your unique requirements.
-            </p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Custom Animations */}
-      <style jsx>{`
-        @keyframes float-3d {
-          0%, 100% { 
-            transform: translateY(0) translateX(0) rotate(0deg) scale(1);
-          }
-          33% { 
-            transform: translateY(-30px) translateX(20px) rotate(120deg) scale(1.1);
-          }
-          66% { 
-            transform: translateY(-15px) translateX(-15px) rotate(240deg) scale(0.9);
-          }
-        }
-        
-        @keyframes gradient-shift {
-          0% { background-position: 0% 50%; }
+      {/* CSS Animations */}
+      <style>{`
+        @keyframes gradientShift {
+          0%, 100% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-        
-        @keyframes shimmer {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
         }
         
         @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-20px); }
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
         }
         
         @keyframes spin-slow {
@@ -911,86 +1034,64 @@ const Services = () => {
           to { transform: rotate(360deg); }
         }
         
-        @keyframes infinite-slider {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(calc(-100% / 3));
-          }
-        }
-        
-        @keyframes infinite-slider-reverse {
-          0% {
-            transform: translateX(calc(-100% / 3));
-          }
-          100% {
-            transform: translateX(0);
-          }
-        }
-        
-        .animate-float-3d {
-          animation: float-3d 20s ease-in-out infinite;
-        }
-        
-        .animate-gradient-shift {
-          background-size: 200% 200%;
-          animation: gradient-shift 3s ease infinite;
-        }
-        
-        .animate-shimmer {
-          animation: shimmer 2s infinite;
+        .animate-spin-slow {
+          animation: spin-slow 8s linear infinite;
         }
         
         .animate-float {
-          animation: float 3s ease-in-out infinite;
-        }
-        
-        .animate-spin-slow {
-          animation: spin-slow 20s linear infinite;
-        }
-        
-        .animate-pulse {
-          animation: pulse 2s ease-in-out infinite;
-        }
-        
-        .animate-infinite-slider {
-          animation: infinite-slider 40s linear infinite;
-          display: flex;
-        }
-        
-        .animate-infinite-slider-reverse {
-          animation: infinite-slider-reverse 35s linear infinite;
-          display: flex;
+          animation: float 6s ease-in-out infinite;
         }
         
         .line-clamp-2 {
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
           overflow: hidden;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+        }
+        
+        /* Hide scrollbar for horizontal scroll on mobile */
+        .overflow-x-auto {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        
+        .overflow-x-auto::-webkit-scrollbar {
+          display: none;
         }
         
         /* Custom scrollbar */
-        ::-webkit-scrollbar {
-          width: 10px;
+        @media (min-width: 640px) {
+          ::-webkit-scrollbar {
+            width: 10px;
+          }
+          
+          ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+          }
+          
+          ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #06b6d4, #3b82f6);
+            border-radius: 5px;
+          }
+          
+          ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+          }
         }
         
-        ::-webkit-scrollbar-track {
-          background: rgba(15, 23, 42, 0.5);
+        /* Text selection */
+        ::selection {
+          background: rgba(6, 182, 212, 0.3);
+          color: white;
         }
         
-        ::-webkit-scrollbar-thumb {
-          background: linear-gradient(to bottom, #06b6d4, #3b82f6);
-          border-radius: 5px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-          background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+        /* Smooth transitions */
+        * {
+          scroll-behavior: smooth;
         }
       `}</style>
     </main>
   );
-};
+}
 
-export default Services;
+export default Industries;

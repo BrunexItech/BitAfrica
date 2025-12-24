@@ -16,6 +16,7 @@ import { motion } from 'framer-motion';
 function Industries() {
   const [activeIndustry, setActiveIndustry] = useState("finance-banking");
   const [isHovered, setIsHovered] = useState(null);
+  const [rotation, setRotation] = useState(0);
 
   const technologyStack = [
     { 
@@ -243,35 +244,44 @@ function Industries() {
     }
   ];
 
+  // Animate rotation for floating elements
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRotation(prev => (prev + 0.5) % 360);
+    }, 50);
+    return () => clearInterval(interval);
+  }, []);
+
   // Animated background grid
   const BackgroundGrid = () => (
     <div className="fixed inset-0 z-0 overflow-hidden opacity-10 sm:opacity-20">
       <div className="absolute inset-0" style={{
-        backgroundImage: `linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
-                         linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-        backgroundSize: '30px 30px',
-        maskImage: 'radial-gradient(circle at center, black, transparent 70%)'
+        backgroundImage: `linear-gradient(to right, rgba(6, 182, 212, 0.1) 1px, transparent 1px),
+                         linear-gradient(to bottom, rgba(6, 182, 212, 0.1) 1px, transparent 1px)`,
+        backgroundSize: '40px 40px',
+        maskImage: 'radial-gradient(circle at center, black, transparent 80%)'
       }} />
-      {/* Animated hexagons */}
-      {[...Array(12)].map((_, i) => (
+      
+      {/* Animated hexagons with cleaner animation */}
+      {[...Array(8)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute border border-cyan-500/10 rounded-lg"
+          className="absolute border border-cyan-500/5 rounded-lg"
           style={{
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
-            width: '60px',
-            height: '60px',
-            rotate: '30deg'
+            width: '80px',
+            height: '80px',
           }}
           animate={{
-            rotate: [30, 390],
-            scale: [1, 1.2, 1],
+            rotate: rotation,
+            scale: [1, 1.1, 1],
+            opacity: [0.3, 0.6, 0.3],
           }}
           transition={{
-            duration: 20 + Math.random() * 20,
+            duration: 3 + Math.random() * 2,
             repeat: Infinity,
-            ease: "linear"
+            ease: "easeInOut"
           }}
         />
       ))}
@@ -282,215 +292,247 @@ function Industries() {
     <main className="pt-16 sm:pt-20 min-h-screen bg-gradient-to-br from-gray-950 via-black to-gray-950 overflow-x-hidden">
       <BackgroundGrid />
 
-      {/* Decorative floating elements */}
+      {/* Decorative floating elements with cleaner animation */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        {[...Array(6)].map((_, i) => (
+        {[...Array(4)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute w-32 h-32 sm:w-64 sm:h-64 rounded-full blur-3xl"
             style={{
-              background: `radial-gradient(circle, rgba(var(--accent-rgb), 0.1) 0%, transparent 70%)`,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              background: `radial-gradient(circle, rgba(${i === 0 ? '6, 182, 212' : i === 1 ? '139, 92, 246' : i === 2 ? '16, 185, 129' : '251, 146, 60'}, 0.05) 0%, transparent 70%)`,
+              left: `${20 + i * 20}%`,
+              top: `${10 + i * 25}%`,
             }}
             animate={{
-              x: [0, Math.sin(i) * 50],
-              y: [0, Math.cos(i) * 50],
+              x: [0, Math.sin(i) * 40],
+              y: [0, Math.cos(i) * 40],
             }}
             transition={{
-              duration: 20 + i * 2,
+              duration: 15 + i * 3,
               repeat: Infinity,
-              repeatType: "reverse"
+              repeatType: "reverse",
+              ease: "easeInOut"
             }}
           />
         ))}
       </div>
 
       <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-12 relative z-10">
-        {/* Hero Section - Made More Compact */}
+        {/* Hero Section - Clean and Modern */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-center mb-16 sm:mb-24 relative"
+          className="text-center mb-12 sm:mb-20 relative"
         >
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: "spring", stiffness: 100 }}
-            className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-black/50 border border-cyan-500/30 mb-6 sm:mb-8 backdrop-blur-xl"
+            className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-black/30 border border-cyan-500/30 mb-6 sm:mb-8 backdrop-blur-xl"
           >
             <div className="relative">
-              <Sparkle className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-400 animate-spin-slow" />
+              <Sparkle className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-400" />
             </div>
-            <span className="text-xs sm:text-sm font-bold text-cyan-400 tracking-wider sm:tracking-widest">INDUSTRY TRANSFORMATION</span>
+            <span className="text-xs sm:text-sm font-medium text-cyan-300 tracking-wider">INDUSTRY TRANSFORMATION</span>
           </motion.div>
           
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-black text-white mb-4 sm:mb-8 leading-tight">
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
-              AI-POWERED
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">
+            <span className="text-white">Industry</span>
+            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent block">
+              Solutions
             </span>
-            <br />
-            <span className="text-white text-3xl sm:text-5xl md:text-6xl">SOLUTIONS</span>
           </h1>
           
           <motion.p 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="text-gray-400 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed px-4"
+            className="text-gray-300 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed px-4"
           >
-            Transforming industries with intelligent AI systems that learn, adapt, and optimize in real-time.
+            Advanced AI and automation solutions tailored for industry-specific challenges and transformation.
           </motion.p>
-          
-          {/* Interactive Stats - Made Responsive */}
-          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-12 px-4">
-            {[
-              { value: "50+", label: "Industries", color: "cyan" },
-              { value: "99.7%", label: "Accuracy", color: "blue" },
-              { value: "200+", label: "Solutions", color: "purple" },
-              { value: "45%", label: "Avg. ROI", color: "pink" }
-            ].map((stat, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 + idx * 0.1 }}
-                whileHover={{ scale: 1.05 }}
-                className="relative group"
-              >
-                <div className="relative p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-black/30 backdrop-blur-xl border border-white/10 overflow-hidden min-w-[100px] sm:min-w-[120px]">
-                  <div className="relative">
-                    <div className={`text-2xl sm:text-3xl md:text-4xl font-black bg-gradient-to-r from-${stat.color}-400 to-${stat.color}-600 bg-clip-text text-transparent`}>
-                      {stat.value}
-                    </div>
-                    <div className="text-gray-500 text-xs sm:text-sm font-medium tracking-wider mt-1 sm:mt-2">
-                      {stat.label}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
         </motion.div>
 
-        {/* Mobile-Friendly Industry Navigation - FIXED FOR MOBILE */}
-        <div className="mb-12 sm:mb-20 relative">
-          {/* Mobile horizontal scroll for industry buttons - IMPROVED VISIBILITY */}
-          <div className="lg:hidden overflow-x-auto pb-4 mb-8 px-2">
-            <div className="flex gap-2 min-w-max px-2">
-              {industries.slice(0, 6).map((industry) => (
-                <button
+        {/* Mobile Categories - Fixed for better visibility and organization */}
+        <div className="lg:hidden mb-10">
+          {/* Section header */}
+          <div className="text-center mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/40 border border-cyan-500/30 mb-3">
+              <span className="text-xs font-medium text-cyan-400">SELECT INDUSTRY</span>
+            </div>
+            <p className="text-gray-400 text-sm mb-6 max-w-md mx-auto px-4">
+              Tap on an industry to view AI solutions
+            </p>
+          </div>
+
+          {/* 2x4 Grid for categories with better spacing */}
+          <div className="grid grid-cols-4 gap-3 px-2 mb-4">
+            {industries.slice(0, 8).map((industry) => (
+              <button
+                key={industry.id}
+                onClick={() => setActiveIndustry(industry.id)}
+                className={`
+                  relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl 
+                  transition-all duration-300 min-h-[100px]
+                  ${activeIndustry === industry.id
+                    ? 'scale-105 shadow-lg'
+                    : 'opacity-90 hover:opacity-100 hover:scale-[1.02]'
+                  }
+                `}
+                style={{
+                  background: activeIndustry === industry.id 
+                    ? `linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.08))`
+                    : 'rgba(0, 0, 0, 0.4)',
+                  border: activeIndustry === industry.id
+                    ? `2px solid ${industry.accentColor}`
+                    : '1px solid rgba(255, 255, 255, 0.15)',
+                  backdropFilter: 'blur(10px)'
+                }}
+              >
+                {/* Active indicator */}
+                {activeIndustry === industry.id && (
+                  <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center">
+                    <div className="w-2 h-2 rounded-full bg-white"></div>
+                  </div>
+                )}
+
+                {/* Icon with better visibility */}
+                <div className={`
+                  p-3 rounded-lg mb-2 transition-all duration-300
+                  ${activeIndustry === industry.id 
+                    ? `bg-gradient-to-br ${industry.color} shadow-lg`
+                    : 'bg-black/60'
+                  }
+                `}>
+                  <div className={`${activeIndustry === industry.id ? 'text-white' : 'text-cyan-400'}`}>
+                    {React.cloneElement(industry.icon, { 
+                      className: 'h-6 w-6 sm:h-7 sm:w-7'
+                    })}
+                  </div>
+                </div>
+
+                {/* Category name */}
+                <span className={`text-xs font-semibold text-center leading-tight ${
+                  activeIndustry === industry.id ? 'text-white' : 'text-gray-300'
+                }`}>
+                  {industry.title}
+                </span>
+
+                {/* Subtle active indicator line */}
+                {activeIndustry === industry.id && (
+                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-1 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"></div>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop Elegant Navigation */}
+        <div className="hidden lg:block">
+          <div className="relative mb-12">
+            <div className="flex justify-center gap-2 mb-8">
+              <div className="h-0.5 w-16 bg-gradient-to-r from-transparent to-cyan-500/50"></div>
+              <div className="h-0.5 w-24 bg-gradient-to-r from-cyan-500/50 to-blue-500/50"></div>
+              <div className="h-0.5 w-16 bg-gradient-to-r from-blue-500/50 to-transparent"></div>
+            </div>
+
+            <div className="grid grid-cols-4 gap-6 relative">
+              {industries.slice(0, 4).map((industry, idx) => (
+                <motion.button
                   key={industry.id}
                   onClick={() => setActiveIndustry(industry.id)}
-                  className={`px-4 py-3 rounded-lg font-medium text-sm transition-all duration-300 whitespace-nowrap flex-shrink-0 min-w-[100px] ${
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`relative p-6 rounded-2xl transition-all duration-500 ${
                     activeIndustry === industry.id
-                      ? `bg-gradient-to-r ${industry.color} text-white shadow-lg`
-                      : 'bg-gray-800/80 text-gray-300 hover:bg-gray-800'
+                      ? 'scale-105 shadow-2xl'
+                      : 'opacity-80 hover:opacity-100'
                   }`}
                   style={{
-                    border: activeIndustry === industry.id 
-                      ? `1px solid ${industry.accentColor}`
+                    background: activeIndustry === industry.id 
+                      ? `linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))`
+                      : 'rgba(0, 0, 0, 0.3)',
+                    border: activeIndustry === industry.id
+                      ? `2px solid ${industry.accentColor}`
                       : '1px solid rgba(255, 255, 255, 0.1)',
                     backdropFilter: 'blur(10px)'
                   }}
                 >
-                  <div className="flex flex-col items-center gap-1">
-                    <div className={`${activeIndustry === industry.id ? 'text-white' : 'text-gray-400'}`}>
-                      {React.cloneElement(industry.icon, { className: 'h-5 w-5' })}
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="relative">
+                      <div className={`p-4 rounded-2xl bg-gradient-to-br ${industry.color} bg-opacity-20`}>
+                        <div className="text-white">{industry.icon}</div>
+                      </div>
+                      {activeIndustry === industry.id && (
+                        <motion.div
+                          className="absolute -inset-1 rounded-2xl border-2 border-transparent"
+                          style={{ borderImage: `linear-gradient(45deg, ${industry.accentColor}, transparent) 1` }}
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                        />
+                      )}
                     </div>
-                    <span className="font-semibold">{industry.title}</span>
+                    <div>
+                      <h3 className={`text-lg font-bold mb-2 ${
+                        activeIndustry === industry.id ? 'text-white' : 'text-gray-300'
+                      }`}>
+                        {industry.title}
+                      </h3>
+                      <p className="text-gray-500 text-sm text-center">
+                        AI Solutions
+                      </p>
+                    </div>
                   </div>
-                </button>
+                </motion.button>
               ))}
             </div>
-          </div>
 
-          {/* Desktop Circular Navigation */}
-          <div className="hidden lg:block relative">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <svg className="w-full h-full" viewBox="0 0 100 100">
-                <motion.path
-                  d="M10,50 Q50,10 90,50 Q50,90 10,50"
-                  stroke="url(#gradient)"
-                  strokeWidth="0.5"
-                  fill="none"
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: 1 }}
-                  transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
-                />
-                <defs>
-                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.5" />
-                    <stop offset="50%" stopColor="#3b82f6" stopOpacity="0.5" />
-                    <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.5" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
-
-            <div className="relative">
-              <motion.div 
-                className="relative mx-auto w-64 h-64 sm:w-96 sm:h-96 rounded-full"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-              >
-                {industries.slice(0, 6).map((industry, idx) => {
-                  const angle = (idx / 6) * 2 * Math.PI;
-                  const x = 48 + 35 * Math.cos(angle);
-                  const y = 48 + 35 * Math.sin(angle);
-                  
-                  return (
-                    <motion.button
-                      key={industry.id}
-                      onClick={() => setActiveIndustry(industry.id)}
-                      className={`absolute w-14 h-14 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center transition-all duration-500 ${
-                        activeIndustry === industry.id
-                          ? 'scale-125 shadow-2xl'
-                          : 'scale-100'
-                      }`}
-                      style={{
-                        left: `${x}%`,
-                        top: `${y}%`,
-                        transform: `translate(-50%, -50%)`,
-                        background: activeIndustry === industry.id 
-                          ? `linear-gradient(135deg, ${industry.accentColor}20, ${industry.accentColor}40)`
-                          : 'rgba(0, 0, 0, 0.3)',
-                        border: activeIndustry === industry.id
-                          ? `2px solid ${industry.accentColor}`
-                          : '1px solid rgba(255, 255, 255, 0.1)',
-                        backdropFilter: 'blur(10px)'
-                      }}
-                      whileHover={{ scale: 1.2, rotate: 5 }}
-                    >
-                      <div className={`${activeIndustry === industry.id ? 'text-white' : 'text-gray-400'}`}>
-                        {React.cloneElement(industry.icon, { className: 'h-6 w-6 sm:h-8 sm:w-8' })}
-                      </div>
-                    </motion.button>
-                  );
-                })}
-              </motion.div>
-
-              <div className="absolute inset-0 flex items-center justify-center">
-                <motion.div 
-                  key={activeIndustry}
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="text-center px-4"
+            {/* Second row for remaining industries */}
+            <div className="grid grid-cols-4 gap-6 mt-6">
+              {industries.slice(4, 8).map((industry) => (
+                <motion.button
+                  key={industry.id}
+                  onClick={() => setActiveIndustry(industry.id)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`relative p-6 rounded-2xl transition-all duration-500 ${
+                    activeIndustry === industry.id
+                      ? 'scale-105 shadow-2xl'
+                      : 'opacity-80 hover:opacity-100'
+                  }`}
+                  style={{
+                    background: activeIndustry === industry.id 
+                      ? `linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))`
+                      : 'rgba(0, 0, 0, 0.3)',
+                    border: activeIndustry === industry.id
+                      ? `2px solid ${industry.accentColor}`
+                      : '1px solid rgba(255, 255, 255, 0.1)',
+                    backdropFilter: 'blur(10px)'
+                  }}
                 >
-                  <div className="text-2xl sm:text-4xl font-black text-white mb-2">
-                    {currentIndustry.title}
+                  <div className="flex flex-col items-center gap-4">
+                    <div className={`p-4 rounded-2xl bg-gradient-to-br ${industry.color} bg-opacity-20`}>
+                      <div className="text-white">{industry.icon}</div>
+                    </div>
+                    <div>
+                      <h3 className={`text-lg font-bold mb-2 ${
+                        activeIndustry === industry.id ? 'text-white' : 'text-gray-300'
+                      }`}>
+                        {industry.title}
+                      </h3>
+                      <p className="text-gray-500 text-sm text-center">
+                        AI Solutions
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-gray-400 text-xs sm:text-sm max-w-xs mx-auto">
-                    {currentIndustry.description}
-                  </div>
-                </motion.div>
-              </div>
+                </motion.button>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Main Industry Showcase - FIXED FOR MOBILE VISIBILITY */}
+        {/* Main Industry Showcase - Clean Design */}
         <motion.div 
           key={activeIndustry}
           initial={{ opacity: 0, y: 30 }}
@@ -500,158 +542,143 @@ function Industries() {
         >
           <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden backdrop-blur-xl mx-2 sm:mx-0"
             style={{
-              background: 'rgba(0, 0, 0, 0.25)',
+              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)',
               border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: `
-                0 0 40px ${currentIndustry.accentColor}20,
-                inset 0 1px 0 rgba(255, 255, 255, 0.1)
-              `
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'
             }}
           >
-            <div className="relative p-4 sm:p-8 lg:p-12">
-              {/* Mobile Title - Better visibility */}
-              <div className="lg:hidden mb-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="relative">
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                      className="absolute inset-0 border-2 border-dashed rounded-full border-cyan-500/30"
-                    />
-                    <div className="p-3 rounded-2xl bg-gradient-to-br from-black/50 to-transparent backdrop-blur-sm">
-                      {currentIndustry.icon}
-                    </div>
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-black text-white">
-                      {currentIndustry.title}
-                      <span className="text-cyan-400 ml-2">AI</span>
-                    </h2>
-                    <div className="text-gray-500 text-xs font-medium tracking-wider">
-                      INTELLIGENT TRANSFORMATION
-                    </div>
-                  </div>
-                </div>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  {currentIndustry.description}
-                </p>
-              </div>
-
+            {/* Subtle accent line */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500"></div>
+            
+            <div className="relative p-6 sm:p-8 lg:p-12">
               <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                {/* Left - Data Visualization - FIXED FOR MOBILE */}
+                {/* Left - Industry Details */}
                 <div>
-                  <div className="mb-6 sm:mb-8">
-                    {/* Desktop Title */}
-                    <div className="hidden lg:flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-                      <div className="relative">
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                          className="absolute inset-0 border-2 border-dashed rounded-full border-cyan-500/30"
-                        />
-                        <div className="p-3 sm:p-4 rounded-2xl bg-gradient-to-br from-black/50 to-transparent backdrop-blur-sm">
-                          {currentIndustry.icon}
-                        </div>
-                      </div>
-                      <div>
-                        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white">
-                          {currentIndustry.title}
-                          <span className="text-cyan-400 ml-2">AI</span>
-                        </h2>
-                        <div className="text-gray-500 text-xs sm:text-sm font-medium tracking-wider">
-                          INTELLIGENT TRANSFORMATION
-                        </div>
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="relative">
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-0 border border-dashed rounded-full border-cyan-500/30"
+                      />
+                      <div className="p-4 rounded-2xl bg-gradient-to-br from-black/50 to-transparent backdrop-blur-sm">
+                        {currentIndustry.icon}
                       </div>
                     </div>
-
-                    {/* Animated progress rings - IMPROVED MOBILE SIZE */}
-                    <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
-                      {Object.entries(currentIndustry.stats).map(([key, value], idx) => (
-                        <div key={key} className="text-center">
-                          <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2">
-                            <svg className="w-full h-full" viewBox="0 0 100 100">
-                              <circle
-                                cx="50"
-                                cy="50"
-                                r="40"
-                                fill="none"
-                                stroke="rgba(255,255,255,0.1)"
-                                strokeWidth="8"
-                              />
-                              <motion.circle
-                                cx="50"
-                                cy="50"
-                                r="40"
-                                fill="none"
-                                stroke={currentIndustry.accentColor}
-                                strokeWidth="8"
-                                strokeLinecap="round"
-                                initial={{ pathLength: 0 }}
-                                animate={{ pathLength: 0.7 }}
-                                transition={{ duration: 1.5, delay: idx * 0.2 }}
-                                transform="rotate(-90 50 50)"
-                              />
-                            </svg>
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <div className="text-xl sm:text-2xl md:text-3xl font-black text-white">{value}</div>
-                            </div>
-                          </div>
-                          <div className="text-xs text-gray-500 uppercase tracking-wider">
-                            {key}
-                          </div>
-                        </div>
-                      ))}
+                    <div>
+                      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
+                        {currentIndustry.title}
+                        <span className="text-cyan-400 ml-2">AI</span>
+                      </h2>
+                      <div className="text-gray-500 text-sm font-medium tracking-wider">
+                        INTELLIGENT SOLUTIONS
+                      </div>
                     </div>
                   </div>
 
-                  {/* Solutions Grid - Made Responsive */}
-                  <div className="relative">
-                    <div className="text-gray-400 text-xs sm:text-sm font-medium tracking-wider mb-3 sm:mb-4">
-                      CORE SOLUTIONS
+                  <p className="text-gray-300 text-lg mb-8 leading-relaxed">
+                    {currentIndustry.description}
+                  </p>
+
+                  {/* Clean Stats Display */}
+                  <div className="grid grid-cols-3 gap-4 mb-8">
+                    {Object.entries(currentIndustry.stats).map(([key, value], idx) => (
+                      <div key={key} className="text-center p-4 rounded-xl bg-gradient-to-br from-white/5 to-transparent border border-white/10">
+                        <div className="text-2xl sm:text-3xl font-bold text-white mb-1">{value}</div>
+                        <div className="text-gray-500 text-xs uppercase tracking-wider">
+                          {key}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Solutions List */}
+                  <div className="space-y-3">
+                    <div className="text-gray-400 text-sm font-medium tracking-wider mb-2">
+                      KEY SOLUTIONS
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                      {currentIndustry.solutions.map((solution, idx) => (
-                        <motion.div
-                          key={idx}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: idx * 0.1 }}
-                          whileHover={{ scale: 1.02, backgroundColor: `${currentIndustry.accentColor}10` }}
-                          className="p-3 sm:p-4 rounded-lg sm:rounded-xl border border-white/5 bg-black/30 backdrop-blur-sm"
-                        >
-                          <div className="flex items-center gap-2 sm:gap-3">
-                            <div className="h-2 w-2 rounded-full bg-cyan-500" />
-                            <span className="text-white text-sm">{solution}</span>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
+                    {currentIndustry.solutions.map((solution, idx) => (
+                      <motion.div
+                        key={idx}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.1 }}
+                        className="flex items-center gap-3 p-3 rounded-lg border border-white/5 hover:border-cyan-500/30 transition-colors group"
+                      >
+                        <div className="h-2 w-2 rounded-full bg-cyan-500 group-hover:scale-150 transition-transform" />
+                        <span className="text-white text-sm group-hover:text-cyan-300 transition-colors">{solution}</span>
+                      </motion.div>
+                    ))}
                   </div>
                 </div>
 
-                {/* Right - Interactive 3D Effect - FIXED FOR MOBILE VISIBILITY */}
+                {/* Right - Interactive Visualization */}
                 <div className="relative mt-8 lg:mt-0">
-                  <div className="relative h-72 sm:h-80 md:h-96 rounded-xl sm:rounded-2xl overflow-hidden"
+                  <div className="relative h-64 sm:h-72 md:h-80 rounded-xl sm:rounded-2xl overflow-hidden"
                     style={{
-                      background: `linear-gradient(45deg, ${currentIndustry.accentColor}15, transparent)`,
+                      background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.1))',
                       border: '1px solid rgba(255, 255, 255, 0.1)',
-                      minHeight: '280px'
                     }}
                   >
-                    {/* Floating data points - VISIBLE ON MOBILE */}
-                    {[...Array(15)].map((_, i) => (
+                    {/* Animated background pattern */}
+                    <div className="absolute inset-0 opacity-20">
+                      <div className="absolute inset-0" style={{
+                        backgroundImage: `radial-gradient(circle at 20% 20%, ${currentIndustry.accentColor} 0%, transparent 20%),
+                                          radial-gradient(circle at 80% 80%, ${currentIndustry.accentColor} 0%, transparent 20%)`
+                      }} />
+                    </div>
+
+                    {/* Central orb animation */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <motion.div
+                        animate={{ 
+                          rotate: 360,
+                          scale: [1, 1.1, 1]
+                        }}
+                        transition={{ 
+                          duration: 15, 
+                          repeat: Infinity,
+                          ease: "linear"
+                        }}
+                        className="relative w-48 h-48 sm:w-56 sm:h-56"
+                      >
+                        <div className="absolute inset-0 border border-cyan-500/30 rounded-full" />
+                        <div className="absolute inset-6 sm:inset-8 border border-blue-500/30 rounded-full" />
+                        <div className="absolute inset-12 sm:inset-16 border border-purple-500/30 rounded-full" />
+                        
+                        {/* Pulsing center */}
+                        <motion.div
+                          animate={{ 
+                            scale: [1, 1.2, 1],
+                            opacity: [0.8, 1, 0.8]
+                          }}
+                          transition={{ 
+                            duration: 3, 
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                          }}
+                          className="absolute inset-16 sm:inset-20 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full opacity-80"
+                          style={{
+                            boxShadow: `0 0 60px ${currentIndustry.accentColor}40`
+                          }}
+                        />
+                      </motion.div>
+                    </div>
+
+                    {/* Floating data points */}
+                    {[...Array(12)].map((_, i) => (
                       <motion.div
                         key={i}
-                        className="absolute w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full"
+                        className="absolute w-3 h-3 rounded-full"
                         style={{
                           background: currentIndustry.accentColor,
-                          left: `${Math.random() * 100}%`,
-                          top: `${Math.random() * 100}%`,
-                          filter: 'drop-shadow(0 0 4px currentColor)'
+                          left: `${20 + (i % 4) * 20}%`,
+                          top: `${20 + Math.floor(i / 4) * 20}%`,
+                          filter: 'blur(1px)'
                         }}
                         animate={{
-                          y: [0, -20, 0],
-                          opacity: [0.3, 0.8, 0.3],
+                          y: [0, -15, 0],
+                          opacity: [0.4, 0.8, 0.4],
                           scale: [1, 1.2, 1]
                         }}
                         transition={{
@@ -661,88 +688,14 @@ function Industries() {
                         }}
                       />
                     ))}
-
-                    {/* Central visualization - VISIBLE ON MOBILE */}
-                    <div className="absolute inset-0 flex items-center justify-center p-4">
-                      <motion.div
-                        animate={{ 
-                          rotateY: [0, 180, 360],
-                          scale: [1, 1.1, 1]
-                        }}
-                        transition={{ 
-                          duration: 20, 
-                          repeat: Infinity,
-                          ease: "linear"
-                        }}
-                        className="relative w-56 h-56 sm:w-64 sm:h-64"
-                      >
-                        <div className="absolute inset-0 border-2 border-dashed rounded-full border-cyan-500/40" />
-                        <div className="absolute inset-6 sm:inset-8 border-2 border-dashed rounded-full border-blue-500/40" />
-                        <div className="absolute inset-12 sm:inset-16 border-2 border-dashed rounded-full border-purple-500/40" />
-                        
-                        {/* Pulsing center - VISIBLE ON MOBILE */}
-                        <motion.div
-                          animate={{ 
-                            scale: [1, 1.4, 1],
-                            opacity: [0.8, 1, 0.8]
-                          }}
-                          transition={{ 
-                            duration: 2, 
-                            repeat: Infinity,
-                            ease: "easeInOut"
-                          }}
-                          className="absolute inset-16 sm:inset-20 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"
-                          style={{
-                            boxShadow: `
-                              0 0 40px ${currentIndustry.accentColor},
-                              inset 0 0 20px rgba(255, 255, 255, 0.3)
-                            `
-                          }}
-                        />
-                        
-                        {/* Glow effect around the center */}
-                        <motion.div
-                          animate={{ 
-                            scale: [1, 1.6, 1],
-                            opacity: [0, 0.4, 0]
-                          }}
-                          transition={{ 
-                            duration: 3, 
-                            repeat: Infinity,
-                            ease: "easeInOut"
-                          }}
-                          className="absolute inset-10 sm:inset-14 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 rounded-full blur-sm"
-                        />
-                      </motion.div>
-                    </div>
-                    
-                    {/* Animated rings around the visualization */}
-                    <motion.div
-                      animate={{ 
-                        rotate: 360,
-                        scale: [1, 1.05, 1]
-                      }}
-                      transition={{ 
-                        duration: 25, 
-                        repeat: Infinity,
-                        ease: "linear"
-                      }}
-                      className="absolute inset-4 sm:ins-6 border border-cyan-500/20 rounded-full"
-                    />
                   </div>
 
-                  {/* Real-time metrics - Made Responsive */}
-                  <div className="mt-4 sm:mt-6 grid grid-cols-3 gap-2 sm:gap-4">
-                    {[
-                      { label: "AI Processing", value: "24/7", trend: "+" },
-                      { label: "Data Points", value: "2.4M", trend: "↑" },
-                      { label: "Accuracy", value: "99.8%", trend: "↗" }
-                    ].map((metric, idx) => (
-                      <div key={idx} className="text-center p-3 sm:p-4 rounded-lg sm:rounded-xl bg-black/30 backdrop-blur-sm border border-white/5">
-                        <div className="text-lg sm:text-xl md:text-2xl font-black text-white">{metric.value}</div>
-                        <div className="text-xs text-gray-500 mt-1">{metric.label}</div>
-                        <div className="text-green-400 text-xs mt-1">{metric.trend} Live</div>
-                      </div>
+                  {/* Tech tags */}
+                  <div className="mt-6 flex flex-wrap gap-2 justify-center">
+                    {["AI Integration", "Real-time Analytics", "Cloud Native", "Automated Workflows"].map((tech, idx) => (
+                      <span key={idx} className="px-3 py-1.5 rounded-full bg-black/50 border border-white/10 text-cyan-400 text-xs font-medium">
+                        {tech}
+                      </span>
                     ))}
                   </div>
                 </div>
@@ -751,54 +704,34 @@ function Industries() {
           </div>
         </motion.div>
 
-        {/* AI Transformation Stories Section - New Section */}
+        {/* AI Transformation Stories - Clean Design */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
           className="relative mb-16 sm:mb-32"
         >
-          {/* Background with subtle animation */}
-          <div className="absolute inset-0 rounded-2xl sm:rounded-3xl overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-blue-500/5 to-purple-500/5" />
-            {[...Array(8)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-32 h-32 rounded-full blur-3xl"
-                style={{
-                  background: `radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, transparent 70%)`,
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                }}
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.3, 0.6, 0.3],
-                }}
-                transition={{
-                  duration: 4 + Math.random() * 2,
-                  repeat: Infinity,
-                }}
-              />
-            ))}
-          </div>
-
-          <div className="relative p-6 sm:p-8 md:p-12 rounded-2xl sm:rounded-3xl backdrop-blur-sm border border-white/10 bg-black/40">
+          <div className="relative p-6 sm:p-8 md:p-12 rounded-2xl sm:rounded-3xl backdrop-blur-sm border border-white/10"
+            style={{
+              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%)',
+            }}
+          >
             <div className="text-center mb-8 sm:mb-12">
-              <div className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 rounded-full bg-black/50 border border-cyan-500/30 mb-4 backdrop-blur-xl">
+              <div className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 rounded-full bg-black/30 border border-cyan-500/30 mb-4 backdrop-blur-xl">
                 <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-400" />
-                <span className="text-xs sm:text-sm font-bold text-cyan-400 tracking-wider">AI TRANSFORMATION IMPACT</span>
+                <span className="text-xs sm:text-sm font-medium text-cyan-300 tracking-wider">SUCCESS STORIES</span>
               </div>
               
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-4">
-                How <span className="text-cyan-400">AI</span> Transforms Industries
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">
+                Real <span className="text-cyan-400">Impact</span> Stories
               </h2>
               
-              <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto px-4">
-                Real-world applications of artificial intelligence driving measurable business outcomes across sectors
+              <p className="text-gray-300 text-base sm:text-lg max-w-2xl mx-auto px-4">
+                How AI is delivering measurable results across different sectors
               </p>
             </div>
 
-            {/* AI Impact Stories Grid */}
+            {/* Impact Stories Grid */}
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {aiImpactStories.map((story, index) => (
                 <motion.div
@@ -809,139 +742,82 @@ function Industries() {
                   whileHover={{ y: -5 }}
                   className="group relative"
                 >
-                  <div className="relative p-5 sm:p-6 rounded-xl sm:rounded-2xl bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-sm border border-white/10 overflow-hidden h-full">
-                    {/* Animated background effect */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="relative p-5 sm:p-6 rounded-xl sm:rounded-2xl bg-gradient-to-br from-white/5 to-transparent backdrop-blur-sm border border-white/10 overflow-hidden h-full hover:border-cyan-500/30 transition-colors">
+                    {/* Subtle gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     
                     <div className="relative">
                       {/* Industry badge */}
-                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/30 mb-4">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-4">
                         <div className="h-2 w-2 rounded-full bg-cyan-500" />
-                        <span className="text-xs font-bold text-cyan-400">{story.industry}</span>
+                        <span className="text-xs font-medium text-cyan-400">{story.industry}</span>
                       </div>
                       
                       {/* Achievement */}
-                      <h3 className="text-white font-bold text-sm sm:text-base mb-3 leading-relaxed">
+                      <h3 className="text-white font-semibold text-sm sm:text-base mb-3 leading-relaxed">
                         {story.achievement}
                       </h3>
                       
-                      {/* Technology used */}
-                      <div className="mb-4">
-                        <div className="text-gray-500 text-xs mb-2">TECHNOLOGY STACK</div>
-                        <div className="text-cyan-400 text-xs font-medium">{story.technology}</div>
-                      </div>
-                      
-                      {/* Timeline */}
+                      {/* Technology and Timeline */}
                       <div className="pt-3 border-t border-white/10">
-                        <div className="text-gray-500 text-xs">IMPLEMENTATION</div>
-                        <div className="text-gray-300 text-sm font-medium">{story.timeline}</div>
+                        <div className="text-gray-500 text-xs mb-1">TECHNOLOGY</div>
+                        <div className="text-cyan-400 text-sm font-medium mb-3">{story.technology}</div>
+                        <div className="text-gray-500 text-xs">TIMELINE</div>
+                        <div className="text-gray-300 text-sm">{story.timeline}</div>
                       </div>
                     </div>
-                    
-                    {/* Corner accents */}
-                    <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-cyan-500/30" />
-                    <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-cyan-500/30" />
-                    <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-cyan-500/30" />
-                    <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-cyan-500/30" />
                   </div>
                 </motion.div>
               ))}
             </div>
-
-            {/* AI Process Visualization */}
-            <div className="mt-10 sm:mt-12 pt-8 sm:pt-10 border-t border-white/10">
-              <div className="text-center mb-6 sm:mb-8">
-                <h3 className="text-lg sm:text-xl font-bold text-white mb-2">The AI Transformation Process</h3>
-                <p className="text-gray-400 text-sm sm:text-base">From data to actionable intelligence</p>
-              </div>
-              
-              <div className="relative">
-                {/* Process steps - Responsive layout */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  {[
-                    { step: "01", title: "Data Analysis", desc: "Pattern recognition", icon: <Database className="h-5 w-5" /> },
-                    { step: "02", title: "AI Modeling", desc: "Algorithm training", icon: <Brain className="h-5 w-5" /> },
-                    { step: "03", title: "Integration", desc: "System deployment", icon: <CircuitBoard className="h-5 w-5" /> },
-                    { step: "04", title: "Optimization", desc: "Continuous learning", icon: <TrendingUp className="h-5 w-5" /> }
-                  ].map((process, idx) => (
-                    <div key={idx} className="text-center">
-                      <div className="relative inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 mb-3">
-                        <div className="text-cyan-400">{process.icon}</div>
-                        <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-black border border-cyan-500/50 flex items-center justify-center">
-                          <span className="text-xs font-bold text-cyan-400">{process.step}</span>
-                        </div>
-                      </div>
-                      <div className="text-white font-bold text-sm sm:text-base">{process.title}</div>
-                      <div className="text-gray-500 text-xs mt-1">{process.desc}</div>
-                    </div>
-                  ))}
-                </div>
-                
-                {/* Connecting lines for desktop */}
-                <div className="hidden sm:block absolute top-6 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 -z-10" />
-                <div className="hidden sm:block absolute top-6 left-2/4 right-1/4 h-0.5 bg-gradient-to-r from-blue-500/30 to-purple-500/30 -z-10" />
-                <div className="hidden sm:block absolute top-6 left-3/4 right-1/4 h-0.5 bg-gradient-to-r from-purple-500/30 to-pink-500/30 -z-10" />
-              </div>
-            </div>
           </div>
         </motion.div>
 
-        {/* Technology Stack - Made Responsive */}
+        {/* Technology Stack - Clean Grid */}
         <div className="mb-16 sm:mb-32">
           <div className="text-center mb-8 sm:mb-12">
-            <div className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 rounded-full bg-black/50 border border-cyan-500/30 mb-4 backdrop-blur-xl">
+            <div className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 rounded-full bg-black/30 border border-cyan-500/30 mb-4 backdrop-blur-xl">
               <Cpu className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-400" />
-              <span className="text-xs sm:text-sm font-bold text-cyan-400 tracking-wider">TECHNOLOGY MATRIX</span>
+              <span className="text-xs sm:text-sm font-medium text-cyan-300 tracking-wider">TECHNOLOGY STACK</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-4">
-              Neural <span className="text-cyan-400">Architecture</span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">
+              Core <span className="text-cyan-400">Technologies</span>
             </h2>
-            <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto px-4">
-              Advanced AI technologies powering industry transformation
+            <p className="text-gray-300 text-base sm:text-lg max-w-2xl mx-auto px-4">
+              Advanced technologies powering industry transformation
             </p>
           </div>
 
-          {/* Tech hex grid - Made Responsive */}
+          {/* Clean Tech Grid */}
           <div className="relative px-2 sm:px-0">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
               {technologyStack.map((tech, idx) => (
                 <motion.div
                   key={idx}
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.5, delay: idx * 0.1 }}
-                  whileHover={{ 
-                    y: -5,
-                    transition: { type: "spring", stiffness: 300 }
-                  }}
-                  className="relative group"
+                  whileHover={{ y: -5 }}
+                  className="group relative"
                 >
-                  {/* Hexagon shape */}
-                  <div className="relative h-40 sm:h-48"
-                    style={{
-                      clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'
-                    }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-xl border border-white/10 group-hover:border-cyan-500/50 transition-colors" />
+                  <div className="relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-white/5 to-transparent backdrop-blur-sm border border-white/10 h-full hover:border-cyan-500/30 transition-colors">
+                    {/* Tech Icon */}
+                    <div className={`p-3 sm:p-4 rounded-2xl bg-gradient-to-br ${tech.color} bg-opacity-20 mb-4 mx-auto w-fit`}>
+                      <div className="text-white">{tech.icon}</div>
+                    </div>
                     
-                    <div className="absolute inset-0 p-4 sm:p-6 flex flex-col items-center justify-center">
-                      <motion.div
-                        animate={{ rotate: [0, 360] }}
-                        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                        className="absolute inset-3 sm:inset-4 border border-cyan-500/20 rounded-full"
-                      />
-                      
-                      <div className={`p-3 sm:p-4 rounded-2xl bg-gradient-to-br ${tech.color} bg-opacity-20 mb-3 sm:mb-4`}>
-                        <div className="text-white">{tech.icon}</div>
-                      </div>
-                      
-                      <h3 className="text-white font-bold text-center text-sm sm:text-base mb-1 sm:mb-2">{tech.name}</h3>
-                      <p className="text-gray-400 text-xs text-center mb-2 sm:mb-3">{tech.description}</p>
-                      
+                    {/* Tech Info */}
+                    <h3 className="text-white font-bold text-center text-sm sm:text-base mb-2">{tech.name}</h3>
+                    <p className="text-gray-400 text-xs text-center mb-3">{tech.description}</p>
+                    
+                    <div className="text-center">
                       <div className="text-cyan-400 text-xs sm:text-sm font-bold">
-                        {tech.applications}+ applications
+                        {tech.applications}+ Applications
                       </div>
                     </div>
+                    
+                    {/* Hover effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
                   </div>
                 </motion.div>
               ))}
@@ -949,14 +825,14 @@ function Industries() {
           </div>
         </div>
 
-        {/* All Industries Overview - Grid Layout */}
+        {/* All Industries Overview - Clean Grid */}
         <div className="mb-16 sm:mb-24">
           <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-4">
-              Industry <span className="text-cyan-400">Solutions</span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">
+              All <span className="text-cyan-400">Industries</span>
             </h2>
-            <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto px-4">
-              Comprehensive AI solutions tailored to specific industry challenges
+            <p className="text-gray-300 text-base sm:text-lg max-w-2xl mx-auto px-4">
+              Comprehensive AI solutions across every sector
             </p>
           </div>
 
@@ -970,44 +846,32 @@ function Industries() {
                 whileHover={{ y: -5 }}
                 className="group relative"
               >
-                <div className="relative p-5 sm:p-6 rounded-xl sm:rounded-2xl bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-sm border border-white/10 overflow-hidden h-full">
-                  {/* Hover gradient effect */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative p-5 sm:p-6 rounded-xl sm:rounded-2xl bg-gradient-to-br from-white/5 to-transparent backdrop-blur-sm border border-white/10 overflow-hidden h-full hover:border-cyan-500/30 transition-colors">
+                  {/* Icon and Title */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className={`p-2.5 sm:p-3 rounded-xl bg-gradient-to-br ${industry.color} bg-opacity-20`}>
+                      <div className="text-white">{React.cloneElement(industry.icon, { className: 'h-5 w-5 sm:h-6 sm:w-6' })}</div>
+                    </div>
+                    <h3 className="text-white font-bold text-lg sm:text-xl">{industry.title}</h3>
+                  </div>
                   
-                  <div className="relative">
-                    {/* Icon and Title */}
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className={`p-2.5 sm:p-3 rounded-xl bg-gradient-to-br ${industry.color} bg-opacity-20`}>
-                        <div className="text-white">{React.cloneElement(industry.icon, { className: 'h-5 w-5 sm:h-6 sm:w-6' })}</div>
-                      </div>
-                      <h3 className="text-white font-bold text-lg sm:text-xl">{industry.title}</h3>
-                    </div>
-                    
-                    {/* Description */}
-                    <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-                      {industry.description}
-                    </p>
-                    
-                    {/* Stats Preview */}
-                    <div className="flex items-center gap-4 mb-4">
-                      {Object.entries(industry.stats).slice(0, 2).map(([key, value]) => (
-                        <div key={key} className="text-center">
-                          <div className="text-lg sm:text-xl font-bold text-white">{value}</div>
-                          <div className="text-gray-500 text-xs capitalize">{key}</div>
-                        </div>
+                  {/* Description */}
+                  <p className="text-gray-300 text-sm mb-4 line-clamp-2">
+                    {industry.description}
+                  </p>
+                  
+                  {/* Solutions Preview */}
+                  <div className="pt-4 border-t border-white/10">
+                    <div className="text-gray-500 text-xs mb-2">KEY SOLUTIONS</div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {industry.solutions.slice(0, 2).map((solution, idx) => (
+                        <span key={idx} className="px-2 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs">
+                          {solution}
+                        </span>
                       ))}
-                    </div>
-                    
-                    {/* Solutions Preview */}
-                    <div className="pt-4 border-t border-white/10">
-                      <div className="text-gray-500 text-xs mb-2">KEY SOLUTIONS</div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {industry.solutions.slice(0, 3).map((solution, idx) => (
-                          <span key={idx} className="px-2 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs">
-                            {solution}
-                          </span>
-                        ))}
-                      </div>
+                      <span className="px-2 py-1 rounded-full bg-white/5 border border-white/10 text-gray-400 text-xs">
+                        +{industry.solutions.length - 2}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -1026,16 +890,7 @@ function Industries() {
         
         @keyframes float {
           0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-        }
-        
-        @keyframes spin-slow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        
-        .animate-spin-slow {
-          animation: spin-slow 8s linear infinite;
+          50% { transform: translateY(-8px); }
         }
         
         .animate-float {
@@ -1057,32 +912,6 @@ function Industries() {
         
         .overflow-x-auto::-webkit-scrollbar {
           display: none;
-        }
-        
-        /* Custom scrollbar */
-        @media (min-width: 640px) {
-          ::-webkit-scrollbar {
-            width: 10px;
-          }
-          
-          ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.3);
-          }
-          
-          ::-webkit-scrollbar-thumb {
-            background: linear-gradient(to bottom, #06b6d4, #3b82f6);
-            border-radius: 5px;
-          }
-          
-          ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
-          }
-        }
-        
-        /* Text selection */
-        ::selection {
-          background: rgba(6, 182, 212, 0.3);
-          color: white;
         }
         
         /* Smooth transitions */
