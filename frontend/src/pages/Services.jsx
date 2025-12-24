@@ -15,7 +15,9 @@ import {
   LineChart, Network as AiNetwork, Fingerprint, Binary,
   Globe as WebIcon, Shield as SecurityIcon, GitBranch as ApiIcon,
   Smartphone as MobileIcon, Palette, Database as DataIcon,
-  Cloud as CloudIcon, Code as CodeIcon, Zap as ZapIcon
+  Cloud as CloudIcon, Code as CodeIcon, Zap as ZapIcon,
+  Cpu as CpuIcon2, Brain as BrainIcon, Rocket as RocketIcon,
+  Target as TargetIcon, GitMerge, Cpu as AiProcessor
 } from 'lucide-react';
 
 const Services = () => {
@@ -26,55 +28,34 @@ const Services = () => {
   const sliderRef = useRef(null);
   const containerRef = useRef(null);
 
-  // Service categories with enhanced AI focus
-  const serviceCategories = [
-    {
-      id: "ai-agents",
-      title: "AI Agents & Autonomous Systems",
-      description: "Deploy intelligent agents that learn, adapt, and execute complex tasks autonomously.",
-      icon: <Bot className="h-8 w-8" />,
-      color: "from-cyan-500 to-blue-600",
-      gradient: "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)",
-      tech: ["Multi-Agent Systems", "Reinforcement Learning", "Autonomous Decision Making"]
-    },
-    {
-      id: "machine-learning",
-      title: "Machine Learning Solutions",
-      description: "Advanced ML models that transform data into actionable business intelligence.",
-      icon: <BrainCircuit className="h-8 w-8" />,
-      color: "from-purple-500 to-pink-600",
-      gradient: "linear-gradient(135deg, #8b5cf6 0%, #db2777 100%)",
-      tech: ["Predictive Analytics", "Neural Networks", "Deep Learning"]
-    },
-    {
-      id: "automation",
-      title: "Intelligent Automation",
-      description: "End-to-end process automation powered by AI and cognitive technologies.",
-      icon: <Workflow className="h-8 w-8" />,
-      color: "from-emerald-500 to-teal-600",
-      gradient: "linear-gradient(135deg, #10b981 0%, #0d9488 100%)",
-      tech: ["RPA 2.0", "Cognitive Automation", "Workflow Optimization"]
-    },
-    {
-      id: "cloud-ai",
-      title: "AI-Powered Cloud",
-      description: "Scalable cloud infrastructure optimized for AI workloads and big data processing.",
-      icon: <CloudCog className="h-8 w-8" />,
-      color: "from-amber-500 to-orange-600",
-      gradient: "linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)",
-      tech: ["AI-Optimized Infra", "GPU Clusters", "Distributed Computing"]
-    }
-  ];
-
-  // Keep only first 4 services for single row display
+  // Enhanced services array with AI-Optimized Cloud first and tech education
   const services = [
+    {
+      id: "ai-cloud-infrastructure",
+      title: "AI-Optimized Cloud",
+      description: "High-performance cloud infrastructure specifically designed for AI/ML workloads and big data processing. Enterprise-grade solutions with auto-scaling and intelligent resource allocation.",
+      features: [
+        "GPU-Accelerated Computing Clusters",
+        "Distributed Training Infrastructure",
+        "Real-time Model Serving",
+        "Data Pipeline Orchestration",
+        "Cost-Optimized Auto-scaling"
+      ],
+      icon: <CloudCog className="h-10 w-10" />,
+      color: "from-amber-500 to-orange-500",
+      gradient: "linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)",
+      stats: { latency: "<10ms", scalability: "Unlimited", efficiency: "40%+" },
+      image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=600&fit=crop&auto=format",
+      tech: ["NVIDIA DGX", "Kubernetes", "TensorRT", "Ray Cluster"],
+      badge: "Most Popular"
+    },
     {
       id: "ai-agents-enterprise",
       title: "Enterprise AI Agents",
-      description: "Deploy autonomous AI agents that handle customer service, data analysis, and complex decision-making processes 24/7. Our agents learn from interactions and improve over time.",
+      description: "Deploy autonomous AI agents that handle customer service, data analysis, and complex decision-making processes. Our agents learn from interactions and improve over time.",
       features: [
-        "Autonomous Customer Support Agents",
-        "Predictive Maintenance Systems",
+        "Autonomous Customer Support Systems",
+        "Predictive Maintenance AI",
         "Intelligent Process Automation",
         "Real-time Market Analysis Agents",
         "Self-Optimizing Supply Chain AI"
@@ -84,35 +65,35 @@ const Services = () => {
       gradient: "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)",
       stats: { efficiency: "↑300%", accuracy: "99.7%", uptime: "24/7" },
       image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop&auto=format",
-      category: "ai-agents",
-      tech: ["GPT-4 Integration", "Computer Vision", "NLP", "Reinforcement Learning"]
+      tech: ["GPT-4 Integration", "Computer Vision", "NLP", "Reinforcement Learning"],
+      badge: "Enterprise"
     },
     {
-      id: "deep-learning-platform",
-      title: "Deep Learning Solutions",
-      description: "Advanced neural network architectures for complex pattern recognition, natural language understanding, and predictive analytics.",
+      id: "ai-education-platform",
+      title: "AI Education Platform",
+      description: "Comprehensive training programs and certifications in AI, machine learning, and automation for individuals and enterprise teams.",
       features: [
-        "Custom CNN/RNN Architectures",
-        "Transfer Learning Implementation",
-        "Real-time Inference Systems",
-        "Model Optimization & Quantization",
-        "AutoML Pipelines"
+        "Hands-on AI Workshops",
+        "Enterprise Training Programs",
+        "Certification Pathways",
+        "Live Project Mentorship",
+        "Industry Expert Sessions"
       ],
-      icon: <BrainCircuit className="h-10 w-10" />,
+      icon: <BrainIcon className="h-10 w-10" />,
       color: "from-purple-500 to-pink-500",
       gradient: "linear-gradient(135deg, #8b5cf6 0%, #db2777 100%)",
-      stats: { performance: "↑5x", training: "80% faster", models: "1000+" },
-      image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&h=600&fit=crop&auto=format",
-      category: "machine-learning",
-      tech: ["TensorFlow", "PyTorch", "Keras", "CUDA Optimization"]
+      stats: { students: "5000+", completion: "95%", satisfaction: "4.9★" },
+      image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=600&fit=crop&auto=format",
+      tech: ["Python", "TensorFlow", "ML Ops", "Cloud AI"],
+      badge: "New"
     },
     {
-      id: "hyperautomation",
-      title: "Hyperautomation Suite",
-      description: "Combine RPA, AI, and machine learning to automate complex business processes end-to-end.",
+      id: "hyperautomation-suite",
+      title: "Intelligent Automation Suite",
+      description: "Combine RPA, AI, and machine learning to automate complex business processes end-to-end with cognitive capabilities.",
       features: [
-        "Intelligent Document Processing",
-        "Cognitive Workflow Automation",
+        "Cognitive Document Processing",
+        "Smart Workflow Automation",
         "Process Mining & Discovery",
         "Self-healing Automation",
         "API Integration Ecosystems"
@@ -122,124 +103,44 @@ const Services = () => {
       gradient: "linear-gradient(135deg, #10b981 0%, #0d9488 100%)",
       stats: { cost: "↓60%", speed: "↑400%", errors: "↓95%" },
       image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop&auto=format",
-      category: "automation",
       tech: ["UiPath", "Automation Anywhere", "ML Ops", "API Gateway"]
     },
     {
-      id: "ai-cloud-infrastructure",
-      title: "AI-Optimized Cloud",
-      description: "High-performance cloud infrastructure specifically designed for AI/ML workloads and big data processing.",
+      id: "custom-ai-solutions",
+      title: "Custom AI Development",
+      description: "Tailored AI solutions built from scratch to solve unique business challenges and create competitive advantages.",
       features: [
-        "GPU-Accelerated Computing",
-        "Distributed Training Clusters",
-        "Model Serving Infrastructure",
-        "Data Pipeline Orchestration",
-        "Cost-Optimized Scaling"
+        "Custom ML Model Development",
+        "AI-Powered Applications",
+        "Data Strategy & Engineering",
+        "Model Deployment & Scaling",
+        "Continuous Improvement"
       ],
-      icon: <CloudCog className="h-10 w-10" />,
-      color: "from-amber-500 to-orange-500",
-      gradient: "linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)",
-      stats: { latency: "<10ms", scale: "∞", savings: "45%" },
-      image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=600&fit=crop&auto=format",
-      category: "cloud-ai",
-      tech: ["NVIDIA DGX", "Kubernetes", "TensorRT", "Ray Cluster"]
+      icon: <AiProcessor className="h-10 w-10" />,
+      color: "from-indigo-500 to-violet-500",
+      gradient: "linear-gradient(135deg, #6366f1 0%, #7c3aed 100%)",
+      stats: { delivery: "30 days", accuracy: "98%", support: "Lifetime" },
+      image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&h=600&fit=crop&auto=format",
+      tech: ["Python", "FastAPI", "Docker", "AWS/Azure"]
+    },
+    {
+      id: "tech-consulting",
+      title: "Tech Strategy Consulting",
+      description: "Expert guidance on AI adoption, digital transformation, and technology roadmap planning for sustainable growth.",
+      features: [
+        "AI Readiness Assessment",
+        "Digital Transformation Roadmap",
+        "Technology Stack Selection",
+        "Team Structure Planning",
+        "ROI Analysis & KPIs"
+      ],
+      icon: <TargetIcon className="h-10 w-10" />,
+      color: "from-rose-500 to-red-500",
+      gradient: "linear-gradient(135deg, #f43f5e 0%, #ef4444 100%)",
+      stats: { clients: "200+", success: "98%", growth: "↑150%" },
+      image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop&auto=format",
+      tech: ["Strategy", "Architecture", "Governance", "Implementation"]
     }
-    // Removed the last 2 services to keep only 4
-  ];
-
-  // Additional services for infinite slider
-  const additionalServices = [
-    {
-      id: "web-development",
-      title: "Website Development",
-      description: "Modern, responsive websites and web applications with cutting-edge technologies.",
-      icon: <WebIcon className="h-10 w-10" />,
-      color: "from-blue-500 to-indigo-500",
-      gradient: "linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)",
-      features: ["React/Next.js", "Progressive Web Apps", "E-commerce", "SEO Optimized"],
-      stats: { speed: "95+ Score", mobile: "100%", seo: "Top Rankings" }
-    },
-    {
-      id: "cyber-security",
-      title: "Cyber Security",
-      description: "Comprehensive security solutions to protect your digital assets and data.",
-      icon: <SecurityIcon className="h-10 w-10" />,
-      color: "from-emerald-500 to-green-500",
-      gradient: "linear-gradient(135deg, #10b981 0%, #22c55e 100%)",
-      features: ["Threat Detection", "Data Encryption", "Compliance", "24/7 Monitoring"],
-      stats: { protection: "99.99%", response: "<5min", audits: "100%" }
-    },
-    {
-      id: "api-integration",
-      title: "API Integration",
-      description: "Seamlessly connect your systems with robust API solutions and microservices.",
-      icon: <ApiIcon className="h-10 w-10" />,
-      color: "from-purple-500 to-violet-500",
-      gradient: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
-      features: ["REST & GraphQL", "WebSocket APIs", "Third-party Integrations", "API Gateway"],
-      stats: { uptime: "99.99%", latency: "<50ms", integrations: "100+" }
-    },
-    {
-      id: "mobile-development",
-      title: "Mobile Development",
-      description: "Native and cross-platform mobile applications for iOS and Android.",
-      icon: <MobileIcon className="h-10 w-10" />,
-      color: "from-pink-500 to-rose-500",
-      gradient: "linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)",
-      features: ["React Native", "Flutter", "iOS & Android", "App Store Optimization"],
-      stats: { downloads: "50K+", rating: "4.8★", stores: "Both" }
-    },
-    {
-      id: "ui-ux-design",
-      title: "UI/UX Design",
-      description: "Beautiful, intuitive user interfaces that drive engagement and conversions.",
-      icon: <Palette className="h-10 w-10" />,
-      color: "from-amber-500 to-yellow-500",
-      gradient: "linear-gradient(135deg, #f59e0b 0%, #eab308 100%)",
-      features: ["User Research", "Wireframing", "Prototyping", "Design Systems"],
-      stats: { engagement: "↑70%", conversion: "↑45%", satisfaction: "95%" }
-    },
-    {
-      id: "data-analytics",
-      title: "Data Analytics",
-      description: "Transform raw data into actionable insights and business intelligence.",
-      icon: <DataIcon className="h-10 w-10" />,
-      color: "from-teal-500 to-cyan-500",
-      gradient: "linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%)",
-      features: ["Real-time Dashboards", "Predictive Analytics", "Data Visualization", "ETL Pipelines"],
-      stats: { insights: "1000+/day", accuracy: "98.5%", speed: "Real-time" }
-    },
-    {
-      id: "cloud-solutions",
-      title: "Cloud Solutions",
-      description: "Scalable cloud infrastructure and migration services for businesses of all sizes.",
-      icon: <CloudIcon className="h-10 w-10" />,
-      color: "from-orange-500 to-red-500",
-      gradient: "linear-gradient(135deg, #f97316 0%, #ef4444 100%)",
-      features: ["AWS/Azure/GCP", "Serverless", "Containerization", "Cost Optimization"],
-      stats: { savings: "40%", scale: "Auto", reliability: "99.9%" }
-    },
-    {
-      id: "devops-solutions",
-      title: "DevOps Solutions",
-      description: "Streamline development and operations with automated CI/CD pipelines.",
-      icon: <CodeIcon className="h-10 w-10" />,
-      color: "from-indigo-500 to-blue-500",
-      gradient: "linear-gradient(135deg, #6366f1 0%, #3b82f6 100%)",
-      features: ["CI/CD Pipelines", "Infrastructure as Code", "Monitoring", "Kubernetes"],
-      stats: { deployment: "90% faster", errors: "↓80%", uptime: "99.95%" }
-    }
-  ];
-
-  // Duplicate items for seamless infinite scrolling
-  const infiniteServices = [...additionalServices, ...additionalServices, ...additionalServices];
-
-  // Tech stats
-  const stats = [
-    { icon: <CircuitBoard className="h-6 w-6" />, value: "500+", label: "AI Models Deployed", color: "text-cyan-400" },
-    { icon: <Atom className="h-6 w-6" />, value: "99.9%", label: "System Uptime", color: "text-emerald-400" },
-    { icon: <AiChip className="h-6 w-6" />, value: "10x", label: "Performance Gain", color: "text-purple-400" },
-    { icon: <Infinity className="h-6 w-6" />, value: "24/7", label: "AI Monitoring", color: "text-amber-400" }
   ];
 
   // Mouse move effect
@@ -271,7 +172,7 @@ const Services = () => {
   return (
     <main 
       ref={containerRef}
-      className="pt-20 min-h-screen bg-gradient-to-br from-[#0a0a1a] via-[#0f172a] to-[#0a0a1a] overflow-hidden relative"
+      className="pt-16 md:pt-20 min-h-screen bg-gradient-to-br from-[#0a0a1a] via-[#0f172a] to-[#0a0a1a] overflow-hidden relative"
       style={{
         '--mouse-x': `${mousePosition.x}%`,
         '--mouse-y': `${mousePosition.y}%`,
@@ -281,167 +182,117 @@ const Services = () => {
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         {/* Dynamic gradient that follows mouse */}
         <div 
-          className="absolute inset-0 opacity-30 transition-opacity duration-1000"
+          className="absolute inset-0 opacity-20 transition-opacity duration-1000"
           style={{
-            background: `radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(6, 182, 212, 0.15) 0%, rgba(139, 92, 246, 0.1) 25%, transparent 50%)`,
+            background: `radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(6, 182, 212, 0.2) 0%, rgba(139, 92, 246, 0.15) 25%, transparent 50%)`,
           }}
         />
         
-        {/* Grid pattern */}
-        <div 
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `linear-gradient(rgba(6, 182, 212, 0.3) 1px, transparent 1px),
-                             linear-gradient(90deg, rgba(6, 182, 212, 0.3) 1px, transparent 1px)`,
-            backgroundSize: '50px 50px',
-          }}
-        />
+        {/* Hexagonal grid pattern */}
+        <div className="absolute inset-0 opacity-[0.03]">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2306b6d4' fill-opacity='0.3'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundSize: '60px 60px',
+          }} />
+        </div>
         
         {/* Floating particles */}
-        {Array.from({ length: 20 }).map((_, i) => (
+        {Array.from({ length: 30 }).map((_, i) => (
           <div
             key={i}
-            className="absolute rounded-full bg-cyan-500/10 animate-float-3d"
+            className="absolute rounded-full bg-gradient-to-r from-cyan-500/20 to-blue-500/20 animate-float-3d"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              width: `${Math.random() * 4 + 1}px`,
-              height: `${Math.random() * 4 + 1}px`,
-              animationDelay: `${i * 0.5}s`,
-              animationDuration: `${Math.random() * 10 + 15}s`,
+              width: `${Math.random() * 6 + 2}px`,
+              height: `${Math.random() * 6 + 2}px`,
+              animationDelay: `${i * 0.3}s`,
+              animationDuration: `${Math.random() * 15 + 20}s`,
+              filter: 'blur(1px)',
             }}
           />
         ))}
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-24">
-        {/* Hero Section with 3D effect */}
-        <div className="text-center mb-20 lg:mb-32 relative">
-          {/* Decorative elements */}
-          <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl" />
-          
-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 backdrop-blur-sm mb-8 group hover:scale-105 transition-all duration-300 animate-pulse">
-            <Sparkle className="h-5 w-5 text-cyan-400 animate-spin-slow" />
-            <span className="text-sm font-bold text-cyan-400 tracking-wider">AI-POWERED INNOVATION</span>
-          </div>
-          
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
-            <span className="bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent animate-gradient-shift">
-              Intelligent
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-16">
+        {/* NEW: Top Subtitle Section */}
+        <div className="text-center mb-12 lg:mb-16">
+          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-gradient-to-r from-cyan-500/15 to-purple-500/15 border border-cyan-500/30 backdrop-blur-xl shadow-lg shadow-cyan-500/10 hover:shadow-cyan-500/20 transition-all duration-500 hover:scale-105">
+            <Sparkle className="h-5 w-5 text-cyan-400 animate-pulse" />
+            <span className="text-sm font-bold text-cyan-300 tracking-wider">
+              INTELLIGENT SOLUTIONS ECOSYSTEM
             </span>
-            <br />
-            <span className="text-white">
-              Technology <span className="text-cyan-400">Solutions</span>
-            </span>
-          </h1>
-          
-          <p className="text-gray-300 text-xl lg:text-2xl max-w-3xl mx-auto leading-relaxed mb-12">
-            We engineer AI agents, automation systems, and machine learning solutions 
-            that transform businesses and redefine what's possible.
-          </p>
-          
-          {/* Interactive Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-4xl mx-auto mb-16">
-            {stats.map((stat, index) => (
-              <div
-                key={index}
-                className="group p-6 rounded-2xl bg-gradient-to-br from-white/5 to-white/2 border border-white/10 backdrop-blur-sm hover:border-cyan-500/50 transition-all duration-500 hover:scale-105 cursor-pointer"
-                style={{
-                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-                }}
-              >
-                <div className={`${stat.color} mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                  {stat.icon}
-                </div>
-                <div className={`text-4xl font-bold ${stat.color} mb-2`}>{stat.value}</div>
-                <div className="text-gray-400 text-sm font-medium tracking-wide">{stat.label}</div>
-              </div>
-            ))}
+            <div className="h-1 w-8 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full animate-pulse"></div>
           </div>
         </div>
 
-        {/* Service Category Filter */}
-        <div className="mb-16">
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
-            {serviceCategories.map((category) => (
-              <button
-                key={category.id}
-                className="group px-6 py-4 rounded-xl bg-gradient-to-br from-white/5 to-transparent border border-white/10 backdrop-blur-sm hover:border-cyan-500/50 transition-all duration-300 flex items-center gap-3"
-                style={{
-                  background: `linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)`,
-                }}
-              >
-                <div className={`h-10 w-10 rounded-lg bg-gradient-to-r ${category.color} flex items-center justify-center`}>
-                  <div className="text-white">{category.icon}</div>
-                </div>
-                <div className="text-left">
-                  <div className="text-white font-semibold group-hover:text-cyan-300 transition-colors">
-                    {category.title}
-                  </div>
-                  <div className="text-xs text-gray-400">{category.tech.length} Technologies</div>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Featured Service Showcase with Glass Morphism */}
-        <div className="mb-24">
+        {/* Featured Service Showcase - Interactive 3D Card */}
+        <div className="mb-16 lg:mb-32">
           <div 
-            className="relative overflow-hidden rounded-3xl border border-white/20 backdrop-blur-xl"
+            className="relative overflow-hidden rounded-3xl border border-white/20 backdrop-blur-xl transform-gpu"
             style={{
-              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)',
-              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%)',
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
             }}
           >
             {/* Animated border */}
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/20 to-cyan-500/0 animate-shimmer" />
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/30 to-cyan-500/0 animate-shimmer opacity-50" />
             
-            <div className="relative p-8 lg:p-12">
-              <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-                {/* Service Image with Hover Effect */}
-                <div className="lg:w-1/2">
-                  <div className="relative rounded-2xl overflow-hidden group">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 mix-blend-overlay" />
+            <div className="relative p-6 lg:p-12">
+              <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
+                {/* Service Image with Parallax Effect */}
+                <div className="lg:w-5/12">
+                  <div className="relative rounded-2xl overflow-hidden group perspective-1000">
+                    <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/30 to-purple-500/20 mix-blend-overlay" />
                     <img 
                       src={services[activeService].image} 
                       alt={services[activeService].title}
-                      className="w-full h-64 lg:h-96 object-cover group-hover:scale-110 transition-transform duration-1000"
+                      className="w-full h-64 lg:h-96 object-cover transform group-hover:scale-110 transition-transform duration-1000"
                     />
+                    
                     {/* Floating tech badges */}
-                    <div className="absolute -top-3 -right-3 flex gap-2">
-                      {services[activeService].tech.slice(0, 2).map((tech, idx) => (
+                    <div className="absolute -top-3 -right-3 flex gap-2 flex-wrap justify-end">
+                      {services[activeService].tech.slice(0, 3).map((tech, idx) => (
                         <span 
                           key={idx}
-                          className="text-xs px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 border border-cyan-500/30 backdrop-blur-sm animate-float"
+                          className="text-xs px-3 py-1.5 rounded-full bg-gradient-to-r from-cyan-500/30 to-blue-500/30 text-cyan-300 border border-cyan-500/50 backdrop-blur-sm animate-float shadow-lg"
                           style={{ animationDelay: `${idx * 0.2}s` }}
                         >
                           {tech}
                         </span>
                       ))}
                     </div>
+
+                    {/* Service badge */}
+                    {services[activeService].badge && (
+                      <div className="absolute top-4 left-4">
+                        <span className="text-xs px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/30 to-orange-500/30 text-amber-300 border border-amber-500/50 backdrop-blur-sm font-bold tracking-wider shadow-lg">
+                          {services[activeService].badge}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
                 
                 {/* Service Details */}
-                <div className="lg:w-1/2">
+                <div className="lg:w-7/12">
                   <div className="flex items-center gap-4 mb-6">
                     <div 
-                      className="h-16 w-16 rounded-2xl flex items-center justify-center shadow-2xl"
+                      className="h-16 w-16 rounded-2xl flex items-center justify-center shadow-2xl transform hover:rotate-12 transition-transform duration-300"
                       style={{ background: services[activeService].gradient }}
                     >
                       <div className="text-white">{services[activeService].icon}</div>
                     </div>
                     <div>
-                      <h2 className="text-3xl lg:text-4xl font-bold text-white mb-2">
+                      <h2 className="text-3xl lg:text-4xl font-bold text-white mb-3">
                         {services[activeService].title}
                       </h2>
                       <div className="flex flex-wrap gap-4">
                         {Object.entries(services[activeService].stats).map(([key, value], idx) => (
-                          <div key={key} className="flex items-center gap-2">
-                            <div className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
+                          <div key={key} className="flex items-center gap-2 group/stat">
+                            <div className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse group-hover/stat:scale-150 transition-transform" />
                             <span className="text-sm text-gray-300 capitalize">{key}:</span>
-                            <span className="text-sm font-bold text-cyan-300">{value}</span>
+                            <span className="text-sm font-bold text-cyan-300 group-hover/stat:text-white transition-colors">{value}</span>
                           </div>
                         ))}
                       </div>
@@ -452,35 +303,51 @@ const Services = () => {
                     {services[activeService].description}
                   </p>
                   
-                  <ul className="space-y-4 mb-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                     {services[activeService].features.map((feature, idx) => (
-                      <li 
+                      <div 
                         key={idx}
-                        className="flex items-center text-gray-300 group cursor-pointer transform hover:translate-x-2 transition-transform duration-300"
+                        className="flex items-center p-4 rounded-xl bg-gradient-to-br from-white/5 to-white/2 border border-white/10 hover:border-cyan-500/30 transition-all duration-300 group/feature"
                       >
-                        <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-cyan-500/20 to-blue-500/20 flex items-center justify-center mr-4 group-hover:scale-110 transition-transform">
+                        <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-cyan-500/20 to-blue-500/20 flex items-center justify-center mr-4 group-hover/feature:scale-110 transition-transform">
                           <CheckCircle className="h-4 w-4 text-emerald-400" />
                         </div>
-                        <span className="group-hover:text-white transition-colors">{feature}</span>
-                      </li>
+                        <span className="text-gray-300 group-hover/feature:text-white transition-colors text-sm md:text-base">
+                          {feature}
+                        </span>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                   
-                  <div className="flex flex-col sm:flex-row gap-4">
+                  {/* KEPT: Play/Pause button only */}
+                  <div className="flex justify-center">
                     <button
                       onClick={() => setIsPlaying(!isPlaying)}
-                      className="px-8 py-4 border-2 border-white/20 text-white rounded-xl hover:bg-white/5 transition-all duration-300 backdrop-blur-sm"
+                      className="px-8 py-4 border-2 border-white/20 text-white rounded-xl hover:bg-white/10 transition-all duration-300 backdrop-blur-sm flex items-center justify-center gap-3 transform hover:scale-105"
                     >
-                      <div className="flex items-center justify-center gap-2">
-                        {isPlaying ? '⏸️' : '▶️'}
-                        <span>{isPlaying ? 'Pause Demo' : 'Play Demo'}</span>
-                      </div>
+                      {isPlaying ? (
+                        <>
+                          <span className="text-xl">⏸️</span>
+                          <div className="text-left">
+                            <div className="font-semibold">Pause Demo</div>
+                            <div className="text-xs text-gray-400">Stop auto-rotation</div>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-xl">▶️</span>
+                          <div className="text-left">
+                            <div className="font-semibold">Play Demo</div>
+                            <div className="text-xs text-gray-400">Resume auto-rotation</div>
+                          </div>
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>
               </div>
               
-              {/* Service Navigation */}
+              {/* Service Navigation Dots */}
               <div className="flex justify-center gap-3 mt-12">
                 {services.map((_, index) => (
                   <button
@@ -491,7 +358,7 @@ const Services = () => {
                     }}
                     className={`h-2 rounded-full transition-all duration-500 ${
                       activeService === index 
-                        ? 'w-12 bg-gradient-to-r from-cyan-500 to-blue-500' 
+                        ? 'w-12 bg-gradient-to-r from-cyan-500 to-blue-500 shadow-lg shadow-cyan-500/50' 
                         : 'w-2 bg-gray-700 hover:bg-gray-500'
                     }`}
                   />
@@ -501,79 +368,81 @@ const Services = () => {
           </div>
         </div>
 
-        {/* AI Services Grid - Now 4 cards in one row */}
-        <div className="mb-24">
+        {/* Interactive Services Grid - Hexagonal Layout */}
+        <div className="mb-20 lg:mb-32">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 mb-4">
-              <Sparkle className="h-4 w-4 text-purple-400" />
-              <span className="text-sm font-semibold text-purple-400">AI & AUTOMATION PORTFOLIO</span>
-            </div>
-            <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">
-              Next-Generation <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                AI Solutions
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+              Our <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                Solution Portfolio
               </span>
             </h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Harness the power of artificial intelligence and automation to transform your business operations.
+              Comprehensive technology solutions designed to drive innovation and efficiency.
             </p>
           </div>
           
-          {/* Grid with 4 columns for single row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-            {services.map((service, index) => {
-              // Find the category for this service
-              const serviceCategory = serviceCategories.find(cat => cat.id === service.category);
-              
-              return (
+          {/* Hexagonal Grid Layout */}
+          <div className="relative">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-5">
+              <div className="absolute inset-0" style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%2306b6d4' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E")`,
+              }} />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
+              {services.map((service, index) => (
                 <div
                   key={service.id}
-                  className="group relative overflow-hidden rounded-2xl border border-white/10 backdrop-blur-sm hover:border-cyan-500/50 transition-all duration-500 hover:scale-[1.02]"
+                  className="group relative overflow-hidden rounded-2xl border border-white/10 backdrop-blur-sm hover:border-cyan-500/50 transition-all duration-500 hover:scale-[1.02] transform-gpu"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%)',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%)',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                   }}
                   onMouseEnter={() => setHoveredIndex(index)}
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
                   {/* Holographic effect on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/10 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                   
-                  {/* Service Image */}
-                  <div className="relative h-56 overflow-hidden">
+                  {/* Service Image with Gradient Overlay */}
+                  <div className="relative h-48 overflow-hidden">
                     <img 
                       src={service.image} 
                       alt={service.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
                     
-                    {/* Category badge */}
-                    <div className="absolute top-4 left-4">
-                      <div 
-                        className="px-3 py-1.5 rounded-full text-xs font-medium text-white backdrop-blur-sm"
-                        style={{ 
-                          background: serviceCategory?.gradient || service.gradient 
-                        }}
-                      >
-                        {serviceCategory?.title || 'AI'}
+                    {/* Service badge */}
+                    {service.badge && (
+                      <div className="absolute top-4 left-4">
+                        <span className="text-xs px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500/30 to-orange-500/30 text-amber-300 border border-amber-500/50 backdrop-blur-sm font-bold">
+                          {service.badge}
+                        </span>
                       </div>
-                    </div>
+                    )}
                   </div>
                   
                   {/* Service Content */}
                   <div className="p-6 relative">
                     <div className="flex items-start justify-between mb-4">
                       <div 
-                        className="h-12 w-12 rounded-xl flex items-center justify-center shadow-lg"
+                        className="h-12 w-12 rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform duration-300"
                         style={{ background: service.gradient }}
                       >
                         <div className="text-white">{service.icon}</div>
                       </div>
                       <div className="text-right">
-                        <div className="text-2xl font-bold text-white" style={{ background: service.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                        <div className="text-2xl font-bold text-white" style={{ 
+                          background: service.gradient, 
+                          WebkitBackgroundClip: 'text', 
+                          WebkitTextFillColor: 'transparent',
+                          backgroundClip: 'text'
+                        }}>
                           {Object.values(service.stats)[0]}
                         </div>
-                        <div className="text-xs text-gray-400">{Object.keys(service.stats)[0]}</div>
+                        <div className="text-xs text-gray-400 capitalize">{Object.keys(service.stats)[0]}</div>
                       </div>
                     </div>
                     
@@ -595,283 +464,121 @@ const Services = () => {
                           {tech}
                         </span>
                       ))}
-                    </div>
-                    
-                    <div className="pt-4 border-t border-white/10">
-                      <Link
-                        to={`/services/${service.id}`}
-                        className="text-cyan-400 hover:text-cyan-300 transition-colors font-medium flex items-center group/link"
-                      >
-                        <span>View AI Implementation</span>
-                        <ArrowRight className="ml-2 h-4 w-4 group-hover/link:translate-x-2 transition-transform" />
-                      </Link>
+                      {service.tech.length > 3 && (
+                        <span className="text-xs px-3 py-1.5 rounded-lg bg-white/5 text-gray-400 border border-white/10">
+                          +{service.tech.length - 3}
+                        </span>
+                      )}
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
 
-        {/* AI Capabilities Showcase */}
-        <div className="mb-24">
-          <div className="bg-gradient-to-br from-white/5 to-transparent border border-white/20 rounded-3xl p-8 lg:p-12 backdrop-blur-xl">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-white mb-4">
-                <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                  AI Capabilities
-                </span> & Expertise
-              </h2>
-              <p className="text-gray-300 max-w-2xl mx-auto">
-                Our comprehensive suite of AI and automation technologies
-              </p>
-            </div>
-            
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                {
-                  title: "Natural Language Processing",
-                  desc: "Advanced text understanding and generation",
-                  icon: <MessageSquare className="h-8 w-8" />,
-                  stats: "98% Accuracy",
-                  color: "from-blue-500 to-cyan-500"
-                },
-                {
-                  title: "Computer Vision",
-                  desc: "Image and video analysis at scale",
-                  icon: <Eye className="h-8 w-8" />,
-                  stats: "120 FPS Processing",
-                  color: "from-purple-500 to-pink-500"
-                },
-                {
-                  title: "Predictive Analytics",
-                  desc: "Forecast trends and behaviors",
-                  icon: <TrendingUp className="h-8 w-8" />,
-                  stats: "95% Forecast Accuracy",
-                  color: "from-emerald-500 to-teal-500"
-                },
-                {
-                  title: "Autonomous Agents",
-                  desc: "Self-learning decision systems",
-                  icon: <Bot className="h-8 w-8" />,
-                  stats: "24/7 Operation",
-                  color: "from-amber-500 to-orange-500"
-                }
-              ].map((capability, index) => (
-                <div
-                  key={index}
-                  className="group p-6 rounded-2xl bg-gradient-to-br from-white/5 to-transparent border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-105"
-                >
-                  <div className={`h-14 w-14 rounded-xl bg-gradient-to-r ${capability.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                    <div className="text-white">{capability.icon}</div>
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-2">{capability.title}</h3>
-                  <p className="text-gray-400 text-sm mb-3">{capability.desc}</p>
-                  <div className="text-sm font-medium text-cyan-300">{capability.stats}</div>
+                  {/* 3D Edge Effect */}
+                  <div className="absolute inset-0 border-2 border-transparent group-hover:border-cyan-500/20 rounded-2xl transition-all duration-500 pointer-events-none" />
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* NEW: Infinite Sliding Services Section */}
-        <div className="relative mb-24">
-          {/* Section Header */}
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-gradient-to-r from-cyan-500/20 to-blue-500/20 mb-4">
-              <Sparkle className="h-4 w-4 text-cyan-400" />
-              <span className="text-sm font-semibold text-cyan-400">COMPLETE TECHNOLOGY STACK</span>
-            </div>
-            <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">
-              Comprehensive <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Digital Services
-              </span>
-            </h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              From web development to cybersecurity, we provide end-to-end solutions for your digital transformation.
-            </p>
-          </div>
-
-          {/* Sliding Background Container */}
-          <div 
-            className="relative overflow-hidden rounded-3xl border border-white/20 backdrop-blur-xl py-12"
-            style={{
-              background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.7) 100%)',
-              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
-            }}
-          >
-            {/* Background Pattern */}
+        {/* Tech Capabilities Showcase - Interactive Cards */}
+        <div className="mb-20">
+          <div className="bg-gradient-to-br from-white/5 to-transparent border border-white/20 rounded-3xl p-6 lg:p-12 backdrop-blur-xl relative overflow-hidden">
+            {/* Animated background */}
             <div className="absolute inset-0 opacity-10">
-              <div className="absolute inset-0" style={{
-                backgroundImage: `radial-gradient(circle at 25% 25%, rgba(6, 182, 212, 0.2) 0%, transparent 50%),
-                                  radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.2) 0%, transparent 50%)`,
+              <div className="absolute inset-0 animate-gradient-shift" style={{
+                background: 'linear-gradient(45deg, #06b6d4, #8b5cf6, #10b981, #f59e0b)',
+                backgroundSize: '400% 400%',
               }} />
             </div>
 
-            {/* Infinite Slider Container */}
-            <div className="relative">
-              {/* First Slider Track */}
-              <div 
-                ref={sliderRef}
-                className="flex animate-infinite-slider"
-                style={{ animationDuration: '40s' }}
-              >
-                {infiniteServices.map((service, index) => (
-                  <div
-                    key={`${service.id}-${index}`}
-                    className="flex-shrink-0 w-80 mx-4"
-                  >
-                    <div className="group relative overflow-hidden rounded-2xl border border-white/10 backdrop-blur-sm hover:border-cyan-500/50 transition-all duration-500 hover:scale-105 h-full"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)',
-                        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
-                      }}
-                    >
-                      {/* Service Icon */}
-                      <div className="absolute -top-6 -right-6 opacity-20">
-                        <div className="h-24 w-24 rounded-full" style={{ background: service.gradient }} />
-                      </div>
-                      
-                      <div className="p-6">
-                        <div className="flex items-center gap-4 mb-6">
-                          <div 
-                            className="h-14 w-14 rounded-xl flex items-center justify-center shadow-lg"
-                            style={{ background: service.gradient }}
-                          >
-                            <div className="text-white">{service.icon}</div>
-                          </div>
-                          <div>
-                            <h3 className="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors">
-                              {service.title}
-                            </h3>
-                            <div className="flex items-center gap-2 mt-1">
-                              {Object.entries(service.stats).map(([key, value], idx) => (
-                                <div key={key} className="flex items-center gap-1">
-                                  <span className="text-xs text-gray-400">{key}:</span>
-                                  <span className="text-xs font-bold text-cyan-300">{value}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <p className="text-gray-400 text-sm mb-6 line-clamp-2">
-                          {service.description}
-                        </p>
-                        
-                        {/* Features */}
-                        <div className="flex flex-wrap gap-2 mb-6">
-                          {service.features.slice(0, 3).map((feature, idx) => (
-                            <span 
-                              key={idx}
-                              className="text-xs px-3 py-1.5 rounded-lg bg-white/5 text-gray-300 border border-white/10"
-                            >
-                              {feature}
-                            </span>
-                          ))}
-                        </div>
-                        
-                        <div className="pt-4 border-t border-white/10">
-                          <button className="text-cyan-400 hover:text-cyan-300 transition-colors font-medium flex items-center group/link">
-                            <span>Learn More</span>
-                            <ArrowRight className="ml-2 h-4 w-4 group-hover/link:translate-x-2 transition-transform" />
-                          </button>
-                        </div>
-                      </div>
-                      
-                      {/* Hover Effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    </div>
+            <div className="text-center mb-12 relative z-10">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                  Core Technologies
+                </span> & Expertise
+              </h2>
+              <p className="text-gray-300 max-w-2xl mx-auto">
+                Mastery across the entire AI and automation technology stack
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+              {[
+                {
+                  title: "AI & Machine Learning",
+                  desc: "Advanced algorithms and neural networks",
+                  icon: <BrainCircuit className="h-10 w-10" />,
+                  stats: "50+ Projects",
+                  color: "from-purple-500 to-pink-500",
+                  tech: ["TensorFlow", "PyTorch", "Scikit-learn", "OpenAI"]
+                },
+                {
+                  title: "Cloud Infrastructure",
+                  desc: "Scalable and secure cloud solutions",
+                  icon: <CloudCog className="h-10 w-10" />,
+                  stats: "99.9% Uptime",
+                  color: "from-cyan-500 to-blue-500",
+                  tech: ["AWS", "Azure", "GCP", "Kubernetes"]
+                },
+                {
+                  title: "Automation & RPA",
+                  desc: "Intelligent process automation",
+                  icon: <Workflow className="h-10 w-10" />,
+                  stats: "400% Efficiency",
+                  color: "from-emerald-500 to-teal-500",
+                  tech: ["UiPath", "Automation Anywhere", "Python", "APIs"]
+                },
+                {
+                  title: "Tech Education",
+                  desc: "Training & certification programs",
+                  icon: <BrainIcon className="h-10 w-10" />,
+                  stats: "95% Success Rate",
+                  color: "from-amber-500 to-orange-500",
+                  tech: ["Workshops", "Certifications", "Mentorship", "Labs"]
+                }
+              ].map((capability, index) => (
+                <div
+                  key={index}
+                  className="group p-6 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 backdrop-blur-sm"
+                >
+                  <div className={`h-16 w-16 rounded-xl bg-gradient-to-r ${capability.color} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300 shadow-lg`}>
+                    <div className="text-white">{capability.icon}</div>
                   </div>
-                ))}
-              </div>
+                  <h3 className="text-lg font-bold text-white mb-3">{capability.title}</h3>
+                  <p className="text-gray-400 text-sm mb-4">{capability.desc}</p>
+                  <div className="text-sm font-medium text-cyan-300 mb-4">{capability.stats}</div>
+                  <div className="flex flex-wrap gap-2">
+                    {capability.tech.map((tech, idx) => (
+                      <span key={idx} className="text-xs px-2 py-1 rounded bg-white/5 text-gray-300">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
 
-              {/* Second Slider Track (Reversed for seamless effect) */}
-              <div 
-                className="flex animate-infinite-slider-reverse mt-8"
-                style={{ animationDuration: '35s' }}
-              >
-                {infiniteServices.slice().reverse().map((service, index) => (
-                  <div
-                    key={`reverse-${service.id}-${index}`}
-                    className="flex-shrink-0 w-80 mx-4"
-                  >
-                    <div className="group relative overflow-hidden rounded-2xl border border-white/10 backdrop-blur-sm hover:border-purple-500/50 transition-all duration-500 hover:scale-105 h-full"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)',
-                        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
-                      }}
-                    >
-                      {/* Service Icon */}
-                      <div className="absolute -top-6 -right-6 opacity-20">
-                        <div className="h-24 w-24 rounded-full" style={{ background: service.gradient }} />
-                      </div>
-                      
-                      <div className="p-6">
-                        <div className="flex items-center gap-4 mb-6">
-                          <div 
-                            className="h-14 w-14 rounded-xl flex items-center justify-center shadow-lg"
-                            style={{ background: service.gradient }}
-                          >
-                            <div className="text-white">{service.icon}</div>
-                          </div>
-                          <div>
-                            <h3 className="text-xl font-bold text-white group-hover:text-purple-300 transition-colors">
-                              {service.title}
-                            </h3>
-                            <div className="flex items-center gap-2 mt-1">
-                              {Object.entries(service.stats).map(([key, value], idx) => (
-                                <div key={key} className="flex items-center gap-1">
-                                  <span className="text-xs text-gray-400">{key}:</span>
-                                  <span className="text-xs font-bold text-purple-300">{value}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <p className="text-gray-400 text-sm mb-6 line-clamp-2">
-                          {service.description}
-                        </p>
-                        
-                        {/* Features */}
-                        <div className="flex flex-wrap gap-2 mb-6">
-                          {service.features.slice(0, 3).map((feature, idx) => (
-                            <span 
-                              key={idx}
-                              className="text-xs px-3 py-1.5 rounded-lg bg-white/5 text-gray-300 border border-white/10"
-                            >
-                              {feature}
-                            </span>
-                          ))}
-                        </div>
-                        
-                        <div className="pt-4 border-t border-white/10">
-                          <button className="text-purple-400 hover:text-purple-300 transition-colors font-medium flex items-center group/link">
-                            <span>Learn More</span>
-                            <ArrowRight className="ml-2 h-4 w-4 group-hover/link:translate-x-2 transition-transform" />
-                          </button>
-                        </div>
-                      </div>
-                      
-                      {/* Hover Effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-purple-500/5 to-purple-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    </div>
-                  </div>
-                ))}
+        {/* CTA Section */}
+        <div className="text-center">
+          <div className="inline-block p-1 rounded-2xl bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 mb-8">
+            <div className="px-8 py-6 rounded-2xl bg-gradient-to-br from-white/5 to-transparent border border-white/10 backdrop-blur-sm">
+              <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">
+                Ready to Transform Your Business?
+              </h3>
+              <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
+                Let's discuss how our AI, automation, and education solutions can drive your success.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  to="/contact"
+                  className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-cyan-500/25 font-semibold"
+                >
+                  Start Your Project
+                </Link>
               </div>
             </div>
-
-            {/* Gradient Fades for Smooth Edges */}
-            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#1e293b] to-transparent pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#1e293b] to-transparent pointer-events-none" />
-          </div>
-
-          {/* CTA below slider - Removed "Discuss Your Project Requirements" */}
-          <div className="text-center mt-12">
-            <p className="text-gray-300 text-lg mb-6">
-              Need a specific solution not listed? Our experts can customize any service to fit your unique requirements.
-            </p>
           </div>
         </div>
       </div>
@@ -880,13 +587,13 @@ const Services = () => {
       <style jsx>{`
         @keyframes float-3d {
           0%, 100% { 
-            transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+            transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
           }
           33% { 
-            transform: translateY(-30px) translateX(20px) rotate(120deg) scale(1.1);
+            transform: translate3d(30px, -20px, 10px) rotate(120deg) scale(1.1);
           }
           66% { 
-            transform: translateY(-15px) translateX(-15px) rotate(240deg) scale(0.9);
+            transform: translate3d(-20px, 10px, -10px) rotate(240deg) scale(0.9);
           }
         }
         
@@ -902,31 +609,8 @@ const Services = () => {
         }
         
         @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-20px); }
-        }
-        
-        @keyframes spin-slow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        
-        @keyframes infinite-slider {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(calc(-100% / 3));
-          }
-        }
-        
-        @keyframes infinite-slider-reverse {
-          0% {
-            transform: translateX(calc(-100% / 3));
-          }
-          100% {
-            transform: translateX(0);
-          }
+          0%, 100% { transform: translateY(0) rotate(0deg); }
+          50% { transform: translateY(-15px) rotate(5deg); }
         }
         
         .animate-float-3d {
@@ -935,33 +619,23 @@ const Services = () => {
         
         .animate-gradient-shift {
           background-size: 200% 200%;
-          animation: gradient-shift 3s ease infinite;
+          animation: gradient-shift 8s ease infinite;
         }
         
         .animate-shimmer {
-          animation: shimmer 2s infinite;
+          animation: shimmer 3s infinite linear;
         }
         
         .animate-float {
           animation: float 3s ease-in-out infinite;
         }
         
-        .animate-spin-slow {
-          animation: spin-slow 20s linear infinite;
+        .perspective-1000 {
+          perspective: 1000px;
         }
         
-        .animate-pulse {
-          animation: pulse 2s ease-in-out infinite;
-        }
-        
-        .animate-infinite-slider {
-          animation: infinite-slider 40s linear infinite;
-          display: flex;
-        }
-        
-        .animate-infinite-slider-reverse {
-          animation: infinite-slider-reverse 35s linear infinite;
-          display: flex;
+        .transform-gpu {
+          transform: translateZ(0);
         }
         
         .line-clamp-2 {
@@ -969,24 +643,6 @@ const Services = () => {
           -webkit-line-clamp: 2;
           -webkit-box-orient: vertical;
           overflow: hidden;
-        }
-        
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-          width: 10px;
-        }
-        
-        ::-webkit-scrollbar-track {
-          background: rgba(15, 23, 42, 0.5);
-        }
-        
-        ::-webkit-scrollbar-thumb {
-          background: linear-gradient(to bottom, #06b6d4, #3b82f6);
-          border-radius: 5px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-          background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
         }
       `}</style>
     </main>
