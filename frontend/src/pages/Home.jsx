@@ -3,7 +3,6 @@ import Hero from '../components/Hero';
 import OurServices from '../components/OurServices';
 import AboutUs from '../components/AboutUs';
 import Testimonials from '../components/Testimonials';
-import Features from '../components/Features';
 import GetinTouch from '../components/GetinTouch';
 
 function Home() {
@@ -13,7 +12,6 @@ function Home() {
       <OurServices />
       <AboutUs />
       <Testimonials />
-      <Features />
       <GetinTouch />
     </main>
   );

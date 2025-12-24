@@ -5,14 +5,14 @@ import {
   CheckCircle, X, Globe2, Users, Award, Shield
 } from 'lucide-react';
 import gsap from 'gsap';
-import consultationService from '../services/consultationService'; // ADD THIS IMPORT
+import consultationService from '../services/consultationService';
 
 const GetinTouch = () => {
   const [activeRegion, setActiveRegion] = useState('global');
   const [selectedService, setSelectedService] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [submitError, setSubmitError] = useState(''); // ADDED for error handling
+  const [submitError, setSubmitError] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -22,29 +22,27 @@ const GetinTouch = () => {
     description: '',
     timezone: 'GMT',
     consultationType: 'video',
-    region: 'global' // ADDED to track region for backend
+    region: 'global'
   });
 
   const globeRef = useRef(null);
   const formRef = useRef(null);
   const particlesRef = useRef([]);
   const successRef = useRef(null);
-  const errorRef = useRef(null); // ADDED for error animation
+  const errorRef = useRef(null);
 
-  // Vibrant color palette with global inspiration
   const colors = {
-    primary: '#FF6B6B',    // Vibrant coral
-    secondary: '#4ECDC4',   // Turquoise
-    accent: '#FFD166',      // Sunshine yellow
-    global: '#118AB2',      // Ocean blue
-    success: '#06D6A0',     // Emerald green
-    error: '#EF4444',       // Red for errors
+    primary: '#FF6B6B',
+    secondary: '#4ECDC4',
+    accent: '#FFD166',
+    global: '#118AB2',
+    success: '#06D6A0',
+    error: '#EF4444',
     gradient: 'linear-gradient(135deg, #FF6B6B, #FFD166, #4ECDC4)',
     background: 'linear-gradient(135deg, #0F0F23 0%, #1A1A2E 50%, #16213E 100%)',
     glass: 'rgba(255, 255, 255, 0.08)'
   };
 
-  // Global regions with flags and time zones
   const regions = [
     { id: 'africa', name: 'Africa', flag: '🌍', color: '#FFD166', timezone: 'GMT+1', peak: '9 AM - 5 PM' },
     { id: 'europe', name: 'Europe', flag: '🇪🇺', color: '#4ECDC4', timezone: 'GMT+2', peak: '8 AM - 4 PM' },
@@ -53,7 +51,6 @@ const GetinTouch = () => {
     { id: 'global', name: 'Global 24/7', flag: '🌐', color: '#C44569', timezone: 'Multiple', peak: 'Round-the-clock' }
   ];
 
-  // Services with icons and colors
   const services = [
     { id: 'ai', name: 'AI Solutions', icon: '🧠', color: '#FF6B6B' },
     { id: 'web', name: 'Web Development', icon: '💻', color: '#4ECDC4' },
@@ -63,14 +60,12 @@ const GetinTouch = () => {
     { id: 'consult', name: 'AI Consultation', icon: '🎯', color: '#C44569' }
   ];
 
-  // Consultation types
   const consultationTypes = [
     { id: 'video', name: 'Video Call', icon: <Video className="h-4 w-4" />, color: '#4ECDC4' },
     { id: 'phone', name: 'Phone Call', icon: <Phone className="h-4 w-4" />, color: '#FF6B6B' },
     { id: 'onsite', name: 'On-site Visit', icon: <MapPin className="h-4 w-4" />, color: '#FFD166' }
   ];
 
-  // Time slots for scheduling
   const timeSlots = [
     { time: '09:00 - 10:00', available: true },
     { time: '10:30 - 11:30', available: true },
@@ -80,79 +75,20 @@ const GetinTouch = () => {
     { time: '17:00 - 18:00', available: true }
   ];
 
-  // Animated globe effect
   useEffect(() => {
     const globe = globeRef.current;
     if (!globe) return;
-
-    // Create floating continents
-    const continents = ['🌍', '🌎', '🌏'];
-    continents.forEach((emoji, i) => {
-      const continent = document.createElement('div');
-      continent.textContent = emoji;
-      continent.style.cssText = `
-        position: absolute;
-        font-size: ${20 + i * 6}px;
-        filter: drop-shadow(0 0 8px ${colors.primary});
-        z-index: ${2 + i};
-        opacity: 0.6;
-      `;
-      
-      globe.appendChild(continent);
-      
-      // Animate around globe
-      gsap.to(continent, {
-        rotation: 360,
-        duration: 20 + i * 5,
-        repeat: -1,
-        ease: "none",
-        transformOrigin: "center center"
-      });
-    });
 
     return () => {
       globe.innerHTML = '';
     };
   }, []);
 
-  // Particle animation for background
   useEffect(() => {
     const particles = particlesRef.current;
     const container = formRef.current;
     
     if (!container) return;
-
-    // Create particles
-    for (let i = 0; i < 20; i++) {
-      const particle = document.createElement('div');
-      particle.className = 'floating-particle';
-      particle.style.cssText = `
-        position: absolute;
-        width: ${Math.random() * 3 + 1}px;
-        height: ${Math.random() * 3 + 1}px;
-        background: ${Math.random() > 0.5 ? colors.primary : colors.secondary};
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 0;
-        opacity: ${Math.random() * 0.2 + 0.05};
-        filter: blur(0.5px);
-        left: ${Math.random() * 100}%;
-        top: ${Math.random() * 100}%;
-      `;
-      
-      container.appendChild(particle);
-      particles.push(particle);
-      
-      // Animate particles
-      gsap.to(particle, {
-        x: Math.random() * 80 - 40,
-        y: Math.random() * 80 - 40,
-        duration: Math.random() * 8 + 8,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut"
-      });
-    }
 
     return () => {
       particles.forEach(p => p.remove());
@@ -160,18 +96,15 @@ const GetinTouch = () => {
     };
   }, []);
 
-  // UPDATED: Form submission handler with backend integration
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setSubmitError(''); // Clear any previous errors
+    setSubmitError('');
 
-    // Validate required fields
     if (!formData.name || !formData.email || !formData.service || !formData.description) {
       setSubmitError('Please fill in all required fields.');
       setIsSubmitting(false);
       
-      // Animate error message
       if (errorRef.current) {
         gsap.fromTo(errorRef.current,
           { scale: 0.8, opacity: 0 },
@@ -182,38 +115,29 @@ const GetinTouch = () => {
     }
 
     try {
-      // Prepare data for backend
       const submissionData = {
         ...formData,
-        region: activeRegion, // Use the active region
-        consultation_type: formData.consultationType // Map to backend field name
+        region: activeRegion,
+        consultation_type: formData.consultationType
       };
 
-      // Call the consultation service
-      const response = await consultationService.submitConsultation(submissionData);
+      await consultationService.submitConsultation(submissionData);
       
-      // Handle success
       setIsSubmitting(false);
       setIsSubmitted(true);
 
-      // Animate success message
       gsap.fromTo(successRef.current,
         { scale: 0, opacity: 0 },
         { scale: 1, opacity: 1, duration: 0.8, ease: "back.out(1.7)" }
       );
       
     } catch (error) {
-      console.error('Consultation submission error:', error);
-      
-      // Handle error - extract error message from response
       let errorMessage = 'Failed to submit consultation request. Please try again.';
       
       if (error.response?.data) {
-        // Try to get error message from Django validation
         if (error.response.data.error) {
           errorMessage = error.response.data.error;
         } else if (typeof error.response.data === 'object') {
-          // Handle field-specific errors from Django serializer
           const errors = Object.values(error.response.data).flat();
           errorMessage = errors[0] || errorMessage;
         } else if (typeof error.response.data === 'string') {
@@ -226,7 +150,6 @@ const GetinTouch = () => {
       setSubmitError(errorMessage);
       setIsSubmitting(false);
       
-      // Animate error message
       if (errorRef.current) {
         gsap.fromTo(errorRef.current,
           { scale: 0.8, opacity: 0 },
@@ -236,14 +159,13 @@ const GetinTouch = () => {
     }
   };
 
-  // UPDATED: Region selector to update formData
   const RegionSelector = () => (
     <div className="space-y-3 mb-6">
       <div className="flex items-center gap-2">
         <Globe2 className="h-4 w-4 text-cyan-300" />
-        <h3 className="text-base font-bold text-white">Select Your Region</h3>
+        <h3 className="text-sm font-bold text-white">Select Your Region</h3>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+      <div className="flex flex-wrap gap-2">
         {regions.map(region => (
           <button
             key={region.id}
@@ -252,7 +174,7 @@ const GetinTouch = () => {
               setActiveRegion(region.id);
               setFormData({...formData, region: region.id, timezone: region.timezone});
             }}
-            className={`relative group p-2 rounded-lg transition-all duration-200 ${
+            className={`relative group px-3 py-2 rounded-lg transition-all duration-200 flex-1 min-w-[120px] ${
               activeRegion === region.id 
                 ? 'scale-105 shadow-md' 
                 : 'hover:scale-[1.02]'
@@ -275,14 +197,13 @@ const GetinTouch = () => {
     </div>
   );
 
-  // UPDATED: Service selector to update formData
   const ServiceSelector = () => (
     <div className="space-y-3 mb-6">
       <div className="flex items-center gap-2">
         <Target className="h-4 w-4 text-cyan-300" />
-        <h3 className="text-base font-bold text-white">Select Service</h3>
+        <h3 className="text-sm font-bold text-white">Select Service</h3>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+      <div className="flex flex-wrap gap-2">
         {services.map(service => (
           <button
             key={service.id}
@@ -291,7 +212,7 @@ const GetinTouch = () => {
               setSelectedService(service.id);
               setFormData({...formData, service: service.name});
             }}
-            className={`group relative p-3 rounded-lg transition-all duration-200 ${
+            className={`group relative px-3 py-3 rounded-lg transition-all duration-200 flex-1 min-w-[130px] ${
               selectedService === service.id 
                 ? 'scale-105 shadow-md' 
                 : 'hover:scale-[1.02]'
@@ -320,20 +241,19 @@ const GetinTouch = () => {
     </div>
   );
 
-  // UPDATED: Consultation type selector to update formData
   const ConsultationSelector = () => (
     <div className="space-y-3 mb-6">
       <div className="flex items-center gap-2">
         <Video className="h-4 w-4 text-cyan-300" />
-        <h3 className="text-base font-bold text-white">Consultation Type</h3>
+        <h3 className="text-sm font-bold text-white">Consultation Type</h3>
       </div>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="flex gap-2">
         {consultationTypes.map(type => (
           <button
             key={type.id}
             type="button"
             onClick={() => setFormData({...formData, consultationType: type.id})}
-            className={`group p-2 rounded-lg transition-all duration-200 ${
+            className={`group px-3 py-2 rounded-lg transition-all duration-200 flex-1 ${
               formData.consultationType === type.id 
                 ? 'scale-105 shadow-md' 
                 : 'hover:scale-[1.02]'
@@ -361,434 +281,289 @@ const GetinTouch = () => {
   );
 
   return (
-    <section className="relative py-8 md:py-12 overflow-hidden" style={{ background: colors.background }}>
-      {/* Animated background */}
-      <div className="absolute inset-0">
-        {/* Gradient orbs */}
-        <div 
-          className="absolute -top-20 -right-20 w-60 h-60 rounded-full"
-          style={{
-            background: `radial-gradient(circle, ${colors.primary}30 0%, transparent 70%)`,
-            filter: 'blur(40px)',
-            opacity: 0.3
-          }}
-        />
-        <div 
-          className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full"
-          style={{
-            background: `radial-gradient(circle, ${colors.secondary}30 0%, transparent 70%)`,
-            filter: 'blur(40px)',
-            opacity: 0.3
-          }}
-        />
-      </div>
-
-      <div className="w-full px-3 sm:px-5 lg:px-6 xl:px-8 relative z-10 mx-auto">
-        {/* Header - Compact with better mobile centering */}
-        <div className="text-center mb-8 max-w-4xl mx-auto px-2">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 mb-4">
-            <Globe className="h-4 w-4 text-cyan-300 animate-spin-slow" />
-            <span className="text-xs font-bold bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent tracking-widest">
+    <section className="relative py-8 md:py-12 overflow-hidden select-none" style={{ background: colors.background }}>
+      <div className="w-full px-4 sm:px-6 md:px-8 relative z-10 mx-auto">
+        {/* Header with slightly larger text */}
+        <div className="text-center mb-8 max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 mb-5">
+            <Globe className="h-4 w-4 text-cyan-100" />
+            <span className="text-xs font-bold text-cyan-300 tracking-widest">
               GLOBAL CONNECTIVITY HUB
             </span>
           </div>
           
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-1">
-            <span className="block text-white/90 text-xl sm:text-2xl md:text-3xl">Connect Globally</span>
-            <span className="block bg-gradient-to-r from-cyan-300 via-pink-400 to-yellow-300 bg-clip-text text-transparent text-2xl sm:text-3xl md:text-4xl mt-1">
-              Free Consultation
-            </span>
-          </h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          <span className="block text-white/90 text-2xl md:text-3xl mb-1">Connect Globally</span>
+          <span className="block bg-gradient-to-r from-cyan-300 via-pink-400 to-yellow-300 bg-clip-text text-transparent text-3xl md:text-4xl">
+            Free Consultation
+          </span>
+        </h1>
           
-          <p className="text-xs sm:text-sm md:text-base text-blue-100/80 leading-relaxed max-w-2xl mx-auto px-2">
+          <p className="text-base text-blue-100/80 leading-relaxed max-w-2xl mx-auto">
             Book a free strategy session from anywhere in the world.
           </p>
         </div>
 
+        {/* Single Column Layout */}
         <div className="w-full">
-          <div className="grid lg:grid-cols-5 gap-4 md:gap-5 lg:gap-6">
-            {/* Left Column - Interactive Globe - Hidden on mobile, takes 2/5 on desktop */}
-            <div className="hidden lg:block lg:col-span-2 relative w-full">
-              <div className="sticky top-20 w-full">
-                {/* Animated Globe */}
+          {/* Globe Section Only - Stats removed */}
+          <div className="mb-8">
+            <div className="relative w-full flex justify-center">
+              <div className="relative">
                 <div 
                   ref={globeRef}
-                  className="relative w-full aspect-square rounded-full mb-4 overflow-hidden flex items-center justify-center"
+                  className="relative w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden flex items-center justify-center mx-auto"
                   style={{
                     background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
                     border: '2px solid rgba(255, 255, 255, 0.1)',
-                    boxShadow: '0 0 40px rgba(0, 198, 255, 0.2)'
+                    boxShadow: '0 0 20px rgba(0, 198, 255, 0.2)'
                   }}
                 >
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="relative">
-                      <div className="absolute -inset-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full blur-md" />
-                      <Globe className="h-20 w-20 text-cyan-300 animate-spin-slow" />
-                    </div>
+                    <Globe className="h-16 w-16 md:h-20 md:w-20 text-cyan-200" />
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
 
-                {/* Compact Stats */}
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="p-2 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
+          {/* Form Section */}
+          <div className="w-full">
+            <div 
+              ref={formRef}
+              className="relative rounded-xl p-5 md:p-6 backdrop-blur-xl border border-white/20 w-full"
+              style={{
+                background: 'rgba(15, 23, 42, 0.7)',
+                boxShadow: '0 8px 30px rgba(0, 0, 0, 0.2)'
+              }}
+            >
+              {/* Success message */}
+              {isSubmitted ? (
+                <div 
+                  ref={successRef}
+                  className="text-center py-6"
+                >
+                  <div className="relative inline-block mb-4">
+                    <div className="relative p-4 rounded-full bg-gradient-to-r from-green-500 to-emerald-500">
+                      <CheckCircle className="h-10 w-10 text-white" />
+                    </div>
+                  </div>
+                  
+                  <h3 className="text-xl font-bold text-white mb-3">Consultation Request Sent! 🎉</h3>
+                  <p className="text-blue-100/80 text-sm mb-6">
+                    Your free consultation request has been submitted successfully.
+                    We'll contact you within 24-48 hours.
+                  </p>
+                  
+                  <button
+                    onClick={() => {
+                      setIsSubmitted(false);
+                      setFormData({
+                        name: '',
+                        email: '',
+                        phone: '',
+                        company: '',
+                        service: '',
+                        description: '',
+                        timezone: 'GMT',
+                        consultationType: 'video',
+                        region: 'global'
+                      });
+                      setSelectedService('');
+                      setActiveRegion('global');
+                      setSubmitError('');
+                    }}
+                    className="px-6 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-semibold transition-all duration-300"
+                  >
+                    Submit Another Request
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-6 w-full">
+                  <RegionSelector />
+                  
+                  <ServiceSelector />
+                  
+                  <ConsultationSelector />
+                  
+                  {/* Error message */}
+                  {submitError && (
+                    <div 
+                      ref={errorRef}
+                      className="p-3 rounded-lg border border-red-500/30 bg-red-500/10"
+                    >
+                      <div className="flex items-center gap-2 text-red-300 text-sm">
+                        <X className="h-4 w-4 flex-shrink-0" />
+                        <span>{submitError}</span>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Personal Details */}
+                  <div className="space-y-4">
                     <div className="flex items-center gap-2">
-                      <Users className="h-5 w-5 text-cyan-300" />
-                      <div>
-                        <div className="text-base font-bold text-white">50+</div>
-                        <div className="text-xs text-blue-100/60">Countries</div>
+                      <User className="h-4 w-4 text-cyan-300" />
+                      <h3 className="text-sm font-bold text-white">Personal Details</h3>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="relative">
+                        <User className="absolute left-3 top-3 h-4 w-4 text-cyan-300 opacity-60" />
+                        <input
+                          type="text"
+                          required
+                          value={formData.name}
+                          onChange={(e) => {
+                            setFormData({...formData, name: e.target.value});
+                            if (submitError) setSubmitError('');
+                          }}
+                          placeholder="Your Name *"
+                          className="w-full pl-10 pr-3 py-3 text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
+                        />
+                      </div>
+                      
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-3 h-4 w-4 text-cyan-300 opacity-60" />
+                        <input
+                          type="email"
+                          required
+                          value={formData.email}
+                          onChange={(e) => {
+                            setFormData({...formData, email: e.target.value});
+                            if (submitError) setSubmitError('');
+                          }}
+                          placeholder="Email Address *"
+                          className="w-full pl-10 pr-3 py-3 text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
+                        />
+                      </div>
+                      
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-3 h-4 w-4 text-cyan-300 opacity-60" />
+                        <input
+                          type="tel"
+                          value={formData.phone}
+                          onChange={(e) => {
+                            setFormData({...formData, phone: e.target.value});
+                            if (submitError) setSubmitError('');
+                          }}
+                          placeholder="Phone (Optional)"
+                          className="w-full pl-10 pr-3 py-3 text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
+                        />
+                      </div>
+                      
+                      <div className="relative">
+                        <Award className="absolute left-3 top-3 h-4 w-4 text-cyan-300 opacity-60" />
+                        <input
+                          type="text"
+                          value={formData.company}
+                          onChange={(e) => {
+                            setFormData({...formData, company: e.target.value});
+                            if (submitError) setSubmitError('');
+                          }}
+                          placeholder="Company (Optional)"
+                          className="w-full pl-10 pr-3 py-3 text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
+                        />
                       </div>
                     </div>
                   </div>
                   
-                  <div className="p-2 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
+                  {/* Project Description */}
+                  <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <Clock className="h-5 w-5 text-cyan-300" />
-                      <div>
-                        <div className="text-base font-bold text-white">24/7</div>
-                        <div className="text-xs text-blue-100/60">Support</div>
-                      </div>
+                      <MessageSquare className="h-4 w-4 text-cyan-300" />
+                      <h3 className="text-sm font-bold text-white">Project Details</h3>
+                    </div>
+                    
+                    <div className="relative">
+                      <MessageSquare className="absolute left-3 top-3 h-4 w-4 text-cyan-300 opacity-60" />
+                      <textarea
+                        required
+                        value={formData.description}
+                        onChange={(e) => {
+                          setFormData({...formData, description: e.target.value});
+                          if (submitError) setSubmitError('');
+                        }}
+                        placeholder="Briefly describe your project... *"
+                        rows="4"
+                        className="w-full pl-10 pr-3 py-3 text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300 resize-none"
+                      />
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column - Form - Takes 3/5 on desktop, full width on mobile */}
-            <div className="lg:col-span-3 relative w-full">
-              <div 
-                ref={formRef}
-                className="relative rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 backdrop-blur-xl border border-white/20 w-full"
-                style={{
-                  background: 'rgba(15, 23, 42, 0.7)',
-                  boxShadow: '0 8px 30px rgba(0, 0, 0, 0.2)'
-                }}
-              >
-                {/* Success message */}
-                {isSubmitted ? (
-                  <div 
-                    ref={successRef}
-                    className="text-center py-6"
+                  
+                  {/* Time Slot Selection */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4 text-cyan-300" />
+                      <h3 className="text-sm font-bold text-white">Preferred Time (Optional)</h3>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {timeSlots.map((slot, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          disabled={!slot.available}
+                          className={`p-2 rounded-lg text-sm transition-all duration-200 ${
+                            slot.available 
+                              ? 'bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-500/50 text-white' 
+                              : 'bg-white/5 opacity-40 cursor-not-allowed border border-white/5 text-white/40'
+                          }`}
+                        >
+                          <div className="flex flex-col items-center">
+                            <span className="text-xs">{slot.time}</span>
+                            {slot.available ? (
+                              <span className="text-[10px] text-green-400 mt-1">Available</span>
+                            ) : (
+                              <span className="text-[10px] text-red-400 mt-1">Booked</span>
+                            )}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Submit Button */}
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="group relative w-full py-3.5 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{
+                      background: colors.gradient
+                    }}
                   >
-                    <div className="relative inline-block mb-3">
-                      <div className="relative p-3 rounded-full bg-gradient-to-r from-green-500 to-emerald-500">
-                        <CheckCircle className="h-10 w-10 text-white" />
-                      </div>
-                    </div>
-                    
-                    <h3 className="text-lg sm:text-xl font-bold text-white mb-2">Consultation Request Sent! 🎉</h3>
-                    <p className="text-blue-100/80 text-xs sm:text-sm mb-4">
-                      Your free consultation request has been submitted successfully.
-                      We'll contact you within 24-48 hours.
-                    </p>
-                    
-                    <button
-                      onClick={() => {
-                        setIsSubmitted(false);
-                        setFormData({
-                          name: '',
-                          email: '',
-                          phone: '',
-                          company: '',
-                          service: '',
-                          description: '',
-                          timezone: 'GMT',
-                          consultationType: 'video',
-                          region: 'global'
-                        });
-                        setSelectedService('');
-                        setActiveRegion('global');
-                        setSubmitError('');
-                      }}
-                      className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs sm:text-sm font-semibold transition-all duration-300"
-                    >
-                      Submit Another Request
-                    </button>
-                  </div>
-                ) : (
-                  <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 w-full">
-                    <RegionSelector />
-                    
-                    <ServiceSelector />
-                    
-                    <ConsultationSelector />
-                    
-                    {/* ADDED: Error message display */}
-                    {submitError && (
-                      <div 
-                        ref={errorRef}
-                        className="p-3 rounded-lg border border-red-500/30 bg-red-500/10"
-                      >
-                        <div className="flex items-center gap-2 text-red-300 text-sm">
-                          <X className="h-4 w-4 flex-shrink-0" />
-                          <span>{submitError}</span>
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* Personal Details */}
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2">
-                        <User className="h-4 w-4 text-cyan-300" />
-                        <h3 className="text-sm sm:text-base font-bold text-white">Personal Details</h3>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3">
-                        <div className="relative">
-                          <User className="absolute left-2 top-2.5 sm:left-3 sm:top-3 h-3 w-3 sm:h-4 sm:w-4 text-cyan-300 opacity-60" />
-                          <input
-                            type="text"
-                            required
-                            value={formData.name}
-                            onChange={(e) => {
-                              setFormData({...formData, name: e.target.value});
-                              if (submitError) setSubmitError(''); // Clear error when user types
-                            }}
-                            placeholder="Your Name *"
-                            className="w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
-                          />
-                        </div>
-                        
-                        <div className="relative">
-                          <Mail className="absolute left-2 top-2.5 sm:left-3 sm:top-3 h-3 w-3 sm:h-4 sm:w-4 text-cyan-300 opacity-60" />
-                          <input
-                            type="email"
-                            required
-                            value={formData.email}
-                            onChange={(e) => {
-                              setFormData({...formData, email: e.target.value});
-                              if (submitError) setSubmitError('');
-                            }}
-                            placeholder="Email Address *"
-                            className="w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
-                          />
-                        </div>
-                        
-                        <div className="relative">
-                          <Phone className="absolute left-2 top-2.5 sm:left-3 sm:top-3 h-3 w-3 sm:h-4 sm:w-4 text-cyan-300 opacity-60" />
-                          <input
-                            type="tel"
-                            value={formData.phone}
-                            onChange={(e) => {
-                              setFormData({...formData, phone: e.target.value});
-                              if (submitError) setSubmitError('');
-                            }}
-                            placeholder="Phone (Optional)"
-                            className="w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
-                          />
-                        </div>
-                        
-                        <div className="relative">
-                          <Award className="absolute left-2 top-2.5 sm:left-3 sm:top-3 h-3 w-3 sm:h-4 sm:w-4 text-cyan-300 opacity-60" />
-                          <input
-                            type="text"
-                            value={formData.company}
-                            onChange={(e) => {
-                              setFormData({...formData, company: e.target.value});
-                              if (submitError) setSubmitError('');
-                            }}
-                            placeholder="Company (Optional)"
-                            className="w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Project Description */}
-                    <div className="space-y-2 sm:space-y-3">
-                      <div className="flex items-center gap-2">
-                        <MessageSquare className="h-4 w-4 text-cyan-300" />
-                        <h3 className="text-sm sm:text-base font-bold text-white">Project Details</h3>
-                      </div>
-                      
-                      <div className="relative">
-                        <MessageSquare className="absolute left-2 top-2.5 sm:left-3 sm:top-3 h-3 w-3 sm:h-4 sm:w-4 text-cyan-300 opacity-60" />
-                        <textarea
-                          required
-                          value={formData.description}
-                          onChange={(e) => {
-                            setFormData({...formData, description: e.target.value});
-                            if (submitError) setSubmitError('');
-                          }}
-                          placeholder="Briefly describe your project... *"
-                          rows="3"
-                          className="w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500 transition-all duration-300 resize-none"
-                        />
-                      </div>
-                    </div>
-                    
-                    {/* Time Slot Selection - Optional for now */}
-                    <div className="space-y-2 sm:space-y-3">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-cyan-300" />
-                        <h3 className="text-sm sm:text-base font-bold text-white">Preferred Time (Optional)</h3>
-                      </div>
-                      
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2">
-                        {timeSlots.slice(0, 4).map((slot, i) => (
-                          <button
-                            key={i}
-                            type="button"
-                            disabled={!slot.available}
-                            className={`p-1.5 sm:p-2 rounded-lg text-xs transition-all duration-200 ${
-                              slot.available 
-                                ? 'bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-500/50 text-white' 
-                                : 'bg-white/5 opacity-40 cursor-not-allowed border border-white/5 text-white/40'
-                            }`}
-                          >
-                            <div className="flex flex-col items-center">
-                              <span className="text-xs">{slot.time}</span>
-                              {slot.available ? (
-                                <span className="text-[10px] text-green-400 mt-0.5">✓ Available</span>
-                              ) : (
-                                <span className="text-[10px] text-red-400 mt-0.5">✗ Booked</span>
-                              )}
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    {/* Submit Button */}
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="group relative w-full py-2.5 sm:py-3 rounded-xl overflow-hidden transition-all duration-500 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
-                      style={{
-                        background: colors.gradient
-                      }}
-                    >
-                      <span className="relative z-10 flex items-center justify-center text-white font-bold text-xs sm:text-sm md:text-base">
-                        {isSubmitting ? (
-                          <>
-                            <div className="h-3 w-3 sm:h-4 sm:w-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-1.5 sm:mr-2" />
-                            Submitting...
-                          </>
-                        ) : (
-                          <>
-                            <Rocket className="mr-1.5 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                            Submit Consultation Request
-                            <Send className="ml-1.5 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
-                          </>
-                        )}
-                      </span>
-                    </button>
-                    
-                    {/* Privacy Note */}
-                    <p className="text-center text-xs text-blue-100/60 flex items-center justify-center gap-1.5 sm:gap-2">
+                    <span className="relative z-10 flex items-center justify-center text-white font-bold text-sm md:text-base">
+                      {isSubmitting ? (
+                        <>
+                          <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          <Rocket className="mr-2 h-4 w-4" />
+                          Submit Consultation Request
+                          <Send className="ml-2 h-4 w-4" />
+                        </>
+                      )}
+                    </span>
+                  </button>
+                  
+                  {/* Privacy Note */}
+                  <div className="text-center space-y-2">
+                    <p className="text-xs text-blue-100/60 flex items-center justify-center gap-2">
                       <Shield className="h-3 w-3" />
                       Your information is secure. We follow GDPR & global privacy standards.
                     </p>
                     
-                    {/* ADDED: Note about email confirmation */}
-                    <p className="text-center text-xs text-cyan-300/70">
+                    <p className="text-xs text-cyan-300/70">
                       You'll receive a confirmation email after submission.
                     </p>
-                  </form>
-                )}
-              </div>
+                  </div>
+                </form>
+              )}
             </div>
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes spin-slow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        
-        .animate-spin-slow {
-          animation: spin-slow 20s linear infinite;
-        }
-        
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-          width: 4px;
-        }
-        
-        ::-webkit-scrollbar-track {
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 2px;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-          background: ${colors.gradient};
-          border-radius: 2px;
-        }
-        
-        /* Input focus styles */
-        input:focus, textarea:focus {
-          box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2);
-        }
-        
-        /* Mobile responsiveness */
-        @media (max-width: 640px) {
-          .grid-cols-5 {
-            grid-template-columns: repeat(2, 1fr);
-          }
-          
-          .grid-cols-3 {
-            grid-template-columns: repeat(3, 1fr);
-          }
-          
-          .p-6 {
-            padding: 1rem;
-          }
-          
-          input, textarea {
-            font-size: 14px;
-          }
-          
-          /* Ensure proper text visibility on mobile */
-          input::placeholder,
-          textarea::placeholder {
-            font-size: 13px;
-          }
-        }
-        
-        @media (max-width: 480px) {
-          .text-4xl {
-            font-size: 1.75rem;
-          }
-          
-          .text-3xl {
-            font-size: 1.5rem;
-          }
-          
-          .text-2xl {
-            font-size: 1.25rem;
-          }
-        }
-        
-        /* Accessibility */
-        @media (prefers-reduced-motion: reduce) {
-          .animate-spin-slow,
-          .group-hover,
-          .transition-all {
-            animation: none !important;
-            transition: none !important;
-          }
-        }
-        
-        /* Ensure content is centered on mobile */
-        @media (max-width: 768px) {
-          section > div {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-          }
-          
-          .relative.z-10 {
-            width: 100%;
-            max-width: 100%;
-          }
-          
-          .max-w-4xl {
-            width: 100%;
-            max-width: 100%;
-          }
-        }
-      `}</style>
     </section>
   );
 };

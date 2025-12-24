@@ -17,7 +17,6 @@ if (typeof window !== 'undefined') {
 }
 
 const OurServices = () => {
-  const [activeService, setActiveService] = useState(null);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [viewport, setViewport] = useState({ width: 0, height: 0 });
@@ -42,7 +41,7 @@ const OurServices = () => {
     glass: 'rgba(255, 255, 255, 0.1)'
   };
 
-  // Advanced services data
+  // Keep only four services: first three + Cyber Security Solutions
   const services = [
     {
       id: 1,
@@ -84,20 +83,7 @@ const OurServices = () => {
       tech: ["Docker", "Kubernetes", "AWS", "CI/CD"]
     },
     {
-      id: 4,
-      title: "Cloud Infrastructure",
-      description: "Scalable cloud solutions with auto-scaling, load balancing, and high-availability architecture for mission-critical applications.",
-      icon: <Cloud className="h-8 w-8" />,
-      color: '#00C6FF',
-      gradient: 'linear-gradient(135deg, #00C6FF, #9D50FF)',
-      features: ["AWS/Azure/GCP", "Auto-scaling", "Load Balancing", "Disaster Recovery"],
-      complexity: "Advanced",
-      delivery: "2-8 weeks",
-      stats: { projects: 120, satisfaction: 97 },
-      tech: ["AWS", "Terraform", "K8s", "Ansible"]
-    },
-    {
-      id: 5,
+      id: 4, // Changed from id: 5 to id: 4
       title: "Cybersecurity Solutions",
       description: "Comprehensive security solutions including penetration testing, threat monitoring, and compliance management.",
       icon: <ShieldCheck className="h-8 w-8" />,
@@ -108,45 +94,6 @@ const OurServices = () => {
       delivery: "4-12 weeks",
       stats: { projects: 65, satisfaction: 100 },
       tech: ["SIEM", "WAF", "Zero Trust", "SOC"]
-    },
-    {
-      id: 6,
-      title: "Data Analytics & BI",
-      description: "Advanced analytics platforms with real-time dashboards, predictive modeling, and business intelligence insights.",
-      icon: <BarChart className="h-8 w-8" />,
-      color: '#6C63FF',
-      gradient: 'linear-gradient(135deg, #6C63FF, #00D4AA)',
-      features: ["Real-time Dashboards", "Predictive Models", "Data Warehousing", "ETL Pipelines"],
-      complexity: "Advanced",
-      delivery: "6-14 weeks",
-      stats: { projects: 90, satisfaction: 96 },
-      tech: ["Apache Spark", "Tableau", "Snowflake", "Python"]
-    },
-    {
-      id: 7,
-      title: "Mobile App Development",
-      description: "Native and cross-platform mobile applications with seamless user experiences and offline capabilities.",
-      icon: <Smartphone className="h-8 w-8" />,
-      color: '#FF8E53',
-      gradient: 'linear-gradient(135deg, #FF8E53, #FFD93D)',
-      features: ["iOS & Android", "React Native", "Offline Sync", "Push Notifications"],
-      complexity: "Intermediate",
-      delivery: "6-16 weeks",
-      stats: { projects: 110, satisfaction: 97 },
-      tech: ["React Native", "Flutter", "Firebase", "Swift"]
-    },
-    {
-      id: 8,
-      title: "DevOps & CI/CD",
-      description: "Complete DevOps pipeline implementation with automated testing, deployment, and monitoring solutions.",
-      icon: <GitBranch className="h-8 w-8" />,
-      color: '#00FFAA',
-      gradient: 'linear-gradient(135deg, #00FFAA, #00C6FF)',
-      features: ["CI/CD Pipelines", "Infrastructure as Code", "Monitoring", "Automated Testing"],
-      complexity: "Advanced",
-      delivery: "4-10 weeks",
-      stats: { projects: 75, satisfaction: 98 },
-      tech: ["Jenkins", "GitLab", "Prometheus", "Docker"]
     }
   ];
 
@@ -432,8 +379,7 @@ const OurServices = () => {
             <div className="h-1.5 w-1.5 md:h-2 md:w-2 rounded-full bg-green-500 animate-ping" />
           </div>
           
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-6 md:mb-8 tracking-tight">
-            <span className="block text-white/90">Transformative</span>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-6 md:mb-8 tracking-tight">            <span className="block text-white/90">Transformative</span>
             <span className="block">
               <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
                 Digital Solutions
@@ -448,20 +394,15 @@ const OurServices = () => {
           </p>
         </div>
 
-        {/* Services Grid - FIXED: 1 column on mobile, 2 on tablet, 3 on desktop, 4 on xl */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 mb-16 md:mb-20">
+        {/* Services Grid - Updated for 4 cards only */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {services.map((service, index) => (
             <div
               key={service.id}
               ref={(el) => (cardsRef.current[index] = el)}
-              className="relative group perspective-1000 w-full max-w-full"
-              onMouseEnter={() => {
-                setHoveredCard(service.id);
-                setActiveService(service);
-              }}
-              onMouseLeave={() => {
-                setHoveredCard(null);
-              }}
+              className="relative group perspective-1000 w-full"
+              onMouseEnter={() => setHoveredCard(service.id)}
+              onMouseLeave={() => setHoveredCard(null)}
             >
               {/* Outer glow layer */}
               <div 
@@ -486,7 +427,7 @@ const OurServices = () => {
                   />
                 </div>
                 
-                {/* Card content - Reduced height */}
+                {/* Card content */}
                 <div 
                   className="relative h-full rounded-xl md:rounded-2xl p-4 md:p-6 overflow-hidden"
                   style={{
@@ -585,7 +526,7 @@ const OurServices = () => {
                       <HolographicBadge text={service.complexity} color={service.color} />
                     </div>
                     
-                    {/* Updated non-persuasive text area */}
+                    {/* Service overview area */}
                     <div 
                       className="w-full relative overflow-hidden rounded-lg md:rounded-xl py-2.5 md:py-3 px-3 md:px-4 transition-all duration-500"
                       style={{ background: `linear-gradient(90deg, ${service.color}10, ${service.color}05)` }}
@@ -618,185 +559,6 @@ const OurServices = () => {
               )}
             </div>
           ))}
-        </div>
-
-        {/* Interactive Service Details Panel */}
-        {activeService && (
-          <div className="fixed inset-x-4 bottom-4 md:inset-x-auto md:right-4 md:top-1/2 md:transform md:-translate-y-1/2 z-50">
-            <div 
-              className="relative rounded-2xl p-4 md:p-6 backdrop-blur-2xl border border-white/20 shadow-2xl animate-slideUp"
-              style={{
-                background: 'rgba(10, 15, 30, 0.9)',
-                maxWidth: '350px'
-              }}
-            >
-              <div className="flex items-center justify-between mb-3 md:mb-4">
-                <h4 className="text-base md:text-lg font-bold text-white">Selected Service</h4>
-                <button 
-                  onClick={() => setActiveService(null)}
-                  className="text-white/60 hover:text-white transition-colors"
-                >
-                  ✕
-                </button>
-              </div>
-              
-              <div className="space-y-3 md:space-y-4">
-                <div className="flex items-center gap-2 md:gap-3">
-                  <div 
-                    className="w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl flex items-center justify-center"
-                    style={{ background: activeService.gradient }}
-                  >
-                    {activeService.icon}
-                  </div>
-                  <div>
-                    <h5 className="font-bold text-white text-sm md:text-base">{activeService.title}</h5>
-                    <div className="text-xs md:text-sm text-white/60">{activeService.delivery} delivery</div>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-2 md:gap-3">
-                  <div className="p-2 md:p-3 rounded-lg bg-white/5">
-                    <div className="text-xl md:text-2xl font-bold text-white">{activeService.stats.projects}+</div>
-                    <div className="text-xs text-white/60">Successful Projects</div>
-                  </div>
-                  <div className="p-2 md:p-3 rounded-lg bg-white/5">
-                    <div className="text-xl md:text-2xl font-bold text-white">{activeService.stats.satisfaction}%</div>
-                    <div className="text-xs text-white/60">Client Satisfaction</div>
-                  </div>
-                </div>
-                
-                <div className="w-full py-2.5 md:py-3 rounded-lg md:rounded-xl font-medium text-center text-sm md:text-base text-white/80 transition-all duration-300 bg-white/5 border border-white/10">
-                  Portfolio Item
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Updated CTA Section - Fixed balanced layout */}
-        <div className="relative rounded-2xl md:rounded-3xl overflow-hidden mt-20 md:mt-32">
-          {/* Particle background */}
-          <div className="absolute inset-0">
-            {[...Array(30)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute rounded-full"
-                style={{
-                  width: Math.random() * 2 + 1,
-                  height: Math.random() * 2 + 1,
-                  background: colors.neon,
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  opacity: Math.random() * 0.2,
-                  animation: `twinkle ${Math.random() * 3 + 2}s infinite`,
-                  animationDelay: `${Math.random() * 2}s`
-                }}
-              />
-            ))}
-          </div>
-          
-          <div 
-            className="relative p-6 md:p-8 lg:p-12 text-center"
-            style={{
-              background: 'radial-gradient(circle at center, rgba(0, 102, 255, 0.1), transparent 70%)',
-              backdropFilter: 'blur(20px)'
-            }}
-          >
-            <h3 className="text-2xl md:text-3xl lg:text-4xl font-black text-white mb-4 md:mb-6">
-              Our Development Philosophy
-            </h3>
-            
-            <p className="text-sm md:text-base lg:text-xl text-blue-100/80 mb-8 md:mb-12 max-w-2xl mx-auto">
-              Crafting digital solutions through innovation, precision, and forward-thinking approaches.
-            </p>
-            
-            {/* Centered and balanced info cards */}
-            <div className="flex flex-col sm:flex-row justify-center items-stretch gap-4 md:gap-6 lg:gap-8 max-w-5xl mx-auto">
-              {/* Innovation Card */}
-              <div className="flex-1 max-w-sm mx-auto sm:mx-0">
-                <div className="group relative p-6 md:p-8 rounded-xl md:rounded-2xl overflow-hidden transition-all duration-500 h-full">
-                  <div 
-                    className="absolute inset-0 rounded-xl md:rounded-2xl opacity-20"
-                    style={{
-                      background: 'linear-gradient(135deg, #0066FF20, #00D4AA20)'
-                    }}
-                  />
-                  <div className="absolute inset-0 rounded-xl md:rounded-2xl bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
-                  <div className="relative z-10 flex flex-col h-full">
-                    <div className="flex items-center justify-center mb-4 md:mb-6">
-                      <div className="w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center bg-white/10 border border-white/20">
-                        <Target className="h-6 w-6 md:h-8 md:w-8 text-cyan-400" />
-                      </div>
-                    </div>
-                    <h4 className="font-bold text-white text-lg md:text-xl mb-3 md:mb-4">
-                      Innovation Focus
-                    </h4>
-                    <p className="text-sm md:text-base text-blue-100/70 flex-grow">
-                      Continuously exploring emerging technologies to deliver cutting-edge solutions that drive business transformation.
-                    </p>
-                    <div className="mt-6 pt-4 border-t border-white/10">
-                      <div className="flex justify-center space-x-4">
-                        <span className="text-xs md:text-sm text-cyan-400/80">AI Integration</span>
-                        <span className="text-xs md:text-sm text-cyan-400/80">R&D</span>
-                        <span className="text-xs md:text-sm text-cyan-400/80">Future Tech</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Quality Card */}
-              <div className="flex-1 max-w-sm mx-auto sm:mx-0">
-                <div className="group relative p-6 md:p-8 rounded-xl md:rounded-2xl overflow-hidden transition-all duration-500 h-full">
-                  <div 
-                    className="absolute inset-0 rounded-xl md:rounded-2xl opacity-20"
-                    style={{
-                      background: 'linear-gradient(135deg, #9D50FF20, #00C6FF20)'
-                    }}
-                  />
-                  <div className="absolute inset-0 rounded-xl md:rounded-2xl bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
-                  <div className="relative z-10 flex flex-col h-full">
-                    <div className="flex items-center justify-center mb-4 md:mb-6">
-                      <div className="w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center bg-white/10 border border-white/20">
-                        <Palette className="h-6 w-6 md:h-8 md:w-8 text-purple-400" />
-                      </div>
-                    </div>
-                    <h4 className="font-bold text-white text-lg md:text-xl mb-3 md:mb-4">
-                      Quality Craftsmanship
-                    </h4>
-                    <p className="text-sm md:text-base text-blue-100/70 flex-grow">
-                      Meticulous attention to detail in every aspect of development, ensuring robust, scalable, and maintainable solutions.
-                    </p>
-                    <div className="mt-6 pt-4 border-t border-white/10">
-                      <div className="flex justify-center space-x-4">
-                        <span className="text-xs md:text-sm text-purple-400/80">Code Quality</span>
-                        <span className="text-xs md:text-sm text-purple-400/80">Testing</span>
-                        <span className="text-xs md:text-sm text-purple-400/80">Maintenance</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Stats section */}
-            <div className="mt-8 md:mt-12 pt-6 md:pt-8 border-t border-white/10">
-              <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-blue-100/60">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-                  <span className="text-xs md:text-sm">Continuous Innovation</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-                  <span className="text-xs md:text-sm">Expert Team</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                  <span className="text-xs md:text-sm">Best Practices</span>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -865,8 +627,8 @@ const OurServices = () => {
         }
         
         /* Enhanced Responsive Design */
-        @media (max-width: 768px) {
-          /* FORCE single column on mobile */
+        @media (max-width: 640px) {
+          /* Mobile: 1 column */
           .grid {
             display: flex !important;
             flex-direction: column !important;
@@ -891,22 +653,15 @@ const OurServices = () => {
           }
         }
         
-        @media (min-width: 768px) and (max-width: 1024px) {
+        @media (min-width: 640px) and (max-width: 1024px) {
           /* Tablet: 2 columns */
           .grid {
             grid-template-columns: repeat(2, 1fr) !important;
           }
         }
         
-        @media (min-width: 1024px) and (max-width: 1280px) {
-          /* Desktop: 3 columns */
-          .grid {
-            grid-template-columns: repeat(3, 1fr) !important;
-          }
-        }
-        
-        @media (min-width: 1280px) {
-          /* Large Desktop: 4 columns */
+        @media (min-width: 1024px) {
+          /* Desktop: 4 columns */
           .grid {
             grid-template-columns: repeat(4, 1fr) !important;
           }
