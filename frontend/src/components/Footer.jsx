@@ -416,75 +416,75 @@ const Footer = () => {
           animation: fadeIn 0.3s ease-out forwards;
         }
         
-        /* Responsive Grid Layout - FIXED: Target only footer grids */
+        /* Responsive Grid Layout - FIXED with more specific selectors */
         @media (max-width: 768px) {
-          /* Mobile: Services and Company side by side - ONLY for footer grids */
-          footer .grid {
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+          /* Mobile: Services and Company side by side */
+          .relative.overflow-hidden.pt-6.pb-3 .grid {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 1rem !important;
           }
           
           /* First column spans full width */
-          footer .md\\:col-span-2 {
-            grid-column: span 2;
+          .relative.overflow-hidden.pt-6.pb-3 .md\\:col-span-2 {
+            grid-column: 1 / span 2 !important;
           }
           
           /* Adjust spacing for mobile */
-          footer .h-12 {
-            height: 3rem;
+          .relative.overflow-hidden.pt-6.pb-3 .h-12 {
+            height: 3rem !important;
           }
-          footer .w-12 {
-            width: 3rem;
+          .relative.overflow-hidden.pt-6.pb-3 .w-12 {
+            width: 3rem !important;
           }
-          footer .h-9 {
-            height: 2.25rem;
+          .relative.overflow-hidden.pt-6.pb-3 .h-9 {
+            height: 2.25rem !important;
           }
-          footer .w-9 {
-            width: 2.25rem;
+          .relative.overflow-hidden.pt-6.pb-3 .w-9 {
+            width: 2.25rem !important;
           }
           
           /* Adjust font sizes for mobile */
-          footer .text-lg {
-            font-size: 1rem;
+          .relative.overflow-hidden.pt-6.pb-3 .text-lg {
+            font-size: 1rem !important;
           }
           
-          footer .text-sm {
-            font-size: 0.75rem;
+          .relative.overflow-hidden.pt-6.pb-3 .text-sm {
+            font-size: 0.75rem !important;
           }
           
-          footer .text-xs {
-            font-size: 0.65rem;
+          .relative.overflow-hidden.pt-6.pb-3 .text-xs {
+            font-size: 0.65rem !important;
           }
           
-          footer .text-\\[13px\\] {
-            font-size: 0.8125rem;
+          .relative.overflow-hidden.pt-6.pb-3 .text-\\[13px\\] {
+            font-size: 0.8125rem !important;
           }
           
-          footer .text-\\[12px\\] {
-            font-size: 0.75rem;
+          .relative.overflow-hidden.pt-6.pb-3 .text-\\[12px\\] {
+            font-size: 0.75rem !important;
           }
           
-          footer .text-\\[11px\\] {
-            font-size: 0.6875rem;
+          .relative.overflow-hidden.pt-6.pb-3 .text-\\[11px\\] {
+            font-size: 0.6875rem !important;
           }
           
-          footer .text-\\[10px\\] {
-            font-size: 0.625rem;
+          .relative.overflow-hidden.pt-6.pb-3 .text-\\[10px\\] {
+            font-size: 0.625rem !important;
           }
         }
         
         /* Tablet: Adjust layout */
         @media (min-width: 769px) and (max-width: 1024px) {
-          footer .grid {
-            grid-template-columns: repeat(2, 1fr);
+          .relative.overflow-hidden.pt-6.pb-3 .grid {
+            grid-template-columns: repeat(2, 1fr) !important;
           }
           
-          footer .md\\:col-span-2 {
-            grid-column: span 2;
+          .relative.overflow-hidden.pt-6.pb-3 .md\\:col-span-2 {
+            grid-column: span 2 !important;
           }
           
-          footer .lg\\:col-span-1 {
-            grid-column: span 1;
+          .relative.overflow-hidden.pt-6.pb-3 .lg\\:col-span-1 {
+            grid-column: span 1 !important;
           }
         }
         

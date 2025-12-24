@@ -89,7 +89,6 @@ const Header = () => {
     { name: "Industries", href: "/industries", icon: <Building className="h-3.5 w-3.5 mr-1.5" /> },
     { name: "Academy", href: "/academy", icon: <GraduationCap className="h-3.5 w-3.5 mr-1.5" /> },
     { name: "Company", href: "/company", icon: <Users className="h-3.5 w-3.5 mr-1.5" /> },
-    { name: "Solutions", href: "/solutions" },
   ];
 
   return (
@@ -148,7 +147,7 @@ const Header = () => {
               <div key={item.name} className="relative group">
                 <Link 
                   to={item.href}
-                  className="flex items-center px-2.5 py-2 text-xs text-blue-100/90 hover:text-white font-medium transition-all duration-200 rounded-lg hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 group whitespace-nowrap"
+                  className="flex items-center px-2.5 py-2 text-xs text-blue-100/90 hover:text-white font-medium transition-all duration-200 rounded-lg hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 group whitespace-nowrap cursor-pointer"
                 >
                   {item.icon && item.icon}
                   {item.name}
@@ -162,7 +161,7 @@ const Header = () => {
                 {/* Dashboard Link for logged-in users */}
                 <Link 
                   to="/dashboard"
-                  className="flex items-center ml-1 px-3 py-2 text-xs text-cyan-300 font-semibold rounded-lg border border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 hover:border-cyan-400 hover:scale-[1.02] transition-all duration-300 group whitespace-nowrap"
+                  className="flex items-center ml-1 px-3 py-2 text-xs text-cyan-300 font-semibold rounded-lg border border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 hover:border-cyan-400 hover:scale-[1.02] transition-all duration-300 group whitespace-nowrap cursor-pointer"
                 >
                   <Sparkles className="h-3 w-3 mr-1.5 group-hover:scale-110 transition-transform" />
                   Dashboard
@@ -182,7 +181,7 @@ const Header = () => {
                 {/* Contact Button with space */}
                 <Link 
                   to="/contact"
-                  className="flex items-center ml-2 px-3 py-2 text-xs text-white font-semibold rounded-lg border border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 hover:border-cyan-400 hover:scale-[1.02] transition-all duration-300 group whitespace-nowrap"
+                  className="flex items-center ml-2 px-3 py-2 text-xs text-white font-semibold rounded-lg border border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 hover:border-cyan-400 hover:scale-[1.02] transition-all duration-300 group whitespace-nowrap cursor-pointer"
                 >
                   <Mail className="h-3 w-3 mr-1.5 group-hover:scale-110 transition-transform" />
                   Contact
@@ -191,7 +190,7 @@ const Header = () => {
                 {/* Get Started Button - Prominent CTA with Rocket icon */}
                 <Link 
                   to="/signup"
-                  className="flex items-center ml-2 px-3 py-2 text-xs bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-lg hover:shadow-lg hover:scale-[1.02] transition-all duration-300 shadow-md group whitespace-nowrap"
+                  className="flex items-center ml-2 px-3 py-2 text-xs bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-lg hover:shadow-lg hover:scale-[1.02] transition-all duration-300 shadow-md group whitespace-nowrap cursor-pointer"
                 >
                   <Rocket className="h-3 w-3 mr-1.5 group-hover:scale-110 transition-transform" />
                   Get Started
@@ -203,13 +202,13 @@ const Header = () => {
           {/* Mobile Menu Button */}
           <div className="lg:hidden flex items-center">
             {isLoggedIn && (
-              <div className="mr-2 text-xs text-cyan-300 font-medium">
+              <div className="mr-2 text-xs text-cyan-300 font-medium cursor-default">
                 Account
               </div>
             )}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="relative p-2 rounded-lg bg-gradient-to-r from-blue-500/5 to-cyan-500/5 border border-blue-500/20 hover:border-cyan-500/40 transition-all duration-300 group"
+              className="relative p-2 rounded-lg bg-gradient-to-r from-blue-500/5 to-cyan-500/5 border border-blue-500/20 hover:border-cyan-500/40 transition-all duration-300 group cursor-pointer"
               aria-label="Toggle menu"
             >
               <div className="w-5 h-5 flex flex-col items-center justify-center space-y-1">
@@ -233,7 +232,7 @@ const Header = () => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className="flex items-center w-full px-2 py-2.5 text-xs text-blue-100/90 hover:text-white hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 rounded-lg font-medium transition-all duration-200 group"
+                  className="flex items-center w-full px-2 py-2.5 text-xs text-blue-100/90 hover:text-white hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-cyan-500/10 rounded-lg font-medium transition-all duration-200 group cursor-pointer"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.icon && item.icon}
@@ -247,7 +246,7 @@ const Header = () => {
                   {/* Dashboard for logged-in mobile users */}
                   <Link
                     to="/dashboard"
-                    className="flex items-center w-full px-2 py-2.5 text-xs text-cyan-300 font-semibold hover:text-white hover:bg-gradient-to-r hover:from-cyan-500/10 hover:to-blue-500/10 rounded-lg transition-all duration-200 group"
+                    className="flex items-center w-full px-2 py-2.5 text-xs text-cyan-300 font-semibold hover:text-white hover:bg-gradient-to-r hover:from-cyan-500/10 hover:to-blue-500/10 rounded-lg transition-all duration-200 group cursor-pointer"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <Sparkles className="h-3 w-3 mr-1.5" />
@@ -272,7 +271,7 @@ const Header = () => {
                   <div className="px-1 py-1">
                     <Link
                       to="/contact"
-                      className="flex items-center justify-center w-full px-2 py-2.5 text-xs text-white font-semibold rounded-lg border border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 transition-all duration-200 active:scale-95"
+                      className="flex items-center justify-center w-full px-2 py-2.5 text-xs text-white font-semibold rounded-lg border border-cyan-400/50 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-blue-500/20 transition-all duration-200 active:scale-95 cursor-pointer"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <Mail className="h-3 w-3 mr-1.5" />
@@ -284,7 +283,7 @@ const Header = () => {
                   <div className="pt-1 px-1 pb-2 space-y-1 border-t border-blue-700/30">
                     <Link 
                       to="/signup"
-                      className="w-full text-center text-xs bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold py-2.5 rounded-lg hover:shadow-lg transition-all duration-200 active:scale-95 block"
+                      className="w-full text-center text-xs bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold py-2.5 rounded-lg hover:shadow-lg transition-all duration-200 active:scale-95 block cursor-pointer"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Get Started

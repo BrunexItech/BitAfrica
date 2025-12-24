@@ -12,21 +12,12 @@ import Services from './pages/Services';
 import Industries from './pages/Industries';
 import Company from './pages/Company';
 import Academy from './pages/Academy';
-import Solutions from './pages/Solutions';
 import Contact from './pages/Contact';
 
 // Authentication Pages
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import ForgotPassword from './pages/ForgotPassword';
-
-// Solution Detail Pages
-import AIAnalytics from './pages/solutions/AIAnalytics';
-import Automation from './pages/solutions/Automation';
-import Cybersecurity from './pages/solutions/Cybersecurity';
-import DevSolutions from './pages/solutions/DevSolutions';
-import MachineLearning from './pages/solutions/MachineLearning';
-import CloudAI from './pages/solutions/CloudAI';
 
 // Dashboard Placeholder
 import Dashboard from './pages/Dashboard';
@@ -87,12 +78,6 @@ function App() {
             </PublicLayout>
           } />
           
-          <Route path="/solutions" element={
-            <PublicLayout>
-              <Solutions />
-            </PublicLayout>
-          } />
-          
           <Route path="/contact" element={
             <PublicLayout>
               <Contact />
@@ -134,44 +119,6 @@ function App() {
           <Route path="/signup/partner" element={
             <PublicLayout>
               <SignUp />
-            </PublicLayout>
-          } />
-          
-          {/* ========== SOLUTION DETAIL ROUTES (with Header + Footer) ========== */}
-          
-          <Route path="/solutions/ai-analytics" element={
-            <PublicLayout>
-              <AIAnalytics />
-            </PublicLayout>
-          } />
-          
-          <Route path="/solutions/automation" element={
-            <PublicLayout>
-              <Automation />
-            </PublicLayout>
-          } />
-          
-          <Route path="/solutions/cybersecurity" element={
-            <PublicLayout>
-              <Cybersecurity />
-            </PublicLayout>
-          } />
-          
-          <Route path="/solutions/dev-solutions" element={
-            <PublicLayout>
-              <DevSolutions />
-            </PublicLayout>
-          } />
-          
-          <Route path="/solutions/machine-learning" element={
-            <PublicLayout>
-              <MachineLearning />
-            </PublicLayout>
-          } />
-          
-          <Route path="/solutions/cloud-ai" element={
-            <PublicLayout>
-              <CloudAI />
             </PublicLayout>
           } />
           
