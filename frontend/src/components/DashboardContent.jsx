@@ -23,13 +23,23 @@ import {
   ArrowLeft,
   Check,
   FileText,
-  Terminal
+  Terminal,
+  AlertCircle,
+  Trophy,
+  Users,
+  Bookmark,
+  Flame,
+  Target as TargetIcon,
+  PieChart,
+  BarChart,
+  TrendingUp as TrendingUpIcon,
+  Search
 } from 'lucide-react';
 import learningService from '../services/learningService';
+import authService from '../services/authService';
 
 const DashboardContent = ({
   darkMode,
-  user,
   sidebarOpen,
   setSidebarOpen,
   mobileMenuOpen,
@@ -40,6 +50,7 @@ const DashboardContent = ({
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
   const [achievements, setAchievements] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
   
   // Learning flow states
   const [learningMode, setLearningMode] = useState(false);
@@ -56,33 +67,56 @@ const DashboardContent = ({
   const [score, setScore] = useState(0);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [quizResults, setQuizResults] = useState(null);
+  const [selectedAnswers, setSelectedAnswers] = useState({});
   
   // UI states
   const [filterStatus, setFilterStatus] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [error, setError] = useState(null);
 
-  // Fetch data on component mount
+  // Fetch all data on component mount
   useEffect(() => {
     fetchDashboardData();
+    const userData = authService.getCurrentUser();
+    setCurrentUser(userData);
   }, []);
 
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
+      setError(null);
+      
       const [coursesData, statsData, achievementsData] = await Promise.all([
         learningService.getCourses(),
         learningService.getDashboardStats(),
         learningService.getAchievements()
       ]);
       
-      setCourses(coursesData);
-      setStats(statsData);
-      setAchievements(achievementsData);
+      setCourses(coursesData || []);
+      setStats(statsData || {});
+      setAchievements(achievementsData || []);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
+      setError('Failed to load dashboard data. Please try again.');
     } finally {
       setLoading(false);
     }
+  };
+
+  // Get user display name
+  const getUserDisplayName = () => {
+    if (!currentUser) return 'Learner';
+    
+    if (currentUser.first_name && currentUser.first_name.trim()) {
+      if (currentUser.last_name && currentUser.last_name.trim()) {
+        return `${currentUser.first_name} ${currentUser.last_name}`;
+      }
+      return currentUser.first_name;
+    }
+    if (currentUser.fullName && currentUser.fullName.trim()) {
+      return currentUser.fullName;
+    }
+    return currentUser.email?.split('@')[0] || 'Learner';
   };
 
   // Start learning a course - show modules first
@@ -93,19 +127,21 @@ const DashboardContent = ({
       
       setSelectedCourse(course);
       const modulesData = await learningService.getModules(courseId);
-      setModules(modulesData);
+      setModules(modulesData || []);
       setCurrentModuleIndex(0);
       
       // Check if current module is already completed
-      const currentModule = modulesData[0];
+      const currentModule = modulesData?.[0];
       setIsCurrentModuleCompleted(currentModule?.is_completed || false);
       
       setLearningMode(true);
       setQuizStarted(false);
       setQuizCompleted(false);
       setQuizResults(null);
+      setSelectedAnswers({});
     } catch (error) {
       console.error('Error starting learning:', error);
+      alert('Failed to load course modules. Please try again.');
     }
   };
 
@@ -117,15 +153,17 @@ const DashboardContent = ({
       
       setSelectedCourse(course);
       const questions = await learningService.getQuizQuestions(courseId);
-      setQuizQuestions(questions);
+      setQuizQuestions(questions || []);
       setQuizStarted(true);
       setCurrentQuestion(0);
       setScore(0);
       setQuizCompleted(false);
       setQuizResults(null);
+      setSelectedAnswers({});
       setLearningMode(false);
     } catch (error) {
       console.error('Error starting quiz:', error);
+      alert('Failed to load quiz questions. Please try again.');
     }
   };
 
@@ -134,6 +172,8 @@ const DashboardContent = ({
     try {
       setModuleLoading(true);
       const currentModule = modules[currentModuleIndex];
+      
+      if (!currentModule || !selectedCourse) return;
       
       // Update backend
       await learningService.updateProgress(
@@ -146,12 +186,7 @@ const DashboardContent = ({
       setIsCurrentModuleCompleted(true);
       
       // Refresh dashboard data to update progress
-      const updatedCourses = await learningService.getCourses();
-      setCourses(updatedCourses);
-      
-      // Refresh stats
-      const updatedStats = await learningService.getDashboardStats();
-      setStats(updatedStats);
+      await fetchDashboardData();
       
     } catch (error) {
       console.error('Error marking module complete:', error);
@@ -171,23 +206,8 @@ const DashboardContent = ({
       const nextModule = modules[nextIndex];
       setIsCurrentModuleCompleted(nextModule?.is_completed || false);
     } else {
-      // All modules completed, exit learning mode
-      setLearningMode(false);
-      setSelectedCourse(null);
-      
-      // Optionally show quiz option
-      if (selectedCourse) {
-        // Check if all modules are actually completed
-        const allCompleted = modules.every(module => module.is_completed);
-        if (allCompleted) {
-          // Show quiz notification or automatically start quiz
-          setTimeout(() => {
-            if (window.confirm(`Congratulations! You've completed all modules. Would you like to take the quiz for ${selectedCourse.title}?`)) {
-              startQuiz(selectedCourse.id);
-            }
-          }, 500);
-        }
-      }
+      // All modules completed, show quiz option
+      handleAllModulesCompleted();
     }
   };
 
@@ -203,48 +223,121 @@ const DashboardContent = ({
     }
   };
 
-  // Handle quiz answer
-  const handleQuizAnswer = async (selectedOption) => {
-    if (currentQuestion < quizQuestions.length - 1) {
-      setCurrentQuestion(prev => prev + 1);
+  // Handle when all modules are completed
+  const handleAllModulesCompleted = () => {
+    const allCompleted = modules.every(module => module.is_completed);
+    if (allCompleted && selectedCourse) {
+      // Show quiz notification
+      if (window.confirm(`Congratulations! You've completed all modules. Would you like to take the quiz for "${selectedCourse.title}"?`)) {
+        startQuiz(selectedCourse.id);
+      } else {
+        setLearningMode(false);
+        setSelectedCourse(null);
+      }
     } else {
-      // Submit quiz when all questions answered
+      setLearningMode(false);
+      setSelectedCourse(null);
+    }
+  };
+
+  // Handle quiz answer selection
+  const handleQuizAnswerSelect = (questionIndex, optionIndex) => {
+    setSelectedAnswers(prev => ({
+      ...prev,
+      [questionIndex]: optionIndex
+    }));
+  };
+
+  // Submit quiz answers
+  const submitQuiz = async () => {
+    try {
+      // Prepare answers in format expected by backend
       const answers = quizQuestions.map((q, index) => ({
         question_id: q.id,
-        selected_option: selectedOption + 1
+        selected_option: (selectedAnswers[index] || 0) + 1 // Convert 0-index to 1-index
       }));
       
-      try {
-        const results = await learningService.submitQuiz(selectedCourse.id, answers);
-        setQuizResults(results);
-        setScore(results.correct_answers);
-        setQuizCompleted(true);
-        
-        // Refresh dashboard data
-        fetchDashboardData();
-      } catch (error) {
-        console.error('Error submitting quiz:', error);
-      }
+      const results = await learningService.submitQuiz(selectedCourse.id, answers);
+      setQuizResults(results);
+      setScore(results.correct_answers);
+      setQuizCompleted(true);
+      
+      // Refresh dashboard data
+      await fetchDashboardData();
+    } catch (error) {
+      console.error('Error submitting quiz:', error);
+      alert('Failed to submit quiz. Please try again.');
     }
+  };
+
+  // Retake quiz
+  const retakeQuiz = () => {
+    setQuizCompleted(false);
+    setQuizResults(null);
+    setCurrentQuestion(0);
+    setScore(0);
+    setSelectedAnswers({});
+  };
+
+  // Exit quiz
+  const exitQuiz = () => {
+    setQuizStarted(false);
+    setQuizCompleted(false);
+    setQuizResults(null);
+    setSelectedCourse(null);
+    setSelectedAnswers({});
   };
 
   // Get current module
   const currentModule = modules[currentModuleIndex];
 
   // Calculate completed modules count
-  const completedModulesCount = modules.filter(m => m.is_completed).length;
+  const completedModulesCount = modules.filter(m => m?.is_completed).length;
   
   // Calculate if all modules are completed
   const allModulesCompleted = modules.length > 0 && completedModulesCount === modules.length;
 
-  // Filter courses based on search and status
-  const filteredCourses = courses.filter(course => {
-    const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         course.description.toLowerCase().includes(searchQuery.toLowerCase());
+  // Get next recommended course
+  const getNextRecommendedCourse = () => {
+    if (!courses || courses.length === 0) return null;
     
-    const completionRatio = course.completed_modules / course.total_modules;
+    // First, find courses in progress
+    const inProgressCourse = courses.find(course => {
+      const progress = (course.completed_modules / course.total_modules) * 100;
+      return progress > 0 && progress < 100;
+    });
+    
+    if (inProgressCourse) return inProgressCourse;
+    
+    // If no courses in progress, find first not started course
+    const notStartedCourse = courses.find(course => 
+      course.completed_modules === 0
+    );
+    
+    return notStartedCourse || courses[0];
+  };
+
+  // Filter courses based on search and status - FIXED VERSION
+  const filteredCourses = courses.filter(course => {
+    if (!course) return false;
+    
+    // Safe string checks
+    const courseTitle = course.title || '';
+    const courseDescription = course.description || '';
+    const courseCategory = course.category || '';
+    const searchLower = searchQuery.toLowerCase();
+    
+    const matchesSearch = searchQuery === '' || 
+      courseTitle.toLowerCase().includes(searchLower) ||
+      courseDescription.toLowerCase().includes(searchLower) ||
+      courseCategory.toLowerCase().includes(searchLower);
+    
+    const completionRatio = course.total_modules > 0 
+      ? course.completed_modules / course.total_modules 
+      : 0;
+    
     let status = 'not-started';
-    if (completionRatio === 1) status = 'completed';
+    if (Math.abs(completionRatio - 1) < 0.01) status = 'completed'; // Account for floating point errors
     else if (completionRatio > 0) status = 'in-progress';
     
     const matchesStatus = filterStatus === 'all' || 
@@ -257,52 +350,126 @@ const DashboardContent = ({
 
   // Get status badge for a course
   const getStatusBadge = (course) => {
-    const completionRatio = course.completed_modules / course.total_modules;
+    if (!course) return { 
+      text: 'Not Started', 
+      className: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600',
+      icon: <Clock size={14} className="mr-1" />
+    };
     
-    if (completionRatio === 1) {
-      return { text: 'Completed', className: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' };
+    const completionRatio = course.total_modules > 0 
+      ? course.completed_modules / course.total_modules 
+      : 0;
+    
+    if (Math.abs(completionRatio - 1) < 0.01) {
+      return { 
+        text: 'Completed', 
+        className: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border border-green-200 dark:border-green-800',
+        icon: <CheckCircle size={14} className="mr-1" />
+      };
     } else if (completionRatio > 0) {
-      return { text: 'In Progress', className: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' };
+      return { 
+        text: 'In Progress', 
+        className: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200 dark:border-blue-800',
+        icon: <TrendingUpIcon size={14} className="mr-1" />
+      };
     } else {
-      return { text: 'Not Started', className: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' };
+      return { 
+        text: 'Not Started', 
+        className: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600',
+        icon: <Clock size={14} className="mr-1" />
+      };
     }
   };
 
-  // Get course color based on category
+  // Get course color based on category - SAFE VERSION
   const getCourseColor = (course) => {
-    const colors = {
-      'Web Development': { gradient: 'from-blue-500 to-cyan-500', bg: 'bg-blue-500', icon: <Code /> },
-      'AI & Machine Learning': { gradient: 'from-purple-500 to-pink-500', bg: 'bg-purple-500', icon: <Brain /> },
-      'Cybersecurity': { gradient: 'from-red-500 to-orange-500', bg: 'bg-red-500', icon: <Shield /> },
-      'Programming': { gradient: 'from-green-500 to-teal-500', bg: 'bg-green-500', icon: <Code /> },
-      'Data Science': { gradient: 'from-indigo-500 to-purple-500', bg: 'bg-indigo-500', icon: <TrendingUp /> }
+    if (!course) return { 
+      gradient: 'from-gray-500 to-gray-700', 
+      bg: 'bg-gray-500',
+      light: 'bg-gray-50 dark:bg-gray-800',
+      border: 'border-gray-200 dark:border-gray-700',
+      icon: <BookOpen className="text-gray-600 dark:text-gray-400" />
     };
     
-    return colors[course.category] || { 
+    const courseCategory = course.category || '';
+    
+    const colors = {
+      'web development': { 
+        gradient: 'from-blue-500 to-cyan-500', 
+        bg: 'bg-blue-500',
+        light: 'bg-blue-50 dark:bg-blue-900/20',
+        border: 'border-blue-200 dark:border-blue-800',
+        icon: <Code className="text-blue-600 dark:text-blue-400" />
+      },
+      'ai & machine learning': { 
+        gradient: 'from-purple-500 to-pink-500', 
+        bg: 'bg-purple-500',
+        light: 'bg-purple-50 dark:bg-purple-900/20',
+        border: 'border-purple-200 dark:border-purple-800',
+        icon: <Brain className="text-purple-600 dark:text-purple-400" />
+      },
+      'cybersecurity': { 
+        gradient: 'from-red-500 to-orange-500', 
+        bg: 'bg-red-500',
+        light: 'bg-red-50 dark:bg-red-900/20',
+        border: 'border-red-200 dark:border-red-800',
+        icon: <Shield className="text-red-600 dark:text-red-400" />
+      },
+      'programming': { 
+        gradient: 'from-green-500 to-teal-500', 
+        bg: 'bg-green-500',
+        light: 'bg-green-50 dark:bg-green-900/20',
+        border: 'border-green-200 dark:border-green-800',
+        icon: <Code className="text-green-600 dark:text-green-400" />
+      },
+      'data science': { 
+        gradient: 'from-indigo-500 to-purple-500', 
+        bg: 'bg-indigo-500',
+        light: 'bg-indigo-50 dark:bg-indigo-900/20',
+        border: 'border-indigo-200 dark:border-indigo-800',
+        icon: <TrendingUp className="text-indigo-600 dark:text-indigo-400" />
+      }
+    };
+    
+    const categoryLower = courseCategory.toLowerCase();
+    return colors[categoryLower] || { 
       gradient: 'from-gray-500 to-gray-700', 
-      bg: 'bg-gray-500', 
-      icon: <BookOpen /> 
+      bg: 'bg-gray-500',
+      light: 'bg-gray-50 dark:bg-gray-800',
+      border: 'border-gray-200 dark:border-gray-700',
+      icon: <BookOpen className="text-gray-600 dark:text-gray-400" />
     };
   };
 
   // Calculate overall progress
   const overallProgress = stats?.overall_progress || 0;
-  
-  // Get next recommended course
-  const getNextRecommendedCourse = () => {
-    return courses.find(course => {
-      const progress = course.completed_modules / course.total_modules;
-      return progress > 0 && progress < 1;
-    }) || courses.find(course => course.completed_modules === 0);
-  };
 
   // Loading state
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-blue-500 mx-auto mb-4" />
           <p className="text-gray-600 dark:text-gray-300">Loading your learning dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center max-w-md mx-4">
+          <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Unable to Load Dashboard</h3>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">{error}</p>
+          <button
+            onClick={fetchDashboardData}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Try Again
+          </button>
         </div>
       </div>
     );
@@ -317,7 +484,7 @@ const DashboardContent = ({
           <div className="flex items-center justify-between mb-6">
             <button
               onClick={() => setLearningMode(false)}
-              className="flex items-center text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+              className="flex items-center text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
             >
               <ArrowLeft className="h-5 w-5 mr-2" />
               Back to Dashboard
@@ -327,68 +494,102 @@ const DashboardContent = ({
             </div>
           </div>
 
-          {/* Course Info */}
-          <div className={`rounded-xl p-6 mb-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}>
-            <h1 className="text-2xl md:text-3xl font-bold mb-2">{selectedCourse.title}</h1>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">{selectedCourse.description}</p>
-            
-            {/* Module Progress Dots */}
-            <div className="flex flex-wrap gap-2 mb-4">
-              {modules.map((module, index) => {
-                const isCompleted = module.is_completed;
-                const isCurrent = index === currentModuleIndex;
-                
-                return (
-                  <button
-                    key={module.id}
-                    onClick={() => {
-                      if (index !== currentModuleIndex) {
-                        setCurrentModuleIndex(index);
-                        setIsCurrentModuleCompleted(module.is_completed || false);
-                      }
-                    }}
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all ${
-                      isCurrent 
-                        ? 'bg-blue-600 text-white ring-2 ring-blue-300' 
-                        : isCompleted
-                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-                        : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
-                    } ${!isCurrent ? 'hover:scale-110' : ''}`}
-                    title={`Module ${index + 1}: ${module.title} ${isCompleted ? '(Completed)' : ''}`}
-                  >
-                    {isCompleted ? <Check className="h-4 w-4" /> : index + 1}
-                  </button>
-                );
-              })}
+          {/* Course Info Card */}
+          <div className={`rounded-xl p-6 mb-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+            <div className="flex flex-col md:flex-row md:items-start justify-between mb-4">
+              <div className="flex-1 mb-4 md:mb-0">
+                <h1 className="text-2xl md:text-3xl font-bold mb-2 text-gray-900 dark:text-white">{selectedCourse.title}</h1>
+                <p className="text-gray-600 dark:text-gray-300 mb-4">{selectedCourse.description}</p>
+              </div>
+              <div className={`px-4 py-2 rounded-lg ${getCourseColor(selectedCourse).light} border ${getCourseColor(selectedCourse).border}`}>
+                <span className="font-medium text-gray-700 dark:text-gray-300">{selectedCourse.category}</span>
+              </div>
             </div>
-            
-            <div className="flex items-center space-x-4 text-sm">
-              <span className="flex items-center">
-                <Clock className="h-4 w-4 mr-1" />
-                {currentModule.estimated_time} min
-              </span>
-              <span className="flex items-center">
-                <FileText className="h-4 w-4 mr-1" />
-                {completedModulesCount} of {modules.length} modules completed
-              </span>
+
+            {/* Module Progress Dots */}
+            <div className="mb-6">
+              <div className="flex flex-wrap gap-2 mb-4">
+                {modules.map((module, index) => {
+                  if (!module) return null;
+                  const isCompleted = module.is_completed;
+                  const isCurrent = index === currentModuleIndex;
+                  
+                  return (
+                    <button
+                      key={module.id || index}
+                      onClick={() => {
+                        if (index !== currentModuleIndex) {
+                          setCurrentModuleIndex(index);
+                          setIsCurrentModuleCompleted(module.is_completed || false);
+                        }
+                      }}
+                      className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all ${
+                        isCurrent 
+                          ? 'bg-blue-600 text-white ring-2 ring-blue-300 shadow-lg' 
+                          : isCompleted
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 hover:scale-110'
+                          : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 hover:scale-110'
+                      }`}
+                      title={`Module ${index + 1}: ${module.title} ${isCompleted ? '(Completed)' : ''}`}
+                    >
+                      {isCompleted ? <Check className="h-5 w-5" /> : index + 1}
+                    </button>
+                  );
+                })}
+              </div>
+              
+              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                <span className="flex items-center">
+                  <Clock className="h-4 w-4 mr-1" />
+                  {currentModule.estimated_time || 10} min
+                </span>
+                <span className="flex items-center">
+                  <FileText className="h-4 w-4 mr-1" />
+                  {completedModulesCount} of {modules.length} modules completed
+                </span>
+                <span className="flex items-center">
+                  <TrendingUp className="h-4 w-4 mr-1" />
+                  {Math.round((completedModulesCount / (modules.length || 1)) * 100)}% complete
+                </span>
+              </div>
+            </div>
+
+            {/* Module Progress Bar */}
+            <div className="mb-2">
+              <div className="flex justify-between text-sm mb-1">
+                <span className="text-gray-600 dark:text-gray-400">Module Progress</span>
+                <span className="font-medium text-gray-700 dark:text-gray-300">{Math.round((completedModulesCount / (modules.length || 1)) * 100)}%</span>
+              </div>
+              <div className={`h-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
+                <div 
+                  className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500"
+                  style={{ width: `${(completedModulesCount / (modules.length || 1)) * 100}%` }}
+                ></div>
+              </div>
             </div>
           </div>
 
-          {/* Module Content */}
-          <div className={`rounded-xl p-6 mb-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}>
+          {/* Module Content Card */}
+          <div className={`rounded-xl p-6 mb-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl md:text-2xl font-bold">{currentModule.title}</h2>
+              <div>
+                <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-2">{currentModule.title}</h2>
+                <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                  <Clock className="h-4 w-4 mr-1" />
+                  Estimated time: {currentModule.estimated_time || 10} minutes
+                </div>
+              </div>
               {isCurrentModuleCompleted && (
-                <span className="flex items-center text-green-600 dark:text-green-400">
-                  <Check className="h-5 w-5 mr-1" />
+                <span className="flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                  <Check className="h-4 w-4 mr-1" />
                   Completed
                 </span>
               )}
             </div>
 
             {/* Lesson Content */}
-            <div className="prose dark:prose-invert max-w-none mb-8">
-              <div className="whitespace-pre-line text-gray-700 dark:text-gray-300 leading-relaxed">
+            <div className="mb-8">
+              <div className="whitespace-pre-line text-gray-700 dark:text-gray-300 leading-relaxed text-lg">
                 {currentModule.content}
               </div>
             </div>
@@ -396,44 +597,50 @@ const DashboardContent = ({
             {/* Code Example */}
             {currentModule.code_example && (
               <div className="mb-8">
-                <div className="flex items-center mb-3">
-                  <Terminal className="h-5 w-5 mr-2 text-blue-600 dark:text-blue-400" />
-                  <h3 className="font-semibold">Code Example</h3>
+                <div className="flex items-center mb-4">
+                  <Terminal className="h-6 w-6 mr-3 text-blue-600 dark:text-blue-400" />
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Code Example</h3>
                 </div>
-                <pre className={`p-4 rounded-lg overflow-x-auto ${darkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-100 text-gray-800'}`}>
-                  <code>{currentModule.code_example}</code>
-                </pre>
+                <div className={`p-4 rounded-lg border ${darkMode ? 'bg-gray-900 border-gray-700' : 'bg-gray-50 border-gray-200'}`}>
+                  <pre className="overflow-x-auto">
+                    <code className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>
+                      {currentModule.code_example}
+                    </code>
+                  </pre>
+                </div>
               </div>
             )}
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between pt-6 border-t dark:border-gray-700">
+            <div className="flex flex-col sm:flex-row justify-between pt-6 border-t dark:border-gray-700 gap-4">
               <button
                 onClick={previousModule}
                 disabled={currentModuleIndex === 0}
-                className={`px-4 py-2 rounded-lg flex items-center ${currentModuleIndex === 0 
-                  ? 'opacity-50 cursor-not-allowed text-gray-400' 
-                  : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300'}`}
+                className={`px-6 py-3 rounded-lg flex items-center justify-center ${
+                  currentModuleIndex === 0
+                    ? 'opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors'
+                }`}
               >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Previous
+                <ArrowLeft className="h-5 w-5 mr-2" />
+                Previous Module
               </button>
 
-              <div className="flex space-x-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 {!isCurrentModuleCompleted ? (
                   <button
                     onClick={markModuleCompleted}
                     disabled={moduleLoading}
-                    className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {moduleLoading ? (
                       <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Saving...
+                        <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                        Saving Progress...
                       </>
                     ) : (
                       <>
-                        <Check className="h-4 w-4 mr-2" />
+                        <Check className="h-5 w-5 mr-2" />
                         Mark as Completed
                       </>
                     )}
@@ -441,58 +648,52 @@ const DashboardContent = ({
                 ) : (
                   <button
                     onClick={nextModule}
-                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center"
+                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center transition-colors"
                   >
-                    {currentModuleIndex < modules.length - 1 ? 'Next Module' : 'Finish Course'}
-                    <ChevronRight className="h-4 w-4 ml-2" />
+                    {currentModuleIndex < modules.length - 1 ? (
+                      <>
+                        Next Module
+                        <ChevronRight className="h-5 w-5 ml-2" />
+                      </>
+                    ) : (
+                      <>
+                        Finish Course
+                        <Trophy className="h-5 w-5 ml-2" />
+                      </>
+                    )}
                   </button>
                 )}
               </div>
             </div>
           </div>
 
-          {/* Progress Bar */}
-          <div className={`rounded-xl p-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}>
-            <div className="flex justify-between text-sm mb-2">
-              <span>Course Progress</span>
-              <span>{Math.round((completedModulesCount / modules.length) * 100)}%</span>
-            </div>
-            <div className={`h-3 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
-              <div 
-                className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500"
-                style={{ width: `${(completedModulesCount / modules.length) * 100}%` }}
-              ></div>
-            </div>
-            <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-2">
-              <span>Completed: {completedModulesCount} modules</span>
-              <span>Remaining: {modules.length - completedModulesCount} modules</span>
-            </div>
-          </div>
-
-          {/* Take Quiz Option (After completing all modules) */}
+          {/* Quiz Prompt */}
           {allModulesCompleted && (
-            <div className={`mt-6 p-6 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-gradient-to-r from-green-50 to-emerald-50'} border ${darkMode ? 'border-gray-700' : 'border-green-200'}`}>
+            <div className={`rounded-xl p-6 ${darkMode ? 'bg-gray-800' : 'bg-gradient-to-r from-green-50 to-emerald-50'} border ${darkMode ? 'border-gray-700' : 'border-green-200'} shadow-lg`}>
               <div className="flex flex-col md:flex-row md:items-center justify-between">
                 <div className="flex items-center mb-4 md:mb-0">
-                  <Target className={`mr-3 ${darkMode ? 'text-green-400' : 'text-green-600'}`} size={24} />
+                  <div className={`p-3 rounded-lg ${darkMode ? 'bg-green-900' : 'bg-green-100'} mr-4`}>
+                    <TargetIcon className={`h-6 w-6 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
+                  </div>
                   <div>
-                    <h3 className="font-semibold">🎉 Course Completed! Ready for the Quiz?</h3>
-                    <p className="text-sm opacity-75">
-                      You've completed all {modules.length} modules. Test your knowledge of {selectedCourse.title}
+                    <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-1">🎉 Course Completed!</h3>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      You've completed all {modules.length} modules. Test your knowledge of "{selectedCourse.title}"
                     </p>
                   </div>
                 </div>
-                <div className="flex space-x-3">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <button 
                     onClick={() => setLearningMode(false)}
-                    className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                   >
                     Return to Dashboard
                   </button>
                   <button 
                     onClick={() => startQuiz(selectedCourse.id)}
-                    className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                    className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center"
                   >
+                    <Brain className="h-5 w-5 mr-2" />
                     Take Quiz
                   </button>
                 </div>
@@ -511,72 +712,80 @@ const DashboardContent = ({
       {sidebarOpen && (
         <aside className={`w-64 ${darkMode ? 'bg-gray-800' : 'bg-white'} border-r ${darkMode ? 'border-gray-700' : 'border-gray-200'} min-h-screen sticky top-16 hidden md:block`}>
           <div className="p-6">
-            <h2 className="font-semibold text-lg mb-4 flex items-center">
-              <Home size={20} className="mr-2" />
+            <h2 className="font-semibold text-lg mb-6 flex items-center text-gray-900 dark:text-white">
+              <Home size={20} className="mr-3" />
               Navigation
             </h2>
-            <nav className="space-y-2">
-              <a href="#" className={`flex items-center p-3 rounded-lg ${darkMode ? 'bg-blue-900/50 text-blue-300' : 'bg-blue-50 text-blue-600'}`}>
+            <nav className="space-y-2 mb-8">
+              <a href="#" className={`flex items-center p-3 rounded-lg ${darkMode ? 'bg-blue-900/30 text-blue-300 border border-blue-800' : 'bg-blue-50 text-blue-600 border border-blue-200'}`}>
                 <BookOpen size={20} className="mr-3" />
                 Learning Dashboard
               </a>
-              <a href="#" className={`flex items-center p-3 rounded-lg ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}>
-                <TrendingUp size={20} className="mr-3" />
+              <a href="#" className={`flex items-center p-3 rounded-lg ${darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'}`}>
+                <BarChart size={20} className="mr-3" />
                 Progress Analytics
               </a>
-              <a href="#" className={`flex items-center p-3 rounded-lg ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}>
+              <a href="#" className={`flex items-center p-3 rounded-lg ${darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'}`}>
                 <Award size={20} className="mr-3" />
                 Achievements
               </a>
-              <a href="#" className={`flex items-center p-3 rounded-lg ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}>
+              <a href="#" className={`flex items-center p-3 rounded-lg ${darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'}`}>
                 <Calendar size={20} className="mr-3" />
                 Study Plan
               </a>
             </nav>
 
             {/* Progress Overview */}
-            <div className="mt-8">
-              <h3 className="font-semibold mb-4">Progress Overview</h3>
+            <div className="mb-8">
+              <h3 className="font-semibold mb-4 text-gray-900 dark:text-white">Progress Overview</h3>
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span>Overall Progress</span>
-                    <span>{overallProgress}%</span>
+                    <span className="text-gray-600 dark:text-gray-400">Overall Progress</span>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">{overallProgress}%</span>
                   </div>
                   <div className={`h-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
                     <div 
-                      className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500"
+                      className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500"
                       style={{ width: `${overallProgress}%` }}
                     ></div>
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm">Completed Courses</span>
-                  <span className="font-semibold">{stats?.enrolled_courses || 0}/{stats?.total_courses || 0}</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Completed Modules</span>
+                  <span className="font-semibold text-gray-700 dark:text-gray-300">
+                    {stats?.completed_modules || 0}/{stats?.total_modules || 0}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm">Learning Streak</span>
-                  <span className="font-semibold flex items-center">
-                    <Zap size={16} className="mr-1 text-yellow-500" />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Learning Streak</span>
+                  <span className="font-semibold flex items-center text-gray-700 dark:text-gray-300">
+                    <Flame size={16} className="mr-1 text-orange-500" />
                     {stats?.learning_streak || 0} days
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* Achievements */}
-            <div className="mt-8">
-              <h3 className="font-semibold mb-4">Achievements</h3>
+            {/* Recent Achievements */}
+            <div>
+              <h3 className="font-semibold mb-4 text-gray-900 dark:text-white">Recent Achievements</h3>
               <div className="space-y-2">
-                {achievements.slice(0, 5).map(achievement => (
-                  <div key={achievement.id} className={`flex items-center p-2 rounded-lg ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} ${!achievement.is_earned && 'opacity-50'}`}>
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${achievement.is_earned ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' : 'bg-gray-100 text-gray-400 dark:bg-gray-700 dark:text-gray-500'}`}>
-                      <span className="text-lg">{achievement.icon}</span>
+                {achievements.slice(0, 3).map(achievement => {
+                  if (!achievement) return null;
+                  return (
+                    <div key={achievement.id} className={`flex items-center p-3 rounded-lg ${darkMode ? achievement.is_earned ? 'bg-yellow-900/20 border border-yellow-800' : 'bg-gray-700' : achievement.is_earned ? 'bg-yellow-50 border border-yellow-200' : 'bg-gray-100'} ${!achievement.is_earned && 'opacity-60'}`}>
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center mr-3 ${achievement.is_earned ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' : 'bg-gray-200 text-gray-400 dark:bg-gray-600 dark:text-gray-500'}`}>
+                        <span className="text-lg">{achievement.icon || '🏆'}</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm text-gray-900 dark:text-white truncate">{achievement.name || 'Achievement'}</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 truncate">{achievement.description || ''}</p>
+                      </div>
+                      {achievement.is_earned && <CheckCircle size={16} className="ml-2 text-green-500 flex-shrink-0" />}
                     </div>
-                    <span className="text-sm flex-1 truncate">{achievement.name}</span>
-                    {achievement.is_earned && <CheckCircle size={16} className="ml-auto text-green-500 flex-shrink-0" />}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -585,31 +794,31 @@ const DashboardContent = ({
 
       {/* Main Content */}
       <main className="flex-1 p-4 md:p-6">
-        {/* Welcome Section */}
-        <div className={`rounded-2xl p-6 mb-8 bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg`}>
-          <div className="flex flex-col md:flex-row md:items-center justify-between">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold mb-2">
-                Welcome back, {user?.name || 'Learner'} 👋
+        {/* Welcome Section - Updated with calm blue background */}
+        <div className={`rounded-2xl p-6 md:p-8 mb-8 ${darkMode ? 'bg-blue-900/20' : 'bg-blue-50'} border ${darkMode ? 'border-blue-800/30' : 'border-blue-200'} shadow-lg`}>
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between">
+            <div className="mb-6 lg:mb-0">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 text-gray-900 dark:text-white">
+                Welcome back, {getUserDisplayName()} 👋
               </h1>
-              <p className="text-blue-100 mb-4">
+              <p className={`mb-6 text-lg ${darkMode ? 'text-blue-200' : 'text-blue-700'}`}>
                 {stats?.completed_modules || 0} modules completed • Level {stats?.level || 1}
               </p>
-              <div className="flex items-center space-x-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 <div className="flex items-center">
-                  <div className="w-24 bg-blue-900/30 rounded-full h-2 mr-2">
+                  <div className={`w-32 ${darkMode ? 'bg-blue-800/40' : 'bg-blue-100'} rounded-full h-3 mr-3`}>
                     <div 
-                      className="bg-white h-2 rounded-full"
+                      className={`h-3 rounded-full ${darkMode ? 'bg-blue-400' : 'bg-blue-600'} transition-all duration-500`}
                       style={{ width: `${overallProgress}%` }}
                     ></div>
                   </div>
-                  <span className="text-sm">
+                  <span className={`text-sm font-medium ${darkMode ? 'text-blue-300' : 'text-blue-700'}`}>
                     {overallProgress}% Overall Progress
                   </span>
                 </div>
-                <span className="flex items-center text-sm">
-                  <Award size={16} className="mr-1" />
-                  {stats?.achievements_earned || 0} Achievements
+                <span className={`flex items-center text-sm ${darkMode ? 'text-blue-300' : 'text-blue-700'}`}>
+                  <Trophy size={18} className="mr-2" />
+                  {stats?.achievements_earned || 0} Achievements Earned
                 </span>
               </div>
             </div>
@@ -618,71 +827,133 @@ const DashboardContent = ({
                 const nextCourse = getNextRecommendedCourse();
                 if (nextCourse) startLearning(nextCourse.id);
               }}
-              className="mt-4 md:mt-0 px-6 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+              disabled={!courses || courses.length === 0}
+              className={`px-6 py-3 rounded-lg font-semibold transition-all hover:scale-105 shadow-lg ${
+                !courses || courses.length === 0 
+                  ? 'opacity-50 cursor-not-allowed bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400' 
+                  : 'bg-blue-600 hover:bg-blue-700 text-white'
+              }`}
             >
-              Continue Learning
+              {!courses || courses.length === 0 ? 'No Courses Available' : 'Continue Learning'}
             </button>
           </div>
         </div>
 
-        {/* Next Best Action */}
-        {courses.length > 0 && (
-          <div className={`mb-8 p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-gradient-to-r from-green-50 to-emerald-50'} border ${darkMode ? 'border-gray-700' : 'border-green-200'}`}>
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
             <div className="flex items-center">
-              <Target className={`mr-3 ${darkMode ? 'text-green-400' : 'text-green-600'}`} size={24} />
-              <div className="flex-1">
-                <h3 className="font-semibold">Next Recommended Topic</h3>
-                <p className="text-sm opacity-75">
-                  Based on your progress, we recommend continuing with your learning path.
-                </p>
+              <div className={`p-2 rounded-lg ${darkMode ? 'bg-blue-900/30' : 'bg-blue-100'} mr-3`}>
+                <BookOpen className={`h-6 w-6 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`} />
+              </div>
+              <div>
+                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Active Courses</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats?.enrolled_courses || 0}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
+            <div className="flex items-center">
+              <div className={`p-2 rounded-lg ${darkMode ? 'bg-green-900/30' : 'bg-green-100'} mr-3`}>
+                <CheckCircle className={`h-6 w-6 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
+              </div>
+              <div>
+                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Completed Modules</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats?.completed_modules || 0}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
+            <div className="flex items-center">
+              <div className={`p-2 rounded-lg ${darkMode ? 'bg-purple-900/30' : 'bg-purple-100'} mr-3`}>
+                <Brain className={`h-6 w-6 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`} />
+              </div>
+              <div>
+                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Quiz Accuracy</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats?.quiz_accuracy?.toFixed(0) || 0}%</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
+            <div className="flex items-center">
+              <div className={`p-2 rounded-lg ${darkMode ? 'bg-yellow-900/30' : 'bg-yellow-100'} mr-3`}>
+                <Award className={`h-6 w-6 ${darkMode ? 'text-yellow-400' : 'text-yellow-600'}`} />
+              </div>
+              <div>
+                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Learning Level</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats?.level || 1}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Next Best Action */}
+        {courses && courses.length > 0 && (
+          <div className={`mb-8 p-5 rounded-xl ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-blue-50 border-blue-200'} border shadow-lg`}>
+            <div className="flex flex-col md:flex-row md:items-center justify-between">
+              <div className="flex items-center mb-4 md:mb-0">
+                <div className={`p-3 rounded-lg ${darkMode ? 'bg-blue-900/30' : 'bg-blue-100'} mr-4`}>
+                  <TargetIcon className={`h-6 w-6 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`} />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-1">Continue Your Learning Journey</h3>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Based on your progress, we recommend continuing with your next course.
+                  </p>
+                </div>
               </div>
               <button 
                 onClick={() => {
                   const nextCourse = getNextRecommendedCourse();
                   if (nextCourse) startLearning(nextCourse.id);
                 }}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
               >
-                Start Learning
+                Start Learning Now
               </button>
             </div>
           </div>
         )}
 
         {/* Search and Filter */}
-        <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex-1">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search courses..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 rounded-lg border dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-              />
-              <BookOpen className="absolute left-3 top-2.5 text-gray-400" size={20} />
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" size={20} />
+                <input
+                  type="text"
+                  placeholder="Search courses by title, description, or category..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 rounded-lg border dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
             </div>
-          </div>
-          <div className="flex border rounded-lg overflow-hidden">
-            {['all', 'in-progress', 'completed', 'not-started'].map((status) => (
-              <button
-                key={status}
-                onClick={() => setFilterStatus(status)}
-                className={`px-3 py-1 text-sm capitalize ${filterStatus === status 
-                  ? darkMode ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-600' 
-                  : darkMode ? 'bg-gray-700' : 'bg-gray-100'
-                }`}
-              >
-                {status.replace('-', ' ')}
-              </button>
-            ))}
+            <div className="flex overflow-x-auto pb-2 md:pb-0">
+              {['all', 'in-progress', 'completed', 'not-started'].map((status) => (
+                <button
+                  key={status}
+                  onClick={() => setFilterStatus(status)}
+                  className={`px-4 py-2 text-sm font-medium capitalize whitespace-nowrap ${filterStatus === status 
+                    ? darkMode ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-600 border border-blue-300' 
+                    : darkMode ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  } ${status === 'all' ? 'rounded-l-lg' : ''} ${status === 'not-started' ? 'rounded-r-lg' : ''}`}
+                >
+                  {status.replace('-', ' ')}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Courses Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">Learning Courses</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">My Learning Courses</h2>
             <span className="text-gray-600 dark:text-gray-300">
               {filteredCourses.length} course{filteredCourses.length !== 1 ? 's' : ''} found
             </span>
@@ -691,7 +962,7 @@ const DashboardContent = ({
           {filteredCourses.length === 0 ? (
             <div className="text-center py-12">
               <BookOpen className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2">No courses found</h3>
+              <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">No courses found</h3>
               <p className="text-gray-600 dark:text-gray-300">
                 {searchQuery ? 'Try a different search term' : 'No courses available yet'}
               </p>
@@ -699,66 +970,74 @@ const DashboardContent = ({
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredCourses.map((course) => {
+                if (!course) return null;
                 const courseColor = getCourseColor(course);
                 const statusBadge = getStatusBadge(course);
+                const progressPercentage = course.total_modules > 0 
+                  ? (course.completed_modules / course.total_modules) * 100 
+                  : 0;
                 
                 return (
                   <div
                     key={course.id}
-                    className={`rounded-xl border ${darkMode ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'} p-6 transition-transform hover:scale-[1.02] hover:shadow-lg`}
+                    className={`rounded-xl border ${darkMode ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'} p-6 transition-all hover:shadow-xl hover:scale-[1.02]`}
                   >
                     <div className="flex items-start justify-between mb-4">
-                      <div className={`p-3 rounded-lg bg-gradient-to-r ${courseColor.gradient} text-white`}>
+                      <div className={`p-3 rounded-lg ${courseColor.light} border ${courseColor.border}`}>
                         {courseColor.icon}
                       </div>
-                      <span className={`text-xs font-semibold px-3 py-1 rounded-full ${statusBadge.className}`}>
+                      <span className={`text-xs font-semibold px-3 py-1.5 rounded-full flex items-center ${statusBadge.className}`}>
+                        {statusBadge.icon}
                         {statusBadge.text}
                       </span>
                     </div>
                     
-                    <h3 className="text-xl font-bold mb-2">{course.title}</h3>
-                    <p className={`text-sm mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                      {course.description}
+                    <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">{course.title || 'Untitled Course'}</h3>
+                    <p className={`text-sm mb-5 ${darkMode ? 'text-gray-300' : 'text-gray-600'} line-clamp-2`}>
+                      {course.description || 'No description available'}
                     </p>
                     
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       <div>
                         <div className="flex justify-between text-sm mb-1">
-                          <span>Progress</span>
-                          <span>{course.progress}%</span>
+                          <span className="text-gray-600 dark:text-gray-400">Progress</span>
+                          <span className="font-medium text-gray-700 dark:text-gray-300">{Math.round(progressPercentage)}%</span>
                         </div>
                         <div className={`h-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
                           <div 
-                            className={`h-full rounded-full bg-gradient-to-r ${courseColor.gradient}`}
-                            style={{ width: `${course.progress}%` }}
+                            className={`h-full rounded-full bg-gradient-to-r ${courseColor.gradient} transition-all duration-500`}
+                            style={{ width: `${progressPercentage}%` }}
                           ></div>
                         </div>
                       </div>
                       
-                      <div className="flex justify-between text-sm">
-                        <span>{course.completed_modules}/{course.total_modules} modules</span>
+                      <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+                        <span className="flex items-center">
+                          <FileText size={14} className="mr-1" />
+                          {course.completed_modules || 0}/{course.total_modules || 0} modules
+                        </span>
                         <span className="flex items-center">
                           <Clock size={14} className="mr-1" />
-                          {course.estimated_time} min
+                          {course.estimated_time || 60} min
                         </span>
                       </div>
                       
-                      <div className="flex space-x-2 mt-4">
+                      <div className="flex flex-col sm:flex-row gap-2 mt-6">
                         <button
                           onClick={() => startLearning(course.id)}
-                          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
+                          className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center text-sm font-medium"
                         >
-                          {course.completed_modules === course.total_modules ? 'Review' : 
-                          course.completed_modules > 0 ? 'Continue' : 'Start Learning'}
-                          <BookOpen size={20} className="ml-2" />
+                          {course.completed_modules === course.total_modules ? 'Review Course' : 
+                          (course.completed_modules || 0) > 0 ? 'Continue Learning' : 'Start Learning'}
+                          <BookOpen size={18} className="ml-2" />
                         </button>
-                        {course.completed_modules > 0 && (
+                        {(course.completed_modules || 0) > 0 && (
                           <button
                             onClick={() => startQuiz(course.id)}
-                            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center"
+                            className="px-4 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center text-sm font-medium"
                             title="Take Quiz"
                           >
-                            <Brain size={20} />
+                            <Brain size={18} />
                           </button>
                         )}
                       </div>
@@ -772,13 +1051,17 @@ const DashboardContent = ({
 
         {/* Quiz Modal */}
         {quizStarted && !quizCompleted && (
-          <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${darkMode ? 'bg-gray-900/90' : 'bg-black/50'}`}>
+          <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${darkMode ? 'bg-gray-900/95' : 'bg-black/70'}`}>
             <div className={`w-full max-w-2xl rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 shadow-2xl`}>
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold">Quiz: {selectedCourse?.title}</h2>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Quiz: {selectedCourse?.title}</h2>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">Test your knowledge of {selectedCourse?.category}</p>
+                </div>
                 <button
-                  onClick={() => setQuizStarted(false)}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                  onClick={exitQuiz}
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                  aria-label="Close quiz"
                 >
                   <X size={24} />
                 </button>
@@ -788,44 +1071,92 @@ const DashboardContent = ({
                 <>
                   <div className="mb-6">
                     <div className="flex justify-between text-sm mb-2">
-                      <span>Question {currentQuestion + 1} of {quizQuestions.length}</span>
-                      <span>Score: {score}</span>
+                      <span className="text-gray-600 dark:text-gray-400">Question {currentQuestion + 1} of {quizQuestions.length}</span>
+                      <span className="font-medium text-gray-700 dark:text-gray-300">
+                        Score: <span className="text-blue-600 dark:text-blue-400">{score}</span>
+                      </span>
                     </div>
                     <div className={`h-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
                       <div 
-                        className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500"
+                        className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300"
                         style={{ width: `${((currentQuestion + 1) / quizQuestions.length) * 100}%` }}
                       ></div>
                     </div>
                   </div>
                   
                   <div className="mb-8">
-                    <h3 className="text-xl font-semibold mb-4">
-                      {quizQuestions[currentQuestion].question}
+                    <h3 className="text-xl font-semibold mb-6 text-gray-900 dark:text-white">
+                      {quizQuestions[currentQuestion]?.question || 'Question not available'}
                     </h3>
                     
                     <div className="space-y-3">
-                      {quizQuestions[currentQuestion].options.map((option, index) => (
+                      {quizQuestions[currentQuestion]?.options?.map((option, index) => (
                         <button
                           key={index}
-                          onClick={() => handleQuizAnswer(index)}
+                          onClick={() => handleQuizAnswerSelect(currentQuestion, index)}
                           className={`w-full text-left p-4 rounded-lg border transition-all ${
-                            darkMode 
-                              ? 'border-gray-700 hover:border-blue-500 hover:bg-blue-900/20' 
-                              : 'border-gray-200 hover:border-blue-400 hover:bg-blue-50'
+                            selectedAnswers[currentQuestion] === index
+                              ? darkMode 
+                                ? 'border-blue-500 bg-blue-900/30' 
+                                : 'border-blue-400 bg-blue-50'
+                              : darkMode 
+                                ? 'border-gray-700 hover:border-blue-500 hover:bg-blue-900/20' 
+                                : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'
                           }`}
                         >
                           <div className="flex items-center">
-                            <div className={`w-6 h-6 rounded-full border mr-3 flex items-center justify-center ${
-                              darkMode ? 'border-gray-600' : 'border-gray-300'
+                            <div className={`w-8 h-8 rounded-full border flex items-center justify-center mr-4 ${
+                              selectedAnswers[currentQuestion] === index
+                                ? 'border-blue-500 bg-blue-500 text-white'
+                                : darkMode ? 'border-gray-600' : 'border-gray-300'
                             }`}>
-                              <span className="text-sm">{String.fromCharCode(65 + index)}</span>
+                              <span className="font-medium">{String.fromCharCode(65 + index)}</span>
                             </div>
-                            <span>{option}</span>
+                            <span className="text-gray-800 dark:text-gray-200">{option || 'Option not available'}</span>
                           </div>
                         </button>
-                      ))}
+                      )) || <p className="text-gray-500 dark:text-gray-400">No options available</p>}
                     </div>
+                  </div>
+                  
+                  <div className="flex justify-between">
+                    <button
+                      onClick={() => currentQuestion > 0 && setCurrentQuestion(prev => prev - 1)}
+                      disabled={currentQuestion === 0}
+                      className={`px-6 py-3 rounded-lg ${
+                        currentQuestion === 0
+                          ? 'opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800 text-gray-400'
+                          : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                      }`}
+                    >
+                      Previous
+                    </button>
+                    
+                    {currentQuestion < quizQuestions.length - 1 ? (
+                      <button
+                        onClick={() => setCurrentQuestion(prev => prev + 1)}
+                        disabled={selectedAnswers[currentQuestion] === undefined}
+                        className={`px-6 py-3 rounded-lg ${
+                          selectedAnswers[currentQuestion] === undefined
+                            ? 'opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800 text-gray-400'
+                            : 'bg-blue-600 text-white hover:bg-blue-700'
+                        }`}
+                      >
+                        Next Question
+                      </button>
+                    ) : (
+                      <button
+                        onClick={submitQuiz}
+                        disabled={selectedAnswers[currentQuestion] === undefined}
+                        className={`px-6 py-3 rounded-lg ${
+                          selectedAnswers[currentQuestion] === undefined
+                            ? 'opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800 text-gray-400'
+                            : 'bg-green-600 text-white hover:bg-green-700'
+                        }`}
+                      >
+                        Submit Quiz
+                      </button>
+                    )}
                   </div>
                 </>
               ) : (
@@ -840,50 +1171,73 @@ const DashboardContent = ({
 
         {/* Quiz Results Modal */}
         {quizCompleted && quizResults && (
-          <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${darkMode ? 'bg-gray-900/90' : 'bg-black/50'}`}>
-            <div className={`w-full max-w-2xl rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 shadow-2xl`}>
-              <div className="text-center">
-                <div className={`w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center ${
-                  quizResults.percentage >= 70 
-                    ? 'bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300' 
-                    : 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900 dark:text-yellow-300'
-                }`}>
-                  {quizResults.percentage >= 70 ? (
-                    <Award size={40} />
-                  ) : (
-                    <Brain size={40} />
-                  )}
+          <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${darkMode ? 'bg-gray-900/95' : 'bg-black/70'}`}>
+            <div className={`w-full max-w-2xl rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-2xl max-h-[90vh] flex flex-col`}>
+              {/* Modal Header - Fixed */}
+              <div className="p-6 border-b dark:border-gray-700 flex-shrink-0">
+                <div className="text-center">
+                  <div className={`w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center ${
+                    quizResults.percentage >= 70 
+                      ? 'bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 border-4 border-green-200 dark:border-green-800' 
+                      : 'bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900/30 dark:to-orange-900/30 border-4 border-yellow-200 dark:border-yellow-800'
+                  }`}>
+                    {quizResults.percentage >= 70 ? (
+                      <Trophy className="h-10 w-10 text-green-600 dark:text-green-400" />
+                    ) : (
+                      <Brain className="h-10 w-10 text-yellow-600 dark:text-yellow-400" />
+                    )}
+                  </div>
+                  
+                  <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">
+                    {quizResults.percentage >= 70 ? 'Quiz Passed! 🎉' : 'Good Effort! 💪'}
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-300 mb-3">
+                    You scored <span className="font-bold">{quizResults.correct_answers}</span> out of <span className="font-bold">{quizResults.total_questions}</span> questions
+                  </p>
+                  
+                  <div className={`text-4xl font-bold mb-4 ${
+                    quizResults.percentage >= 90 ? 'text-green-600 dark:text-green-400' :
+                    quizResults.percentage >= 70 ? 'text-blue-600 dark:text-blue-400' :
+                    quizResults.percentage >= 50 ? 'text-yellow-600 dark:text-yellow-400' :
+                    'text-red-600 dark:text-red-400'
+                  }`}>
+                    {quizResults.percentage.toFixed(0)}%
+                  </div>
+                  
+                  {/* Result Message */}
+                  <div className={`p-3 rounded-lg ${
+                    quizResults.percentage >= 70 
+                      ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
+                      : 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800'
+                  }`}>
+                    <p className="text-sm text-gray-700 dark:text-gray-300">
+                      {quizResults.percentage >= 70 
+                        ? `Excellent work! You have a strong understanding of ${selectedCourse?.title}.`
+                        : `Keep practicing! Review the correct answers below to improve your understanding.`
+                      }
+                    </p>
+                  </div>
                 </div>
-                
-                <h2 className="text-2xl font-bold mb-2">
-                  {quizResults.percentage >= 70 ? 'Congratulations!' : 'Good Effort!'}
-                </h2>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  You scored {quizResults.correct_answers} out of {quizResults.total_questions} questions
-                </p>
-                
-                <div className={`text-4xl font-bold mb-6 ${
-                  quizResults.percentage >= 90 ? 'text-green-600 dark:text-green-400' :
-                  quizResults.percentage >= 70 ? 'text-blue-600 dark:text-blue-400' :
-                  'text-yellow-600 dark:text-yellow-400'
-                }`}>
-                  {quizResults.percentage.toFixed(1)}%
-                </div>
-                
+              </div>
+
+              {/* Scrollable Content Area */}
+              <div className="flex-1 overflow-y-auto px-6">
                 {/* Score Breakdown */}
-                <div className="mb-8">
-                  <h3 className="font-semibold mb-4">Question Breakdown</h3>
+                <div className="py-4">
+                  <h3 className="font-semibold text-lg mb-3 text-gray-900 dark:text-white">Question Breakdown</h3>
                   <div className="space-y-3">
-                    {quizResults.details.map((detail, index) => (
+                    {quizResults.details?.map((detail, index) => (
                       <div 
                         key={index}
-                        className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} ${
-                          detail.is_correct ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500'
+                        className={`p-4 rounded-lg ${
+                          detail.is_correct 
+                            ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
+                            : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'
                         }`}
                       >
                         <div className="flex justify-between items-start mb-2">
-                          <span className="font-medium">Question {index + 1}</span>
-                          <span className={`text-sm px-2 py-1 rounded-full ${
+                          <span className="font-medium text-gray-900 dark:text-white">Question {index + 1}</span>
+                          <span className={`text-xs px-2 py-1 rounded-full ${
                             detail.is_correct 
                               ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
                               : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
@@ -891,39 +1245,45 @@ const DashboardContent = ({
                             {detail.is_correct ? 'Correct' : 'Incorrect'}
                           </span>
                         </div>
-                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
-                          Your answer: Option {detail.selected_option}
-                          {!detail.is_correct && ` (Correct: Option ${detail.correct_option})`}
+                        <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">
+                          <span className="font-medium">Your answer:</span> Option {String.fromCharCode(64 + detail.selected_option)}
+                          {!detail.is_correct && ` (Correct: Option ${String.fromCharCode(64 + detail.correct_option)})`}
                         </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          <span className="font-medium">Explanation:</span> {detail.explanation}
-                        </p>
+                        {!detail.is_correct && (
+                          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                            <span className="font-medium">Explanation:</span> {detail.explanation}
+                          </p>
+                        )}
                       </div>
-                    ))}
+                    )) || <p className="text-gray-500 dark:text-gray-400 text-center py-4">No quiz details available</p>}
                   </div>
                 </div>
-                
-                <div className="flex justify-center space-x-3">
+              </div>
+
+              {/* Fixed Footer with Action Buttons */}
+              <div className="p-6 border-t dark:border-gray-700 flex-shrink-0">
+                <div className="flex flex-col sm:flex-row justify-center gap-3">
                   <button
-                    onClick={() => {
-                      setQuizCompleted(false);
-                      setQuizResults(null);
-                      setQuizStarted(false);
-                    }}
-                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    onClick={exitQuiz}
+                    className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium flex-1 sm:flex-none"
                   >
                     Return to Dashboard
                   </button>
+                  
+                  {quizResults.percentage < 70 && (
+                    <button
+                      onClick={retakeQuiz}
+                      className="px-5 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium flex-1 sm:flex-none"
+                    >
+                      Retake Quiz
+                    </button>
+                  )}
+                  
                   <button
-                    onClick={() => {
-                      setQuizCompleted(false);
-                      setQuizResults(null);
-                      setCurrentQuestion(0);
-                      setScore(0);
-                    }}
-                    className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={() => selectedCourse && startLearning(selectedCourse.id)}
+                    className="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm font-medium flex-1 sm:flex-none"
                   >
-                    Retake Quiz
+                    Review Course
                   </button>
                 </div>
               </div>
@@ -933,35 +1293,44 @@ const DashboardContent = ({
 
         {/* Progress Analytics */}
         <div className={`rounded-xl p-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
-          <h2 className="text-2xl font-bold mb-6 flex items-center">
+          <h2 className="text-2xl font-bold mb-6 flex items-center text-gray-900 dark:text-white">
             <BarChart3 size={24} className="mr-3" />
             Learning Analytics
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-blue-50'}`}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700/50' : 'bg-blue-50'} border ${darkMode ? 'border-gray-600' : 'border-blue-100'}`}>
               <div className="flex items-center">
                 <Clock size={20} className="mr-3 text-blue-600 dark:text-blue-400" />
                 <div>
-                  <p className="text-sm opacity-75">Total Study Time</p>
-                  <p className="text-xl font-bold">{Math.round((stats?.completed_modules || 0) * 15)} min</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Total Study Time</p>
+                  <p className="text-xl font-bold text-gray-900 dark:text-white">{Math.round((stats?.completed_modules || 0) * 15)} min</p>
                 </div>
               </div>
             </div>
-            <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-green-50'}`}>
+            <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700/50' : 'bg-green-50'} border ${darkMode ? 'border-gray-600' : 'border-green-100'}`}>
               <div className="flex items-center">
                 <CheckCircle size={20} className="mr-3 text-green-600 dark:text-green-400" />
                 <div>
-                  <p className="text-sm opacity-75">Quiz Accuracy</p>
-                  <p className="text-xl font-bold">{stats?.quiz_accuracy?.toFixed(0) || 0}%</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Quiz Accuracy</p>
+                  <p className="text-xl font-bold text-gray-900 dark:text-white">{stats?.quiz_accuracy?.toFixed(1) || 0}%</p>
                 </div>
               </div>
             </div>
-            <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-purple-50'}`}>
+            <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700/50' : 'bg-purple-50'} border ${darkMode ? 'border-gray-600' : 'border-purple-100'}`}>
               <div className="flex items-center">
                 <Award size={20} className="mr-3 text-purple-600 dark:text-purple-400" />
                 <div>
-                  <p className="text-sm opacity-75">Achievements</p>
-                  <p className="text-xl font-bold">{stats?.achievements_earned || 0}/{stats?.total_achievements || 0}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Achievements</p>
+                  <p className="text-xl font-bold text-gray-900 dark:text-white">{stats?.achievements_earned || 0}/{stats?.total_achievements || 0}</p>
+                </div>
+              </div>
+            </div>
+            <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700/50' : 'bg-orange-50'} border ${darkMode ? 'border-gray-600' : 'border-orange-100'}`}>
+              <div className="flex items-center">
+                <Flame size={20} className="mr-3 text-orange-600 dark:text-orange-400" />
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Learning Streak</p>
+                  <p className="text-xl font-bold text-gray-900 dark:text-white">{stats?.learning_streak || 0} days</p>
                 </div>
               </div>
             </div>

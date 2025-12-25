@@ -2,162 +2,236 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Menu, 
-  Bell, 
-  Search, 
   Moon, 
   Sun, 
   LogOut, 
-  User 
+  User,
+  X,
+  ChevronRight
 } from 'lucide-react';
 import authService from '../services/authService';
 
 const DashboardHeader = ({ 
   darkMode, 
   setDarkMode, 
-  searchQuery, 
-  setSearchQuery,
   mobileMenuOpen,
   setMobileMenuOpen
 }) => {
   const [currentUser, setCurrentUser] = useState(null);
-  const [user, setUser] = useState({
-    name: 'Sharif',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sharif'
-  });
+  const [mobileUserMenuOpen, setMobileUserMenuOpen] = useState(false);
 
   // Get current user from localStorage on component mount
   useEffect(() => {
     const userData = authService.getCurrentUser();
     if (userData) {
       setCurrentUser(userData);
-      // Update the mock user with real name if available
-      if (userData.fullName || userData.name) {
-        setUser(prev => ({
-          ...prev,
-          name: userData.fullName || userData.name || 'User'
-        }));
-      }
     }
   }, []);
 
-  // Get user display name
-  const getUserDisplayName = () => {
-    if (!currentUser) return user.name;
+  // Close mobile user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (mobileUserMenuOpen && !event.target.closest('.mobile-user-menu')) {
+        setMobileUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [mobileUserMenuOpen]);
+
+  // Get user's first name only
+  const getUserFirstName = () => {
+    if (!currentUser) return 'Learner';
     
-    // Try different possible name properties
-    const name = currentUser.fullName || currentUser.name || currentUser.username || currentUser.email || user.name;
+    // Try to get first name in order of preference
+    if (currentUser.first_name && currentUser.first_name.trim()) {
+      return currentUser.first_name;
+    }
     
-    // Return full name
-    return name;
+    // If no first_name, extract from fullName
+    if (currentUser.fullName && currentUser.fullName.trim()) {
+      return currentUser.fullName.split(' ')[0];
+    }
+    
+    // If no name properties, extract from email
+    if (currentUser.email) {
+      return currentUser.email.split('@')[0];
+    }
+    
+    return 'Learner';
+  };
+
+  // Get user full name for tooltips
+  const getUserFullName = () => {
+    if (!currentUser) return 'Guest User';
+    
+    if (currentUser.first_name && currentUser.last_name) {
+      return `${currentUser.first_name} ${currentUser.last_name}`;
+    }
+    if (currentUser.fullName) {
+      return currentUser.fullName;
+    }
+    return currentUser.email || 'User';
+  };
+
+  // Get user initials for avatar
+  const getUserInitials = () => {
+    const name = getUserFullName();
+    return name
+      .split(' ')
+      .map(word => word[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
   };
 
   // Logout function
   const handleLogout = async () => {
     try {
       await authService.logout();
-      console.log('Logout successful');
     } catch (error) {
-      console.log('Logout API failed, clearing local storage anyway:', error.message);
-      // Even if API fails, we still clear local storage
+      console.log('Logout API failed, clearing local storage:', error.message);
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
       localStorage.removeItem('user');
     } finally {
-      // Force storage event to trigger updates in other components
       window.dispatchEvent(new Event('storage'));
-      
-      // Redirect to home page
       window.location.href = '/';
-      window.location.reload(); // Force refresh to update all components
     }
   };
 
   return (
-    <header className={`sticky top-0 z-50 ${darkMode ? 'bg-gray-800' : 'bg-white'} border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
+    <header className={`sticky top-0 z-50 ${darkMode ? 'bg-gray-800' : 'bg-white'} border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm select-none`} style={{ userSelect: 'none' }}>
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
-          {/* Left section */}
+          {/* Left section - Logo only */}
+          <div className="flex items-center space-x-2 select-none" style={{ userSelect: 'none' }}>
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center select-none" style={{ userSelect: 'none' }}>
+              <div className="text-white font-bold text-sm select-none" style={{ userSelect: 'none' }}>DL</div>
+            </div>
+            <span className="font-bold text-xl select-none" style={{ userSelect: 'none' }}>DevLearn</span>
+          </div>
+
+          {/* Right section - Desktop controls */}
           <div className="flex items-center space-x-4">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-              <Menu size={24} />
-            </button>
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
-                <div className="text-white font-bold">DL</div>
-              </div>
-              <span className="font-bold text-xl">DevLearn</span>
-            </div>
-          </div>
-
-          {/* Search bar */}
-          <div className="flex-1 max-w-2xl mx-4 hidden md:block">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-              <input
-                type="text"
-                placeholder="Search topics, modules, or quizzes..."
-                className={`w-full pl-10 pr-4 py-2 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'} focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-          </div>
-
-          {/* Right section - with user info and logout */}
-          <div className="flex items-center space-x-2">
+            {/* Dark mode toggle */}
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors hidden md:block select-none"
               aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              style={{ userSelect: 'none' }}
             >
               {darkMode ? <Sun size={20} /> : <Moon size={20} />}
             </button>
-            <button 
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 relative"
-              aria-label="Notifications"
-            >
-              <Bell size={20} />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
-            
-            {/* User section with welcome message and logout */}
-            <div className="flex items-center space-x-2 pl-2 border-l dark:border-gray-700">
-              {/* Welcome message - instead of profile image */}
-              <div className="flex items-center px-3 py-1.5 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-800 border border-blue-100 dark:border-gray-600">
-                <User size={16} className="mr-2 text-blue-600 dark:text-blue-400" />
-                <span className="font-medium text-sm text-gray-700 dark:text-gray-300">
-                  Welcome, {getUserDisplayName()}
-                </span>
+
+            {/* Desktop User section */}
+            <div className="hidden md:flex items-center space-x-3 select-none" style={{ userSelect: 'none' }}>
+              {/* Welcome message with first name only */}
+              <div 
+                className="flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-800 border border-blue-100 dark:border-gray-600 select-none"
+                style={{ userSelect: 'none' }}
+                title={`Welcome back, ${getUserFullName()}`}
+              >
+                <User size={18} className="mr-3 text-blue-600 dark:text-blue-400 flex-shrink-0 select-none" style={{ userSelect: 'none' }} />
+                <div className="select-none" style={{ userSelect: 'none' }}>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 select-none" style={{ userSelect: 'none' }}>Welcome back</div>
+                  <div className="font-semibold text-gray-800 dark:text-gray-200 truncate max-w-[150px] select-none" style={{ userSelect: 'none' }}>
+                    {getUserFirstName()}
+                  </div>
+                </div>
               </div>
               
-              {/* Logout button */}
+              {/* Desktop Logout button */}
               <button
                 onClick={handleLogout}
-                className="flex items-center p-2 rounded-lg bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 border border-red-200 dark:border-red-700 hover:bg-gradient-to-r hover:from-red-100 hover:to-pink-100 dark:hover:from-red-800/30 dark:hover:to-pink-800/30 hover:scale-105 transition-all duration-200 group"
+                className="flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 border border-red-200 dark:border-red-700 hover:from-red-100 hover:to-pink-100 dark:hover:from-red-800/30 dark:hover:to-pink-800/30 transition-all duration-200 group select-none"
                 aria-label="Logout"
+                style={{ userSelect: 'none' }}
               >
-                <LogOut size={18} className="text-red-600 dark:text-red-400 group-hover:text-red-700 dark:group-hover:text-red-300" />
+                <LogOut size={18} className="mr-2 text-red-600 dark:text-red-400 group-hover:text-red-700 dark:group-hover:text-red-300 select-none" style={{ userSelect: 'none' }} />
+                <span className="font-medium text-red-700 dark:text-red-300 hidden lg:inline select-none" style={{ userSelect: 'none' }}>Logout</span>
               </button>
+            </div>
+
+            {/* Mobile controls - Right side */}
+            <div className="flex items-center space-x-2 md:hidden select-none" style={{ userSelect: 'none' }}>
+              {/* Dark mode toggle - Mobile */}
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors select-none"
+                aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+                style={{ userSelect: 'none' }}
+              >
+                {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+              </button>
+
+              {/* Mobile user menu toggle - Hamburger on right */}
+              <div className="mobile-user-menu relative select-none" style={{ userSelect: 'none' }}>
+                <button
+                  onClick={() => setMobileUserMenuOpen(!mobileUserMenuOpen)}
+                  className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors select-none"
+                  aria-label="User menu"
+                  style={{ userSelect: 'none' }}
+                >
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-medium text-sm select-none" style={{ userSelect: 'none' }}>
+                    {getUserInitials()}
+                  </div>
+                  <Menu size={20} className={`transition-transform ${mobileUserMenuOpen ? 'rotate-90' : ''} select-none`} style={{ userSelect: 'none' }} />
+                </button>
+
+                {/* Mobile user dropdown */}
+                {mobileUserMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg border dark:border-gray-700 py-2 z-50 select-none" style={{ userSelect: 'none' }}>
+                    {/* User info */}
+                    <div className="px-4 py-3 border-b dark:border-gray-700 select-none" style={{ userSelect: 'none' }}>
+                      <div className="flex items-center space-x-3 select-none" style={{ userSelect: 'none' }}>
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-medium select-none" style={{ userSelect: 'none' }}>
+                          {getUserInitials()}
+                        </div>
+                        <div className="flex-1 min-w-0 select-none" style={{ userSelect: 'none' }}>
+                          <div className="font-semibold text-gray-900 dark:text-white truncate select-none" style={{ userSelect: 'none' }}>
+                            {getUserFullName()}
+                          </div>
+                          <div className="text-sm text-gray-500 dark:text-gray-400 truncate select-none" style={{ userSelect: 'none' }}>
+                            {currentUser?.email || 'No email'}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* User menu items */}
+                    <div className="py-2 select-none" style={{ userSelect: 'none' }}>
+                      <div className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300 select-none" style={{ userSelect: 'none' }}>
+                        <div className="flex items-center justify-between select-none" style={{ userSelect: 'none' }}>
+                          <span className="select-none" style={{ userSelect: 'none' }}>Account Status</span>
+                          <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 select-none" style={{ userSelect: 'none' }}>
+                            Active
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="border-t dark:border-gray-700 mt-2 pt-2 select-none" style={{ userSelect: 'none' }}>
+                        <button
+                          onClick={handleLogout}
+                          className="w-full flex items-center justify-between px-4 py-3 text-left text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors select-none"
+                          style={{ userSelect: 'none' }}
+                        >
+                          <div className="flex items-center select-none" style={{ userSelect: 'none' }}>
+                            <LogOut size={18} className="mr-3 select-none" style={{ userSelect: 'none' }} />
+                            <span className="font-medium select-none" style={{ userSelect: 'none' }}>Logout</span>
+                          </div>
+                          <ChevronRight size={16} className="select-none" style={{ userSelect: 'none' }} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Mobile search */}
-        <div className="mt-3 md:hidden">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-            <input
-              type="text"
-              placeholder="Search topics..."
-              className={`w-full pl-10 pr-4 py-2 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'}`}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-        </div>
+        {/* REMOVED: Mobile welcome bar with user info */}
       </div>
     </header>
   );
