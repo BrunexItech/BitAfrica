@@ -395,43 +395,42 @@ const DashboardContent = ({
     const courseCategory = course.category || '';
     
     const colors = {
-      'web development': { 
-        gradient: 'from-blue-500 to-cyan-500', 
-        bg: 'bg-blue-500',
-        light: 'bg-blue-50 dark:bg-blue-900/30',
-        border: 'border-blue-200 dark:border-blue-800',
-        icon: <Code className="text-blue-700 dark:text-blue-300" />
-      },
-      'ai & machine learning': { 
-        gradient: 'from-purple-500 to-pink-500', 
-        bg: 'bg-purple-500',
-        light: 'bg-purple-50 dark:bg-purple-900/30',
-        border: 'border-purple-200 dark:border-purple-800',
-        icon: <Brain className="text-purple-700 dark:text-purple-300" />
-      },
-      'cybersecurity': { 
-        gradient: 'from-red-500 to-orange-500', 
-        bg: 'bg-red-500',
-        light: 'bg-red-50 dark:bg-red-900/30',
-        border: 'border-red-200 dark:border-red-800',
-        icon: <Shield className="text-red-700 dark:text-red-300" />
-      },
-      'programming': { 
-        gradient: 'from-green-500 to-teal-500', 
-        bg: 'bg-green-500',
-        light: 'bg-green-50 dark:bg-green-900/30',
-        border: 'border-green-200 dark:border-green-800',
-        icon: <Code className="text-green-700 dark:text-green-300" />
-      },
-      'data science': { 
-        gradient: 'from-indigo-500 to-purple-500', 
-        bg: 'bg-indigo-500',
-        light: 'bg-indigo-50 dark:bg-indigo-900/30',
-        border: 'border-indigo-200 dark:border-indigo-800',
-        icon: <TrendingUp className="text-indigo-700 dark:text-indigo-300" />
-      }
-    };
-    
+  'web development': { 
+    gradient: 'from-blue-500 to-cyan-500', 
+    bg: 'bg-blue-500',
+    light: 'bg-blue-50 dark:bg-blue-900/60', // Changed from /30 to /60 - darker
+    border: 'border-blue-200 dark:border-blue-800',
+    icon: <Code className="text-blue-700 dark:text-blue-300" />
+  },
+  'ai & machine learning': { 
+    gradient: 'from-purple-500 to-pink-500', 
+    bg: 'bg-purple-500',
+    light: 'bg-purple-50 dark:bg-purple-900/60', // Changed from /30 to /60 - darker
+    border: 'border-purple-200 dark:border-purple-800',
+    icon: <Brain className="text-purple-700 dark:text-purple-300" />
+  },
+  'cybersecurity': { 
+    gradient: 'from-red-500 to-orange-500', 
+    bg: 'bg-red-500',
+    light: 'bg-red-50 dark:bg-red-900/60', // Changed from /30 to /60 - darker
+    border: 'border-red-200 dark:border-red-800',
+    icon: <Shield className="text-red-700 dark:text-red-300" />
+  },
+  'programming': { 
+    gradient: 'from-green-500 to-teal-500', 
+    bg: 'bg-green-500',
+    light: 'bg-green-50 dark:bg-green-900/60', // Changed from /30 to /60 - darker
+    border: 'border-green-200 dark:border-green-800',
+    icon: <Code className="text-green-700 dark:text-green-300" />
+  },
+  'data science': { 
+    gradient: 'from-indigo-500 to-purple-500', 
+    bg: 'bg-indigo-500',
+    light: 'bg-indigo-50 dark:bg-indigo-900/60', // Changed from /30 to /60 - darker
+    border: 'border-indigo-200 dark:border-indigo-800',
+    icon: <TrendingUp className="text-indigo-700 dark:text-indigo-300" />
+  }
+};
     const categoryLower = courseCategory.toLowerCase();
     return colors[categoryLower] || { 
       gradient: 'from-gray-500 to-gray-700', 
@@ -502,8 +501,8 @@ const DashboardContent = ({
                 <h1 className={`text-2xl md:text-3xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{selectedCourse.title}</h1>
                 <p className={`mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{selectedCourse.description}</p>
               </div>
-              <div className={`px-4 py-2 rounded-lg ${getCourseColor(selectedCourse).light} border ${getCourseColor(selectedCourse).border}`}>
-                <span className={`font-medium ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>{selectedCourse.category}</span>
+                <div className={`px-4 py-2 rounded-lg ${getCourseColor(selectedCourse).light} border ${getCourseColor(selectedCourse).border}`}>
+                <span className={`font-medium ${darkMode ? 'text-black-200' : 'text-gray-800'}`}>{selectedCourse.category}</span>
               </div>
             </div>
 
@@ -984,7 +983,8 @@ const DashboardContent = ({
                     key={course.id}
                     className={`rounded-xl border ${darkMode ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'} p-6 transition-all hover:shadow-xl hover:scale-[1.02]`}
                   >
-                    <div className="flex items-start justify-between mb-4">
+
+                      <div className="flex items-start justify-between mb-4">
                       <div className={`p-3 rounded-lg ${courseColor.light} border ${courseColor.border}`}>
                         {courseColor.icon}
                       </div>
@@ -992,7 +992,7 @@ const DashboardContent = ({
                         {statusBadge.icon}
                         {statusBadge.text}
                       </span>
-                    </div>
+                     </div>
                     
                     <h3 className={`text-xl font-bold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{course.title || 'Untitled Course'}</h3>
                     <p className={`text-sm mb-5 ${darkMode ? 'text-gray-300' : 'text-gray-700'} line-clamp-2`}>
@@ -1171,7 +1171,8 @@ const DashboardContent = ({
           </div>
         )}
 
-        {/* Quiz Results Modal - UPDATED with perfect dark mode visibility */}
+
+        {/* Quiz Results Modal - FIXED DARK MODE ISSUES */}
         {quizCompleted && quizResults && (
           <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${darkMode ? 'bg-gray-900/95' : 'bg-black/70'}`}>
             <div className={`w-full max-w-2xl rounded-xl shadow-2xl max-h-[90vh] flex flex-col ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
@@ -1206,13 +1207,13 @@ const DashboardContent = ({
                     {quizResults.percentage.toFixed(0)}%
                   </div>
                   
-                  {/* Result Message */}
+                  {/* Result Message - FIXED DARK MODE BACKGROUND & TEXT */}
                   <div className={`p-3 rounded-lg ${
                     quizResults.percentage >= 70 
-                      ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
-                      : 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800'
+                      ? darkMode ? 'bg-green-900/40 border border-green-800' : 'bg-green-50 border border-green-200'
+                      : darkMode ? 'bg-yellow-900/40 border border-yellow-800' : 'bg-yellow-50 border border-yellow-200'
                   }`}>
-                    <p className={`text-sm ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                    <p className={`text-sm ${darkMode ? 'text-gray-100' : 'text-gray-700'}`}>
                       {quizResults.percentage >= 70 
                         ? `Excellent work! You have a strong understanding of ${selectedCourse?.title}.`
                         : `Keep practicing! Review the correct answers below to improve your understanding.`
@@ -1222,7 +1223,7 @@ const DashboardContent = ({
                 </div>
               </div>
 
-              {/* Scrollable Content Area - UPDATED for perfect dark mode visibility */}
+              {/* Scrollable Content Area - FIXED DARK MODE TEXT VISIBILITY */}
               <div className="flex-1 overflow-y-auto px-6">
                 {/* Score Breakdown */}
                 <div className="py-4">
@@ -1233,16 +1234,16 @@ const DashboardContent = ({
                         key={index}
                         className={`p-4 rounded-lg ${
                           detail.is_correct 
-                            ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
-                            : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'
+                            ? darkMode ? 'bg-green-900/30 border border-green-800' : 'bg-green-50 border border-green-200'
+                            : darkMode ? 'bg-red-900/30 border border-red-800' : 'bg-red-50 border border-red-200'
                         }`}
                       >
                         <div className="flex justify-between items-start mb-2">
-                          <span className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>Question {index + 1}</span>
+                          <span className={`font-medium ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>Question {index + 1}</span>
                           <span className={`text-xs px-2 py-1 rounded-full ${
                             detail.is_correct 
-                              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
-                              : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                              ? darkMode ? 'bg-green-800 text-green-200' : 'bg-green-100 text-green-800'
+                              : darkMode ? 'bg-red-800 text-red-200' : 'bg-red-100 text-red-800'
                           }`}>
                             {detail.is_correct ? 'Correct ✓' : 'Incorrect ✗'}
                           </span>
@@ -1256,7 +1257,7 @@ const DashboardContent = ({
                           )}
                         </p>
                         {!detail.is_correct && detail.explanation && (
-                          <div className={`mt-2 p-3 rounded ${darkMode ? 'bg-gray-700/50' : 'bg-gray-100'}`}>
+                          <div className={`mt-2 p-3 rounded ${darkMode ? 'bg-gray-700/70' : 'bg-gray-100'}`}>
                             <p className={`text-sm font-medium mb-1 ${darkMode ? 'text-blue-300' : 'text-blue-700'}`}>Explanation:</p>
                             <p className={`text-sm ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>{detail.explanation}</p>
                           </div>
@@ -1302,7 +1303,7 @@ const DashboardContent = ({
           </div>
         )}
 
-        {/* Progress Analytics */}
+        {/* Progress Analytics - FIXED CATEGORY TEXT VISIBILITY */}
         <div className={`rounded-xl p-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
           <h2 className={`text-2xl font-bold mb-6 flex items-center ${darkMode ? 'text-white' : 'text-gray-900'}`}>
             <BarChart3 size={24} className="mr-3" />
@@ -1313,7 +1314,7 @@ const DashboardContent = ({
               <div className="flex items-center">
                 <Clock size={20} className="mr-3 text-blue-700 dark:text-blue-400" />
                 <div>
-                  <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Total Study Time</p>
+                  <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Total Study Time</p>
                   <p className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{Math.round((stats?.completed_modules || 0) * 15)} min</p>
                 </div>
               </div>
@@ -1322,7 +1323,7 @@ const DashboardContent = ({
               <div className="flex items-center">
                 <CheckCircle size={20} className="mr-3 text-green-700 dark:text-green-400" />
                 <div>
-                  <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Quiz Accuracy</p>
+                  <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Quiz Accuracy</p>
                   <p className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{stats?.quiz_accuracy?.toFixed(1) || 0}%</p>
                 </div>
               </div>
@@ -1331,7 +1332,7 @@ const DashboardContent = ({
               <div className="flex items-center">
                 <Award size={20} className="mr-3 text-purple-700 dark:text-purple-400" />
                 <div>
-                  <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Achievements</p>
+                  <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Achievements</p>
                   <p className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{stats?.achievements_earned || 0}/{stats?.total_achievements || 0}</p>
                 </div>
               </div>
@@ -1340,7 +1341,7 @@ const DashboardContent = ({
               <div className="flex items-center">
                 <Flame size={20} className="mr-3 text-orange-700 dark:text-orange-400" />
                 <div>
-                  <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Learning Streak</p>
+                  <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Learning Streak</p>
                   <p className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{stats?.learning_streak || 0} days</p>
                 </div>
               </div>
