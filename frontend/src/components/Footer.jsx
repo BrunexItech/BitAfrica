@@ -93,7 +93,7 @@ const Footer = () => {
   // Services
   const services = [
     { name: "AI Development", icon: <Brain className="h-3 w-3" />, color: colors.primary },
-    { name: "Web Apps", icon: <Globe className="h-3 w-3" />, color: colors.secondary },
+    { name: "Web Applications", icon: <Globe className="h-3 w-3" />, color: colors.secondary },
     { name: "Cloud Solutions", icon: <Cloud className="h-3 w-3" />, color: colors.accent },
     { name: "Cybersecurity", icon: <Shield className="h-3 w-3" />, color: colors.electric },
     { name: "Data Analytics", icon: <Database className="h-3 w-3" />, color: colors.purple },
@@ -103,11 +103,11 @@ const Footer = () => {
   // Company links
   const companyLinks = [
     { name: "About Us", icon: <Users className="h-3 w-3" /> },
-    { name: "Careers", icon: <Briefcase className="h-3 w-3" /> },
-    { name: "Blog", icon: <FileText className="h-3 w-3" /> },
-    { name: "Press", icon: <MessageSquare className="h-3 w-3" /> },
-    { name: "Partners", icon: <Award className="h-3 w-3" /> },
-    { name: "Support Center", icon: <MessageSquare className="h-3 w-3" /> }
+    { name: "Location", icon: <Briefcase className="h-3 w-3" /> },
+    { name: "Privacy Policy", icon: <FileText className="h-3 w-3" /> },
+    { name: "Our Blogs", icon: <MessageSquare className="h-3 w-3" /> },
+    { name: "Our Partners", icon: <Award className="h-3 w-3" /> },
+    { name: "Our Support", icon: <MessageSquare className="h-3 w-3" /> }
   ];
 
   // Contact info

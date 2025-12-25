@@ -14,18 +14,18 @@ const Testimonials = () => {
   const testimonials = [
     {
       id: 1,
-      name: "Alexandra Morgan",
+      name: "Gladys Osei",
       role: "CEO, FinTech Innovations",
       message: "BitAfrica's AI solutions revolutionized our entire fraud detection system. Truly transformative.",
-      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+      avatar: "https://i.ibb.co/bM12Hd2m/Screenshot-2025-12-25-15-54-24-60-f598e1360c96b5a5aa16536c303cff92-2.jpg",
       color: '#0066FF'
     },
     {
       id: 2,
-      name: "Kwame Osei",
+      name: "Alexandra Morgan",
       role: "CTO, AgriTech Solutions",
       message: "The predictive analytics platform increased our crop yields by 47%. Game-changing technology.",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+      avatar: "https://i.ibb.co/mVy2Rc29/Screenshot-2025-12-25-16-03-13-69-f598e1360c96b5a5aa16536c303cff92-2.jpg",
       color: '#10B981'
     },
     {
@@ -33,23 +33,23 @@ const Testimonials = () => {
       name: "Dr. Sarah Johnson",
       role: "Medical Director",
       message: "Our predictive healthcare system now anticipates outbreaks with 92% accuracy. Saving lives.",
-      avatar: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+      avatar: "https://i.ibb.co/9mdCN5ch/Screenshot-2025-12-25-16-05-33-33-f598e1360c96b5a5aa16536c303cff92-2.jpg",
       color: '#00D4AA'
     },
     {
       id: 4,
-      name: "David Chen",
+      name: "Fatima Zara",
       role: "Head of Smart Cities",
       message: "The smart city infrastructure handles 2.5M IoT devices with zero downtime. Impressive reliability.",
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+      avatar: "https://i.ibb.co/9mdCN5ch/Screenshot-2025-12-25-16-05-33-33-f598e1360c96b5a5aa16536c303cff92-2.jpg",
       color: '#8A2BE2'
     },
     {
       id: 5,
-      name: "Fatima Zahra",
+      name: "Clinton Albright",
       role: "Education Director",
       message: "Our adaptive learning platform serves 500K+ students. Engagement increased by 300%.",
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+      avatar: "https://i.ibb.co/d0vtx2qB/Screenshot-2025-12-25-15-59-22-65-f598e1360c96b5a5aa16536c303cff92-3.jpg",
       color: '#F59E0B'
     }
   ];

@@ -26,7 +26,7 @@ function Company() {
       color: "from-emerald-500 to-green-500"
     },
     {
-      name: "James Omondi",
+      name: "James Mbuvi",
       role: "Director of Educational Programs",
       bio: "Designs and implements technology education initiatives for practical, industry-relevant technical skills.",
       image: "https://i.ibb.co/r2q6Sv9K/Screenshot-2025-12-25-16-00-42-09-f598e1360c96b5a5aa16536c303cff92-3.jpg",
