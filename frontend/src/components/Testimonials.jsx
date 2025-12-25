@@ -41,7 +41,7 @@ const Testimonials = () => {
       name: "Fatima Zara",
       role: "Head of Smart Cities",
       message: "The smart city infrastructure handles 2.5M IoT devices with zero downtime. Impressive reliability.",
-      avatar: "https://i.ibb.co/9mdCN5ch/Screenshot-2025-12-25-16-05-33-33-f598e1360c96b5a5aa16536c303cff92-2.jpg",
+      avatar: "https://i.ibb.co/1t9qnpY0/Screenshot-2025-12-25-15-44-30-56-f598e1360c96b5a5aa16536c303cff92-2.jpg",
       color: '#8A2BE2'
     },
     {
