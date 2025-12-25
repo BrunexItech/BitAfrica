@@ -12,24 +12,24 @@ function Company() {
       color: "from-cyan-500 to-blue-500"
     },
     {
-      name: "Dr. Amina Keita",
+      name: "Vivian Keita",
       role: "Chief Technology Officer",
       bio: "Leading our technical research and development initiatives. Oversees AI systems and software architecture.",
-      image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800&q=80",
+      image: "https://i.ibb.co/JWgRTQ7N/Screenshot-2025-12-24-17-13-23-38-f598e1360c96b5a5aa16536c303cff92-3.jpg",
       color: "from-purple-500 to-pink-500"
     },
     {
-      name: "Kofi Mensah",
+      name: "Gilbert Mensah",
       role: "Head of Engineering Operations",
       bio: "Manages software development lifecycle and engineering teams across regional offices.",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800&q=80",
+      image: "https://i.ibb.co/WWSV5h5n/Screenshot-2025-12-25-16-11-27-49-f598e1360c96b5a5aa16536c303cff92-2.jpg",
       color: "from-emerald-500 to-green-500"
     },
     {
-      name: "Naledi Chukwu",
+      name: "James Omondi",
       role: "Director of Educational Programs",
       bio: "Designs and implements technology education initiatives for practical, industry-relevant technical skills.",
-      image: "https://images.unsplash.com/photo-1558898479-33c0057a5d12?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800&q=80",
+      image: "https://i.ibb.co/r2q6Sv9K/Screenshot-2025-12-25-16-00-42-09-f598e1360c96b5a5aa16536c303cff92-3.jpg",
       color: "from-amber-500 to-orange-500"
     }
   ];
