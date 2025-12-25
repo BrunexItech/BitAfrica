@@ -190,11 +190,11 @@ const Footer = () => {
       
       {/* Main content */}
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Responsive Grid Layout - FIXED */}
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        {/* Responsive Grid Layout - FIXED MOBILE LAYOUT */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
           
           {/* Column 1: Brand & Global */}
-          <div className="col-span-2 md:col-span-1 lg:col-span-1 space-y-3">
+          <div className="col-span-2 md:col-span-1 space-y-3">
             {/* Compact Logo */}
             <div className="flex items-center gap-2">
               <div className="relative">
@@ -279,7 +279,7 @@ const Footer = () => {
           </div>
           
           {/* Column 4: Newsletter & Contact */}
-          <div className="col-span-2 md:col-span-2 lg:col-span-1 space-y-3">
+          <div className="col-span-2 md:col-span-1 space-y-3">
             {/* Compact Newsletter */}
             <div className="bg-gradient-to-br from-cyan-500/10 to-purple-500/10 rounded-lg p-2.5 border border-white/10">
               <div className="flex items-center gap-1.5 mb-1.5">
@@ -415,6 +415,31 @@ const Footer = () => {
         
         .animate-fadeIn {
           animation: fadeIn 0.3s ease-out forwards;
+        }
+        
+        /* Fix mobile layout without affecting desktop */
+        @media (max-width: 767px) {
+          /* Force 2-column grid on mobile */
+          .grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          }
+          
+          /* Services and Company each take 1 column (side by side) */
+          .col-span-1 {
+            grid-column: span 1 !important;
+          }
+          
+          /* Brand and Newsletter each take 2 columns (full width) */
+          .col-span-2 {
+            grid-column: span 2 !important;
+          }
+        }
+        
+        /* Ensure desktop layout stays as 4 columns */
+        @media (min-width: 768px) {
+          .grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+          }
         }
         
         /* Accessibility */

@@ -220,8 +220,19 @@ const Dashboard = () => {
     };
   });
 
+  // Apply dark mode to HTML root for proper Tailwind dark mode inheritance
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      document.documentElement.style.backgroundColor = '#111827'; // bg-gray-900
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.style.backgroundColor = '#f9fafb'; // bg-gray-50
+    }
+  }, [darkMode]);
+
   return (
-    <div className={`min-h-screen ${darkMode ? 'dark bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
+    <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
       {/* Dashboard Header */}
       <DashboardHeader 
         darkMode={darkMode}

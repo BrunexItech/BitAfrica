@@ -1,3 +1,4 @@
+// frontend/src/components/DashboardContent.jsx
 import React, { useState, useEffect } from 'react';
 import {
   Home,
@@ -447,10 +448,10 @@ const DashboardContent = ({
   // Loading state
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className={`flex items-center justify-center min-h-[60vh] ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-blue-500 mx-auto mb-4" />
-          <p className="text-gray-700 dark:text-gray-300">Loading your learning dashboard...</p>
+          <p className={`text-lg ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Loading your learning dashboard...</p>
         </div>
       </div>
     );
@@ -459,11 +460,11 @@ const DashboardContent = ({
   // Error state
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className={`flex items-center justify-center min-h-[60vh] ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
         <div className="text-center max-w-md mx-4">
           <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Unable to Load Dashboard</h3>
-          <p className="text-gray-700 dark:text-gray-300 mb-4">{error}</p>
+          <h3 className={`text-xl font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Unable to Load Dashboard</h3>
+          <p className={`mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{error}</p>
           <button
             onClick={fetchDashboardData}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors dark:bg-blue-700 dark:hover:bg-blue-800"
@@ -478,31 +479,31 @@ const DashboardContent = ({
   // Learning Mode - Show Module Content
   if (learningMode && selectedCourse && currentModule) {
     return (
-      <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50/80'} p-4 md:p-6`}>
+      <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} p-4 md:p-6`}>
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <button
               onClick={() => setLearningMode(false)}
-              className="flex items-center text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              className={`flex items-center ${darkMode ? 'text-gray-300 hover:text-blue-400' : 'text-gray-700 hover:text-blue-600'} transition-colors`}
             >
               <ArrowLeft className="h-5 w-5 mr-2" />
               Back to Dashboard
             </button>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
+            <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               Module {currentModuleIndex + 1} of {modules.length}
             </div>
           </div>
 
           {/* Course Info Card */}
-          <div className={`rounded-xl p-6 mb-6 ${darkMode ? 'bg-gray-800/90' : 'bg-white'} shadow-lg border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+          <div className={`rounded-xl p-6 mb-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
             <div className="flex flex-col md:flex-row md:items-start justify-between mb-4">
               <div className="flex-1 mb-4 md:mb-0">
-                <h1 className="text-2xl md:text-3xl font-bold mb-2 text-gray-900 dark:text-white">{selectedCourse.title}</h1>
-                <p className="text-gray-700 dark:text-gray-300 mb-4">{selectedCourse.description}</p>
+                <h1 className={`text-2xl md:text-3xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{selectedCourse.title}</h1>
+                <p className={`mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{selectedCourse.description}</p>
               </div>
               <div className={`px-4 py-2 rounded-lg ${getCourseColor(selectedCourse).light} border ${getCourseColor(selectedCourse).border}`}>
-                <span className="font-medium text-gray-800 dark:text-gray-200">{selectedCourse.category}</span>
+                <span className={`font-medium ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>{selectedCourse.category}</span>
               </div>
             </div>
 
@@ -538,16 +539,16 @@ const DashboardContent = ({
                 })}
               </div>
               
-              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-                <span className="flex items-center">
+              <div className="flex flex-wrap items-center gap-4 text-sm">
+                <span className={`flex items-center ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                   <Clock className="h-4 w-4 mr-1" />
                   {currentModule.estimated_time || 10} min
                 </span>
-                <span className="flex items-center">
+                <span className={`flex items-center ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                   <FileText className="h-4 w-4 mr-1" />
                   {completedModulesCount} of {modules.length} modules completed
                 </span>
-                <span className="flex items-center">
+                <span className={`flex items-center ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                   <TrendingUp className="h-4 w-4 mr-1" />
                   {Math.round((completedModulesCount / (modules.length || 1)) * 100)}% complete
                 </span>
@@ -557,8 +558,8 @@ const DashboardContent = ({
             {/* Module Progress Bar */}
             <div className="mb-2">
               <div className="flex justify-between text-sm mb-1">
-                <span className="text-gray-600 dark:text-gray-400">Module Progress</span>
-                <span className="font-medium text-gray-700 dark:text-gray-300">{Math.round((completedModulesCount / (modules.length || 1)) * 100)}%</span>
+                <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Module Progress</span>
+                <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{Math.round((completedModulesCount / (modules.length || 1)) * 100)}%</span>
               </div>
               <div className={`h-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
                 <div 
@@ -570,11 +571,11 @@ const DashboardContent = ({
           </div>
 
           {/* Module Content Card */}
-          <div className={`rounded-xl p-6 mb-6 ${darkMode ? 'bg-gray-800/90' : 'bg-white'} shadow-lg border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+          <div className={`rounded-xl p-6 mb-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-2">{currentModule.title}</h2>
-                <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                <h2 className={`text-xl md:text-2xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{currentModule.title}</h2>
+                <div className={`flex items-center text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                   <Clock className="h-4 w-4 mr-1" />
                   Estimated time: {currentModule.estimated_time || 10} minutes
                 </div>
@@ -589,7 +590,7 @@ const DashboardContent = ({
 
             {/* Lesson Content */}
             <div className="mb-8">
-              <div className="whitespace-pre-line text-gray-800 dark:text-gray-200 leading-relaxed text-lg">
+              <div className={`whitespace-pre-line leading-relaxed text-lg ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>
                 {currentModule.content}
               </div>
             </div>
@@ -599,7 +600,7 @@ const DashboardContent = ({
               <div className="mb-8">
                 <div className="flex items-center mb-4">
                   <Terminal className="h-6 w-6 mr-3 text-blue-600 dark:text-blue-400" />
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Code Example</h3>
+                  <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Code Example</h3>
                 </div>
                 <div className={`p-4 rounded-lg border ${darkMode ? 'bg-gray-900 border-gray-700' : 'bg-gray-50 border-gray-200'}`}>
                   <pre className="overflow-x-auto">
@@ -667,17 +668,17 @@ const DashboardContent = ({
             </div>
           </div>
 
-          {/* Quiz Prompt - UPDATED: Buttons on separate rows on desktop */}
+          {/* Quiz Prompt */}
           {allModulesCompleted && (
-            <div className={`rounded-xl p-6 ${darkMode ? 'bg-gray-800/90 border-gray-700' : 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200'} border shadow-lg`}>
+            <div className={`rounded-xl p-6 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200'} border shadow-lg`}>
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                 <div className="flex items-center">
                   <div className={`p-3 rounded-lg ${darkMode ? 'bg-green-900/30' : 'bg-green-100'} mr-4`}>
                     <TargetIcon className={`h-6 w-6 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-1">🎉 Course Completed!</h3>
-                    <p className="text-gray-700 dark:text-gray-300">
+                    <h3 className={`font-semibold text-lg mb-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>🎉 Course Completed!</h3>
+                    <p className={darkMode ? 'text-gray-300' : 'text-gray-700'}>
                       You've completed all {modules.length} modules. Test your knowledge of "{selectedCourse.title}"
                     </p>
                   </div>
@@ -710,10 +711,10 @@ const DashboardContent = ({
     <div className="flex">
       {/* Sidebar */}
       {sidebarOpen && (
-        <aside className={`w-64 ${darkMode ? 'bg-gray-800/90' : 'bg-white'} border-r ${darkMode ? 'border-gray-700' : 'border-gray-200'} min-h-screen sticky top-16 hidden md:block`}>
+        <aside className={`w-64 ${darkMode ? 'bg-gray-800' : 'bg-white'} border-r ${darkMode ? 'border-gray-700' : 'border-gray-200'} min-h-screen sticky top-16 hidden md:block`}>
           <div className="p-6">
-            {/* FIXED: Navigation text */}
-            <h2 className="font-semibold text-lg mb-6 flex items-center text-gray-900 dark:text-white">
+            {/* Navigation */}
+            <h2 className={`font-semibold text-lg mb-6 flex items-center ${darkMode ? 'text-white' : 'text-gray-900'}`}>
               <Home size={20} className="mr-3" />
               Navigation
             </h2>
@@ -736,14 +737,14 @@ const DashboardContent = ({
               </a>
             </nav>
 
-            {/* FIXED: Progress Overview text */}
+            {/* Progress Overview */}
             <div className="mb-8">
-              <h3 className="font-semibold mb-4 text-gray-900 dark:text-white">Progress Overview</h3>
+              <h3 className={`font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Progress Overview</h3>
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span className="text-gray-600 dark:text-gray-400">Overall Progress</span>
-                    <span className="font-medium text-gray-700 dark:text-gray-300">{overallProgress}%</span>
+                    <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Overall Progress</span>
+                    <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{overallProgress}%</span>
                   </div>
                   <div className={`h-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
                     <div 
@@ -753,14 +754,14 @@ const DashboardContent = ({
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Completed Modules</span>
-                  <span className="font-semibold text-gray-700 dark:text-gray-300">
+                  <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Completed Modules</span>
+                  <span className={`font-semibold ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                     {stats?.completed_modules || 0}/{stats?.total_modules || 0}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Learning Streak</span>
-                  <span className="font-semibold flex items-center text-gray-700 dark:text-gray-300">
+                  <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Learning Streak</span>
+                  <span className={`font-semibold flex items-center ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                     <Flame size={16} className="mr-1 text-orange-500" />
                     {stats?.learning_streak || 0} days
                   </span>
@@ -768,9 +769,9 @@ const DashboardContent = ({
               </div>
             </div>
 
-            {/* FIXED: Recent Achievements text */}
+            {/* Recent Achievements */}
             <div>
-              <h3 className="font-semibold mb-4 text-gray-900 dark:text-white">Recent Achievements</h3>
+              <h3 className={`font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Recent Achievements</h3>
               <div className="space-y-2">
                 {achievements.slice(0, 3).map(achievement => {
                   if (!achievement) return null;
@@ -780,10 +781,8 @@ const DashboardContent = ({
                         <span className="text-lg">{achievement.icon || '🏆'}</span>
                       </div>
                       <div className="flex-1 min-w-0">
-                        {/* FIXED: Achievement name text */}
-                        <p className="font-medium text-sm text-gray-900 dark:text-white truncate">{achievement.name || 'Achievement'}</p>
-                        {/* FIXED: Achievement description text */}
-                        <p className="text-xs text-gray-600 dark:text-gray-400 truncate">{achievement.description || ''}</p>
+                        <p className={`font-medium text-sm truncate ${darkMode ? 'text-white' : 'text-gray-900'}`}>{achievement.name || 'Achievement'}</p>
+                        <p className={`text-xs truncate ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{achievement.description || ''}</p>
                       </div>
                       {achievement.is_earned && <CheckCircle size={16} className="ml-2 text-green-500 flex-shrink-0" />}
                     </div>
@@ -796,16 +795,14 @@ const DashboardContent = ({
       )}
 
       {/* Main Content */}
-      <main className="flex-1 p-4 md:p-6">
-        {/* Welcome Section - FIXED: All text now visible in dark mode */}
+      <main className={`flex-1 p-4 md:p-6 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+        {/* Welcome Section */}
         <div className={`rounded-2xl p-6 md:p-8 mb-8 ${darkMode ? 'bg-blue-900/20' : 'bg-blue-50/80'} border ${darkMode ? 'border-blue-800/30' : 'border-blue-200'} shadow-lg`}>
           <div className="flex flex-col lg:flex-row lg:items-center justify-between">
             <div className="mb-6 lg:mb-0">
-              {/* FIXED: Welcome text */}
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 text-gray-900 dark:text-white">
+              <h1 className={`text-2xl md:text-3xl lg:text-4xl font-bold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                 Welcome back, {getUserDisplayName()} 👋
               </h1>
-              {/* FIXED: Stats text */}
               <p className={`mb-6 text-lg ${darkMode ? 'text-blue-200' : 'text-blue-800'}`}>
                 {stats?.completed_modules || 0} modules completed • Level {stats?.level || 1}
               </p>
@@ -817,12 +814,10 @@ const DashboardContent = ({
                       style={{ width: `${overallProgress}%` }}
                     ></div>
                   </div>
-                  {/* FIXED: Progress text */}
                   <span className={`text-sm font-medium ${darkMode ? 'text-blue-300' : 'text-blue-800'}`}>
                     {overallProgress}% Overall Progress
                   </span>
                 </div>
-                {/* FIXED: Achievements text */}
                 <span className={`flex items-center text-sm ${darkMode ? 'text-blue-300' : 'text-blue-800'}`}>
                   <Trophy size={18} className="mr-2" />
                   {stats?.achievements_earned || 0} Achievements Earned
@@ -846,70 +841,68 @@ const DashboardContent = ({
           </div>
         </div>
 
-        {/* Quick Stats - FIXED: All text now visible */}
+        {/* Quick Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800/90' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
+          <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
             <div className="flex items-center">
               <div className={`p-2 rounded-lg ${darkMode ? 'bg-blue-900/30' : 'bg-blue-100'} mr-3`}>
                 <BookOpen className={`h-6 w-6 ${darkMode ? 'text-blue-400' : 'text-blue-700'}`} />
               </div>
               <div>
                 <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Active Courses</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats?.enrolled_courses || 0}</p>
+                <p className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{stats?.enrolled_courses || 0}</p>
               </div>
             </div>
           </div>
           
-          <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800/90' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
+          <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
             <div className="flex items-center">
               <div className={`p-2 rounded-lg ${darkMode ? 'bg-green-900/30' : 'bg-green-100'} mr-3`}>
                 <CheckCircle className={`h-6 w-6 ${darkMode ? 'text-green-400' : 'text-green-700'}`} />
               </div>
               <div>
                 <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Completed Modules</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats?.completed_modules || 0}</p>
+                <p className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{stats?.completed_modules || 0}</p>
               </div>
             </div>
           </div>
           
-          <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800/90' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
+          <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
             <div className="flex items-center">
               <div className={`p-2 rounded-lg ${darkMode ? 'bg-purple-900/30' : 'bg-purple-100'} mr-3`}>
                 <Brain className={`h-6 w-6 ${darkMode ? 'text-purple-400' : 'text-purple-700'}`} />
               </div>
               <div>
                 <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Quiz Accuracy</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats?.quiz_accuracy?.toFixed(0) || 0}%</p>
+                <p className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{stats?.quiz_accuracy?.toFixed(0) || 0}%</p>
               </div>
             </div>
           </div>
           
-          <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800/90' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
+          <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
             <div className="flex items-center">
               <div className={`p-2 rounded-lg ${darkMode ? 'bg-yellow-900/30' : 'bg-yellow-100'} mr-3`}>
                 <Award className={`h-6 w-6 ${darkMode ? 'text-yellow-400' : 'text-yellow-700'}`} />
               </div>
               <div>
                 <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Learning Level</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats?.level || 1}</p>
+                <p className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{stats?.level || 1}</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Next Best Action - FIXED: Text visibility */}
+        {/* Next Best Action */}
         {courses && courses.length > 0 && (
-          <div className={`mb-8 p-5 rounded-xl ${darkMode ? 'bg-gray-800/90 border-gray-700' : 'bg-blue-50/80 border-blue-200'} border shadow-lg`}>
+          <div className={`mb-8 p-5 rounded-xl ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-blue-50/80 border-blue-200'} border shadow-lg`}>
             <div className="flex flex-col md:flex-row md:items-center justify-between">
               <div className="flex items-center mb-4 md:mb-0">
                 <div className={`p-3 rounded-lg ${darkMode ? 'bg-blue-900/30' : 'bg-blue-100'} mr-4`}>
                   <TargetIcon className={`h-6 w-6 ${darkMode ? 'text-blue-400' : 'text-blue-700'}`} />
                 </div>
                 <div>
-                  {/* FIXED: Title text */}
-                  <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-1">Continue Your Learning Journey</h3>
-                  {/* FIXED: Description text */}
-                  <p className="text-gray-700 dark:text-gray-300">
+                  <h3 className={`font-semibold text-lg mb-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Continue Your Learning Journey</h3>
+                  <p className={darkMode ? 'text-gray-300' : 'text-gray-700'}>
                     Based on your progress, we recommend continuing with your next course.
                   </p>
                 </div>
@@ -927,7 +920,7 @@ const DashboardContent = ({
           </div>
         )}
 
-        {/* Search and Filter - FIXED: Text visibility */}
+        {/* Search and Filter */}
         <div className="mb-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div className="flex-1">
@@ -938,7 +931,7 @@ const DashboardContent = ({
                   placeholder="Search courses by title, description, or category..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-lg border dark:border-gray-700 dark:bg-gray-800/90 dark:text-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={`w-full pl-10 pr-4 py-3 rounded-lg border ${darkMode ? 'border-gray-700 bg-gray-800 text-gray-200' : 'border-gray-200 bg-white text-gray-900'} focus:outline-none focus:ring-2 focus:ring-blue-500`}
                 />
               </div>
             </div>
@@ -959,13 +952,11 @@ const DashboardContent = ({
           </div>
         </div>
 
-        {/* Courses Section - FIXED: All text now visible */}
+        {/* Courses Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
-            {/* FIXED: Section title */}
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">My Learning Courses</h2>
-            {/* FIXED: Course count */}
-            <span className="text-gray-700 dark:text-gray-300">
+            <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>My Learning Courses</h2>
+            <span className={darkMode ? 'text-gray-300' : 'text-gray-700'}>
               {filteredCourses.length} course{filteredCourses.length !== 1 ? 's' : ''} found
             </span>
           </div>
@@ -973,10 +964,8 @@ const DashboardContent = ({
           {filteredCourses.length === 0 ? (
             <div className="text-center py-12">
               <BookOpen className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-              {/* FIXED: No courses title */}
-              <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">No courses found</h3>
-              {/* FIXED: No courses message */}
-              <p className="text-gray-700 dark:text-gray-300">
+              <h3 className={`text-xl font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>No courses found</h3>
+              <p className={darkMode ? 'text-gray-300' : 'text-gray-700'}>
                 {searchQuery ? 'Try a different search term' : 'No courses available yet'}
               </p>
             </div>
@@ -993,7 +982,7 @@ const DashboardContent = ({
                 return (
                   <div
                     key={course.id}
-                    className={`rounded-xl border ${darkMode ? 'border-gray-700 bg-gray-800/90' : 'border-gray-200 bg-white'} p-6 transition-all hover:shadow-xl hover:scale-[1.02]`}
+                    className={`rounded-xl border ${darkMode ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'} p-6 transition-all hover:shadow-xl hover:scale-[1.02]`}
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div className={`p-3 rounded-lg ${courseColor.light} border ${courseColor.border}`}>
@@ -1005,9 +994,7 @@ const DashboardContent = ({
                       </span>
                     </div>
                     
-                    {/* FIXED: Course title */}
-                    <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">{course.title || 'Untitled Course'}</h3>
-                    {/* FIXED: Course description */}
+                    <h3 className={`text-xl font-bold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{course.title || 'Untitled Course'}</h3>
                     <p className={`text-sm mb-5 ${darkMode ? 'text-gray-300' : 'text-gray-700'} line-clamp-2`}>
                       {course.description || 'No description available'}
                     </p>
@@ -1015,8 +1002,8 @@ const DashboardContent = ({
                     <div className="space-y-4">
                       <div>
                         <div className="flex justify-between text-sm mb-1">
-                          <span className="text-gray-600 dark:text-gray-400">Progress</span>
-                          <span className="font-medium text-gray-700 dark:text-gray-300">{Math.round(progressPercentage)}%</span>
+                          <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Progress</span>
+                          <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{Math.round(progressPercentage)}%</span>
                         </div>
                         <div className={`h-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
                           <div 
@@ -1026,7 +1013,7 @@ const DashboardContent = ({
                         </div>
                       </div>
                       
-                      <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+                      <div className={`flex justify-between text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                         <span className="flex items-center">
                           <FileText size={14} className="mr-1" />
                           {course.completed_modules || 0}/{course.total_modules || 0} modules
@@ -1064,14 +1051,14 @@ const DashboardContent = ({
           )}
         </div>
 
-        {/* Quiz Modal - FIXED: Text visibility */}
+        {/* Quiz Modal */}
         {quizStarted && !quizCompleted && (
           <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${darkMode ? 'bg-gray-900/95' : 'bg-black/70'}`}>
             <div className={`w-full max-w-2xl rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 shadow-2xl`}>
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Quiz: {selectedCourse?.title}</h2>
-                  <p className="text-gray-700 dark:text-gray-400 text-sm mt-1">Test your knowledge of {selectedCourse?.category}</p>
+                  <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Quiz: {selectedCourse?.title}</h2>
+                  <p className={`text-sm mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Test your knowledge of {selectedCourse?.category}</p>
                 </div>
                 <button
                   onClick={exitQuiz}
@@ -1086,8 +1073,8 @@ const DashboardContent = ({
                 <>
                   <div className="mb-6">
                     <div className="flex justify-between text-sm mb-2">
-                      <span className="text-gray-600 dark:text-gray-400">Question {currentQuestion + 1} of {quizQuestions.length}</span>
-                      <span className="font-medium text-gray-700 dark:text-gray-300">
+                      <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Question {currentQuestion + 1} of {quizQuestions.length}</span>
+                      <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                         Score: <span className="text-blue-600 dark:text-blue-400">{score}</span>
                       </span>
                     </div>
@@ -1100,7 +1087,7 @@ const DashboardContent = ({
                   </div>
                   
                   <div className="mb-8">
-                    <h3 className="text-xl font-semibold mb-6 text-gray-900 dark:text-white">
+                    <h3 className={`text-xl font-semibold mb-6 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                       {quizQuestions[currentQuestion]?.question || 'Question not available'}
                     </h3>
                     
@@ -1127,10 +1114,10 @@ const DashboardContent = ({
                             }`}>
                               <span className="font-medium">{String.fromCharCode(65 + index)}</span>
                             </div>
-                            <span className="text-gray-800 dark:text-gray-200">{option || 'Option not available'}</span>
+                            <span className={darkMode ? 'text-gray-200' : 'text-gray-800'}>{option || 'Option not available'}</span>
                           </div>
                         </button>
-                      )) || <p className="text-gray-500 dark:text-gray-400">No options available</p>}
+                      )) || <p className={darkMode ? 'text-gray-500' : 'text-gray-600'}>No options available</p>}
                     </div>
                   </div>
                   
@@ -1177,18 +1164,18 @@ const DashboardContent = ({
               ) : (
                 <div className="text-center py-12">
                   <Loader2 className="h-12 w-12 animate-spin text-blue-500 mx-auto mb-4" />
-                  <p className="text-gray-700 dark:text-gray-300">Loading quiz questions...</p>
+                  <p className={darkMode ? 'text-gray-300' : 'text-gray-700'}>Loading quiz questions...</p>
                 </div>
               )}
             </div>
           </div>
         )}
 
-        {/* Quiz Results Modal - FIXED: Text visibility */}
+        {/* Quiz Results Modal - UPDATED with perfect dark mode visibility */}
         {quizCompleted && quizResults && (
           <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${darkMode ? 'bg-gray-900/95' : 'bg-black/70'}`}>
-            <div className={`w-full max-w-2xl rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-2xl max-h-[90vh] flex flex-col`}>
-              {/* Modal Header - Fixed */}
+            <div className={`w-full max-w-2xl rounded-xl shadow-2xl max-h-[90vh] flex flex-col ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+              {/* Modal Header */}
               <div className="p-6 border-b dark:border-gray-700 flex-shrink-0">
                 <div className="text-center">
                   <div className={`w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center ${
@@ -1203,10 +1190,10 @@ const DashboardContent = ({
                     )}
                   </div>
                   
-                  <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">
+                  <h2 className={`text-2xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                     {quizResults.percentage >= 70 ? 'Quiz Passed! 🎉' : 'Good Effort! 💪'}
                   </h2>
-                  <p className="text-gray-700 dark:text-gray-300 mb-3">
+                  <p className={`mb-3 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                     You scored <span className="font-bold">{quizResults.correct_answers}</span> out of <span className="font-bold">{quizResults.total_questions}</span> questions
                   </p>
                   
@@ -1225,7 +1212,7 @@ const DashboardContent = ({
                       ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
                       : 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800'
                   }`}>
-                    <p className="text-sm text-gray-700 dark:text-gray-300">
+                    <p className={`text-sm ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                       {quizResults.percentage >= 70 
                         ? `Excellent work! You have a strong understanding of ${selectedCourse?.title}.`
                         : `Keep practicing! Review the correct answers below to improve your understanding.`
@@ -1235,11 +1222,11 @@ const DashboardContent = ({
                 </div>
               </div>
 
-              {/* Scrollable Content Area */}
+              {/* Scrollable Content Area - UPDATED for perfect dark mode visibility */}
               <div className="flex-1 overflow-y-auto px-6">
                 {/* Score Breakdown */}
                 <div className="py-4">
-                  <h3 className="font-semibold text-lg mb-3 text-gray-900 dark:text-white">Question Breakdown</h3>
+                  <h3 className={`font-semibold text-lg mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Question Breakdown</h3>
                   <div className="space-y-3">
                     {quizResults.details?.map((detail, index) => (
                       <div 
@@ -1251,26 +1238,35 @@ const DashboardContent = ({
                         }`}
                       >
                         <div className="flex justify-between items-start mb-2">
-                          <span className="font-medium text-gray-900 dark:text-white">Question {index + 1}</span>
+                          <span className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>Question {index + 1}</span>
                           <span className={`text-xs px-2 py-1 rounded-full ${
                             detail.is_correct 
-                              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
-                              : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                              : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                           }`}>
-                            {detail.is_correct ? 'Correct' : 'Incorrect'}
+                            {detail.is_correct ? 'Correct ✓' : 'Incorrect ✗'}
                           </span>
                         </div>
-                        <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">
+                        <p className={`text-sm mb-1 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                           <span className="font-medium">Your answer:</span> Option {String.fromCharCode(64 + detail.selected_option)}
-                          {!detail.is_correct && ` (Correct: Option ${String.fromCharCode(64 + detail.correct_option)})`}
+                          {!detail.is_correct && (
+                            <span className={`ml-2 ${darkMode ? 'text-green-300' : 'text-green-700'}`}>
+                              (Correct: Option {String.fromCharCode(64 + detail.correct_option)})
+                            </span>
+                          )}
                         </p>
-                        {!detail.is_correct && (
-                          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                            <span className="font-medium">Explanation:</span> {detail.explanation}
-                          </p>
+                        {!detail.is_correct && detail.explanation && (
+                          <div className={`mt-2 p-3 rounded ${darkMode ? 'bg-gray-700/50' : 'bg-gray-100'}`}>
+                            <p className={`text-sm font-medium mb-1 ${darkMode ? 'text-blue-300' : 'text-blue-700'}`}>Explanation:</p>
+                            <p className={`text-sm ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>{detail.explanation}</p>
+                          </div>
                         )}
                       </div>
-                    )) || <p className="text-gray-500 dark:text-gray-400 text-center py-4">No quiz details available</p>}
+                    )) || (
+                      <div className="text-center py-4">
+                        <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>No quiz details available</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1306,9 +1302,9 @@ const DashboardContent = ({
           </div>
         )}
 
-        {/* Progress Analytics - FIXED: Text visibility */}
-        <div className={`rounded-xl p-6 ${darkMode ? 'bg-gray-800/90' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
-          <h2 className="text-2xl font-bold mb-6 flex items-center text-gray-900 dark:text-white">
+        {/* Progress Analytics */}
+        <div className={`rounded-xl p-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
+          <h2 className={`text-2xl font-bold mb-6 flex items-center ${darkMode ? 'text-white' : 'text-gray-900'}`}>
             <BarChart3 size={24} className="mr-3" />
             Learning Analytics
           </h2>
@@ -1317,8 +1313,8 @@ const DashboardContent = ({
               <div className="flex items-center">
                 <Clock size={20} className="mr-3 text-blue-700 dark:text-blue-400" />
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Total Study Time</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">{Math.round((stats?.completed_modules || 0) * 15)} min</p>
+                  <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Total Study Time</p>
+                  <p className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{Math.round((stats?.completed_modules || 0) * 15)} min</p>
                 </div>
               </div>
             </div>
@@ -1326,8 +1322,8 @@ const DashboardContent = ({
               <div className="flex items-center">
                 <CheckCircle size={20} className="mr-3 text-green-700 dark:text-green-400" />
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Quiz Accuracy</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">{stats?.quiz_accuracy?.toFixed(1) || 0}%</p>
+                  <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Quiz Accuracy</p>
+                  <p className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{stats?.quiz_accuracy?.toFixed(1) || 0}%</p>
                 </div>
               </div>
             </div>
@@ -1335,8 +1331,8 @@ const DashboardContent = ({
               <div className="flex items-center">
                 <Award size={20} className="mr-3 text-purple-700 dark:text-purple-400" />
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Achievements</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">{stats?.achievements_earned || 0}/{stats?.total_achievements || 0}</p>
+                  <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Achievements</p>
+                  <p className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{stats?.achievements_earned || 0}/{stats?.total_achievements || 0}</p>
                 </div>
               </div>
             </div>
@@ -1344,8 +1340,8 @@ const DashboardContent = ({
               <div className="flex items-center">
                 <Flame size={20} className="mr-3 text-orange-700 dark:text-orange-400" />
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Learning Streak</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">{stats?.learning_streak || 0} days</p>
+                  <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Learning Streak</p>
+                  <p className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{stats?.learning_streak || 0} days</p>
                 </div>
               </div>
             </div>
