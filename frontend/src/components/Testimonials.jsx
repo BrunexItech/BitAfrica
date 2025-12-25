@@ -176,11 +176,11 @@ const Testimonials = () => {
               >
                 <div className="bg-gray-800/40 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-gray-700/50 shadow-xl">
                   <div className="flex flex-col items-center gap-6 md:gap-8">
-                    {/* Profile Picture - Centered on mobile */}
+                    {/* Profile Picture - FIXED: Proper centering on mobile */}
                     <div className="flex flex-col items-center w-full">
-                      <div className="relative inline-block">
-                        {/* Gradient background - properly contained */}
-                        <div className="absolute -inset-3 md:-inset-2 rounded-full opacity-20 bg-gradient-to-r from-cyan-500 to-blue-500" />
+                      <div className="relative inline-flex justify-center items-center">
+                        {/* FIXED: Gradient background with proper mobile sizing */}
+                        <div className="absolute -inset-2 md:-inset-2 rounded-full opacity-20 bg-gradient-to-r from-cyan-500 to-blue-500 scale-110 md:scale-100" />
                         <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-2 border-gray-600/50">
                           <img
                             src={testimonial.avatar}
@@ -238,6 +238,44 @@ const Testimonials = () => {
           </div>
         </div>
       </div>
+
+      {/* Add custom CSS to ensure proper centering on all devices */}
+      <style jsx>{`
+        /* Ensure profile picture container is properly centered */
+        .relative.inline-flex {
+          display: inline-flex !important;
+          justify-content: center !important;
+          align-items: center !important;
+        }
+        
+        /* Fix for mobile gradient shadow */
+        @media (max-width: 767px) {
+          .absolute.-inset-2 {
+            /* Reduced inset for mobile to prevent overflow */
+            top: -0.5rem;
+            right: -0.5rem;
+            bottom: -0.5rem;
+            left: -0.5rem;
+          }
+          
+          /* Ensure the profile picture container doesn't cause horizontal scroll */
+          .flex.flex-col.items-center.w-full {
+            overflow: hidden;
+          }
+        }
+        
+        /* Fix gradient positioning for all screen sizes */
+        .absolute.-inset-2.rounded-full {
+          position: absolute;
+          border-radius: 9999px;
+          z-index: -1;
+        }
+        
+        /* Make sure the gradient doesn't interfere with layout */
+        .relative.inline-flex > .absolute {
+          pointer-events: none;
+        }
+      `}</style>
     </section>
   );
 };
