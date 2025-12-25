@@ -106,6 +106,58 @@ const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
 
+  // Scroll to top on component mount - ADDED FOR MOBILE SCROLL RESTORATION
+  useEffect(() => {
+    // Scroll to top when dashboard loads
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    
+    // Also handle hash-based navigation
+    if (window.location.hash) {
+      const id = window.location.hash.replace('#', '');
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView();
+        }
+      }, 100);
+    }
+  }, []);
+
+  // Mobile responsiveness effect
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setSidebarOpen(false);
+      } else {
+        setSidebarOpen(true);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    
+    // Cleanup function
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  // Apply dark mode to HTML root for proper Tailwind dark mode inheritance
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      document.documentElement.style.backgroundColor = '#111827'; // bg-gray-900
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.style.backgroundColor = '#f9fafb'; // bg-gray-50
+    }
+    
+    // Cleanup function to reset background color
+    return () => {
+      document.documentElement.style.backgroundColor = '';
+    };
+  }, [darkMode]);
+
   // Start quiz for selected topic
   const startQuiz = (topicId) => {
     const selected = topics.find(t => t.id === topicId);
@@ -160,6 +212,9 @@ const Dashboard = () => {
     setQuizCompleted(false);
     setCurrentQuestion(0);
     setScore(0);
+    
+    // Scroll to top when starting a quiz
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Handle quiz answer
@@ -188,21 +243,6 @@ const Dashboard = () => {
     ));
   };
 
-  // Mobile responsiveness effect
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setSidebarOpen(false);
-      } else {
-        setSidebarOpen(true);
-      }
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   // Convert icon strings to JSX elements for topics
   const topicsWithIcons = topics.map(topic => {
     const iconMap = {
@@ -220,16 +260,21 @@ const Dashboard = () => {
     };
   });
 
-  // Apply dark mode to HTML root for proper Tailwind dark mode inheritance
+  // Handle page visibility change for better mobile experience
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-      document.documentElement.style.backgroundColor = '#111827'; // bg-gray-900
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.style.backgroundColor = '#f9fafb'; // bg-gray-50
-    }
-  }, [darkMode]);
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        // Page became visible again, ensure we're at the top
+        window.scrollTo(0, 0);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
