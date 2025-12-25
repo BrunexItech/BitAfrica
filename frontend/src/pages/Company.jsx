@@ -8,7 +8,7 @@ function Company() {
       name: "Bruno Sharif",
       role: "Founder & CEO",
       bio: "Technology visionary with extensive experience in digital transformation across African markets. Leads the strategic direction of BitAfrica AI.",
-      image: "https://i.ibb.co/SDW8mysy/IMG-20250419-WA0007-2.jpg",
+      image: "https://i.ibb.co/CphnSMZS/IMG-20250419-WA0008-5.jpg",
       color: "from-cyan-500 to-blue-500"
     },
     {
