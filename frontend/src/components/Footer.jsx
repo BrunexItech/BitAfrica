@@ -190,11 +190,11 @@ const Footer = () => {
       
       {/* Main content */}
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Responsive Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        {/* Responsive Grid Layout - FIXED */}
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
           
-          {/* Column 1: Brand & Global - Full width on mobile, then responsive */}
-          <div className="md:col-span-2 lg:col-span-1 space-y-3">
+          {/* Column 1: Brand & Global */}
+          <div className="col-span-2 md:col-span-1 lg:col-span-1 space-y-3">
             {/* Compact Logo */}
             <div className="flex items-center gap-2">
               <div className="relative">
@@ -223,8 +223,8 @@ const Footer = () => {
             <GlobalPresence />
           </div>
           
-          {/* Columns 2 & 3: Services and Company - Side by side on mobile */}
-          <div className="md:col-span-1">
+          {/* Column 2: Services */}
+          <div className="col-span-1">
             <h3 className="text-[15px] font-bold text-white mb-2 flex items-center gap-1.5">
               <Zap className="h-3.5 w-3.5 text-yellow-400" />
               Services
@@ -252,7 +252,8 @@ const Footer = () => {
             </div>
           </div>
           
-          <div className="md:col-span-1">
+          {/* Column 3: Company */}
+          <div className="col-span-1">
             <h3 className="text-[15px] font-bold text-white mb-2 flex items-center gap-1.5">
               <Briefcase className="h-3.5 w-3.5 text-green-400" />
               Company
@@ -277,8 +278,8 @@ const Footer = () => {
             </div>
           </div>
           
-          {/* Column 4: Newsletter & Contact - Full width on mobile */}
-          <div className="md:col-span-2 lg:col-span-1 space-y-3">
+          {/* Column 4: Newsletter & Contact */}
+          <div className="col-span-2 md:col-span-2 lg:col-span-1 space-y-3">
             {/* Compact Newsletter */}
             <div className="bg-gradient-to-br from-cyan-500/10 to-purple-500/10 rounded-lg p-2.5 border border-white/10">
               <div className="flex items-center gap-1.5 mb-1.5">
@@ -338,7 +339,7 @@ const Footer = () => {
                     <MapPin className="h-3.5 w-3.5 text-cyan-300" />
                   </div>
                   <span className="text-blue-100/80 text-[12px]">
-                  Nairobi
+                    Nairobi
                   </span>
                 </div>
               </div>
@@ -414,78 +415,6 @@ const Footer = () => {
         
         .animate-fadeIn {
           animation: fadeIn 0.3s ease-out forwards;
-        }
-        
-        /* Responsive Grid Layout - FIXED with more specific selectors */
-        @media (max-width: 768px) {
-          /* Mobile: Services and Company side by side */
-          .relative.overflow-hidden.pt-6.pb-3 .grid {
-            grid-template-columns: 1fr 1fr !important;
-            gap: 1rem !important;
-          }
-          
-          /* First column spans full width */
-          .relative.overflow-hidden.pt-6.pb-3 .md\\:col-span-2 {
-            grid-column: 1 / span 2 !important;
-          }
-          
-          /* Adjust spacing for mobile */
-          .relative.overflow-hidden.pt-6.pb-3 .h-12 {
-            height: 3rem !important;
-          }
-          .relative.overflow-hidden.pt-6.pb-3 .w-12 {
-            width: 3rem !important;
-          }
-          .relative.overflow-hidden.pt-6.pb-3 .h-9 {
-            height: 2.25rem !important;
-          }
-          .relative.overflow-hidden.pt-6.pb-3 .w-9 {
-            width: 2.25rem !important;
-          }
-          
-          /* Adjust font sizes for mobile */
-          .relative.overflow-hidden.pt-6.pb-3 .text-lg {
-            font-size: 1rem !important;
-          }
-          
-          .relative.overflow-hidden.pt-6.pb-3 .text-sm {
-            font-size: 0.75rem !important;
-          }
-          
-          .relative.overflow-hidden.pt-6.pb-3 .text-xs {
-            font-size: 0.65rem !important;
-          }
-          
-          .relative.overflow-hidden.pt-6.pb-3 .text-\\[13px\\] {
-            font-size: 0.8125rem !important;
-          }
-          
-          .relative.overflow-hidden.pt-6.pb-3 .text-\\[12px\\] {
-            font-size: 0.75rem !important;
-          }
-          
-          .relative.overflow-hidden.pt-6.pb-3 .text-\\[11px\\] {
-            font-size: 0.6875rem !important;
-          }
-          
-          .relative.overflow-hidden.pt-6.pb-3 .text-\\[10px\\] {
-            font-size: 0.625rem !important;
-          }
-        }
-        
-        /* Tablet: Adjust layout */
-        @media (min-width: 769px) and (max-width: 1024px) {
-          .relative.overflow-hidden.pt-6.pb-3 .grid {
-            grid-template-columns: repeat(2, 1fr) !important;
-          }
-          
-          .relative.overflow-hidden.pt-6.pb-3 .md\\:col-span-2 {
-            grid-column: span 2 !important;
-          }
-          
-          .relative.overflow-hidden.pt-6.pb-3 .lg\\:col-span-1 {
-            grid-column: span 1 !important;
-          }
         }
         
         /* Accessibility */
