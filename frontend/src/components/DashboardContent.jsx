@@ -1,5 +1,5 @@
 // frontend/src/components/DashboardContent.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Home,
   BookOpen,
@@ -34,7 +34,12 @@ import {
   PieChart,
   BarChart,
   TrendingUp as TrendingUpIcon,
-  Search
+  Search,
+  ChevronDown,
+  ChevronUp,
+  Filter,
+  SortAsc,
+  SortDesc
 } from 'lucide-react';
 import learningService from '../services/learningService';
 import authService from '../services/authService';
@@ -60,6 +65,7 @@ const DashboardContent = ({
   const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
   const [isCurrentModuleCompleted, setIsCurrentModuleCompleted] = useState(false);
   const [moduleLoading, setModuleLoading] = useState(false);
+  const [showCompletionSuccess, setShowCompletionSuccess] = useState(false); // NEW
   
   // Quiz states
   const [quizStarted, setQuizStarted] = useState(false);
@@ -70,9 +76,14 @@ const DashboardContent = ({
   const [quizResults, setQuizResults] = useState(null);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   
-  // UI states
-  const [filterStatus, setFilterStatus] = useState('all');
+  // UI states - NEW: Course list view states
+  const [courseListView, setCourseListView] = useState('list'); // 'list' or 'detail'
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [sortBy, setSortBy] = useState('alphabetical'); // 'alphabetical', 'progress', 'recent'
+  const [expandedLetters, setExpandedLetters] = useState(new Set());
+  const [showSortOptions, setShowSortOptions] = useState(false);
+  
   const [error, setError] = useState(null);
 
   // Fetch all data on component mount
@@ -81,6 +92,16 @@ const DashboardContent = ({
     const userData = authService.getCurrentUser();
     setCurrentUser(userData);
   }, []);
+
+  // Handle completion success animation
+  useEffect(() => {
+    if (showCompletionSuccess) {
+      const timer = setTimeout(() => {
+        setShowCompletionSuccess(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [showCompletionSuccess]);
 
   const fetchDashboardData = async () => {
     try {
@@ -143,13 +164,14 @@ const DashboardContent = ({
       setQuizCompleted(false);
       setQuizResults(null);
       setSelectedAnswers({});
+      setCourseListView('detail');
     } catch (error) {
       console.error('Error starting learning:', error);
       alert('Failed to load course modules. Please try again.');
     }
   };
 
-  // Start quiz for a course
+  // Start quiz for a course - FIXED: Properly opens quiz modal
   const startQuiz = async (courseId) => {
     try {
       // SCROLL TO TOP ADDED HERE
@@ -168,13 +190,47 @@ const DashboardContent = ({
       setQuizResults(null);
       setSelectedAnswers({});
       setLearningMode(false);
+      
+      // Ensure quiz modal opens immediately
+      setCourseListView('list'); // Stay in list view, quiz modal will overlay
     } catch (error) {
       console.error('Error starting quiz:', error);
       alert('Failed to load quiz questions. Please try again.');
     }
   };
 
-  // Mark current module as completed
+  // Open course detail view from list
+  const openCourseDetail = (course) => {
+    // SCROLL TO TOP ADDED HERE
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    setSelectedCourse(course);
+    setCourseListView('detail');
+  };
+
+  // Return to course list view
+  const backToCourseList = () => {
+    // SCROLL TO TOP ADDED HERE
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    setSelectedCourse(null);
+    setCourseListView('list');
+  };
+
+  // Toggle letter expansion
+  const toggleLetterExpansion = (letter) => {
+    setExpandedLetters(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(letter)) {
+        newSet.delete(letter);
+      } else {
+        newSet.add(letter);
+      }
+      return newSet;
+    });
+  };
+
+  // Mark current module as completed - WITH SMOOTH TRANSITION
   const markModuleCompleted = async () => {
     try {
       setModuleLoading(true);
@@ -189,11 +245,19 @@ const DashboardContent = ({
         true
       );
       
+      // Show success animation
+      setShowCompletionSuccess(true);
+      
       // Update frontend state
       setIsCurrentModuleCompleted(true);
       
       // Refresh dashboard data to update progress
       await fetchDashboardData();
+      
+      // Auto-advance to next module after delay
+      setTimeout(() => {
+        nextModule();
+      }, 1500);
       
     } catch (error) {
       console.error('Error marking module complete:', error);
@@ -216,7 +280,7 @@ const DashboardContent = ({
       const nextModule = modules[nextIndex];
       setIsCurrentModuleCompleted(nextModule?.is_completed || false);
     } else {
-      // All modules completed, show quiz option
+      // All modules completed - AUTO-OPEN QUIZ
       handleAllModulesCompleted();
     }
   };
@@ -236,20 +300,16 @@ const DashboardContent = ({
     }
   };
 
-  // Handle when all modules are completed
+  // Handle when all modules are completed - AUTO-OPEN QUIZ
   const handleAllModulesCompleted = () => {
     const allCompleted = modules.every(module => module.is_completed);
     if (allCompleted && selectedCourse) {
-      // Show quiz notification
-      if (window.confirm(`Congratulations! You've completed all modules. Would you like to take the quiz for "${selectedCourse.title}"?`)) {
-        startQuiz(selectedCourse.id);
-      } else {
-        setLearningMode(false);
-        setSelectedCourse(null);
-      }
+      // Auto-start quiz instead of showing confirmation
+      startQuiz(selectedCourse.id);
     } else {
       setLearningMode(false);
       setSelectedCourse(null);
+      setCourseListView('list');
     }
   };
 
@@ -295,7 +355,7 @@ const DashboardContent = ({
     setSelectedAnswers({});
   };
 
-  // Exit quiz
+  // Exit quiz - FIXED: Properly closes quiz modal
   const exitQuiz = () => {
     // SCROLL TO TOP ADDED HERE
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -303,8 +363,8 @@ const DashboardContent = ({
     setQuizStarted(false);
     setQuizCompleted(false);
     setQuizResults(null);
-    setSelectedCourse(null);
     setSelectedAnswers({});
+    // Don't reset selectedCourse if we want to keep it in detail view
   };
 
   // Get current module
@@ -336,36 +396,129 @@ const DashboardContent = ({
     return notStartedCourse || courses[0];
   };
 
-  // Filter courses based on search and status - FIXED VERSION
-  const filteredCourses = courses.filter(course => {
-    if (!course) return false;
+  // Group courses by first letter for alphabetical display
+  const groupedCourses = useMemo(() => {
+    if (!courses || courses.length === 0) return {};
     
-    // Safe string checks
-    const courseTitle = course.title || '';
-    const courseDescription = course.description || '';
+    // Filter courses based on search and status
+    const filtered = courses.filter(course => {
+      if (!course) return false;
+      
+      // Safe string checks
+      const courseTitle = course.title || '';
+      const courseDescription = course.description || '';
+      const courseCategory = course.category || '';
+      const searchLower = searchQuery.toLowerCase();
+      
+      const matchesSearch = searchQuery === '' || 
+        courseTitle.toLowerCase().includes(searchLower) ||
+        courseDescription.toLowerCase().includes(searchLower) ||
+        courseCategory.toLowerCase().includes(searchLower);
+      
+      const completionRatio = course.total_modules > 0 
+        ? course.completed_modules / course.total_modules 
+        : 0;
+      
+      let status = 'not-started';
+      if (Math.abs(completionRatio - 1) < 0.01) status = 'completed';
+      else if (completionRatio > 0) status = 'in-progress';
+      
+      const matchesStatus = filterStatus === 'all' || 
+                           (filterStatus === 'completed' && status === 'completed') ||
+                           (filterStatus === 'in-progress' && status === 'in-progress') ||
+                           (filterStatus === 'not-started' && status === 'not-started');
+      
+      return matchesSearch && matchesStatus;
+    });
+    
+    // Sort filtered courses
+    const sorted = [...filtered].sort((a, b) => {
+      switch (sortBy) {
+        case 'alphabetical':
+          return (a.title || '').localeCompare(b.title || '');
+        case 'progress':
+          const progressA = (a.completed_modules / (a.total_modules || 1)) * 100;
+          const progressB = (b.completed_modules / (b.total_modules || 1)) * 100;
+          return progressB - progressA; // Descending (highest first)
+        case 'recent':
+          return new Date(b.created_at) - new Date(a.created_at);
+        default:
+          return 0;
+      }
+    });
+    
+    // Group by first letter
+    const groups = {};
+    sorted.forEach(course => {
+      if (!course || !course.title) return;
+      const firstLetter = course.title.charAt(0).toUpperCase();
+      if (!groups[firstLetter]) {
+        groups[firstLetter] = [];
+      }
+      groups[firstLetter].push(course);
+    });
+    
+    return groups;
+  }, [courses, searchQuery, filterStatus, sortBy]);
+
+  // Get course color based on category - SAFE VERSION
+  const getCourseColor = (course) => {
+    if (!course) return { 
+      gradient: 'from-gray-500 to-gray-700', 
+      bg: 'bg-gray-500',
+      light: 'bg-gray-50 dark:bg-gray-800/80',
+      border: 'border-gray-200 dark:border-gray-700',
+      icon: <BookOpen className="text-gray-700 dark:text-gray-300" />
+    };
+    
     const courseCategory = course.category || '';
-    const searchLower = searchQuery.toLowerCase();
     
-    const matchesSearch = searchQuery === '' || 
-      courseTitle.toLowerCase().includes(searchLower) ||
-      courseDescription.toLowerCase().includes(searchLower) ||
-      courseCategory.toLowerCase().includes(searchLower);
-    
-    const completionRatio = course.total_modules > 0 
-      ? course.completed_modules / course.total_modules 
-      : 0;
-    
-    let status = 'not-started';
-    if (Math.abs(completionRatio - 1) < 0.01) status = 'completed'; // Account for floating point errors
-    else if (completionRatio > 0) status = 'in-progress';
-    
-    const matchesStatus = filterStatus === 'all' || 
-                         (filterStatus === 'completed' && status === 'completed') ||
-                         (filterStatus === 'in-progress' && status === 'in-progress') ||
-                         (filterStatus === 'not-started' && status === 'not-started');
-    
-    return matchesSearch && matchesStatus;
-  });
+    const colors = {
+  'web development': { 
+    gradient: 'from-blue-500 to-cyan-500', 
+    bg: 'bg-blue-500',
+    light: 'bg-blue-50 dark:bg-blue-900/60',
+    border: 'border-blue-200 dark:border-blue-800',
+    icon: <Code className="text-blue-700 dark:text-blue-300" />
+  },
+  'ai & machine learning': { 
+    gradient: 'from-purple-500 to-pink-500', 
+    bg: 'bg-purple-500',
+    light: 'bg-purple-50 dark:bg-purple-900/60',
+    border: 'border-purple-200 dark:border-purple-800',
+    icon: <Brain className="text-purple-700 dark:text-purple-300" />
+  },
+  'cybersecurity': { 
+    gradient: 'from-red-500 to-orange-500', 
+    bg: 'bg-red-500',
+    light: 'bg-red-50 dark:bg-red-900/60',
+    border: 'border-red-200 dark:border-red-800',
+    icon: <Shield className="text-red-700 dark:text-red-300" />
+  },
+  'programming': { 
+    gradient: 'from-green-500 to-teal-500', 
+    bg: 'bg-green-500',
+    light: 'bg-green-50 dark:bg-green-900/60',
+    border: 'border-green-200 dark:border-green-800',
+    icon: <Code className="text-green-700 dark:text-green-300" />
+  },
+  'data science': { 
+    gradient: 'from-indigo-500 to-purple-500', 
+    bg: 'bg-indigo-500',
+    light: 'bg-indigo-50 dark:bg-indigo-900/60',
+    border: 'border-indigo-200 dark:border-indigo-800',
+    icon: <TrendingUp className="text-indigo-700 dark:text-indigo-300" />
+  }
+};
+    const categoryLower = courseCategory.toLowerCase();
+    return colors[categoryLower] || { 
+      gradient: 'from-gray-500 to-gray-700', 
+      bg: 'bg-gray-500',
+      light: 'bg-gray-50 dark:bg-gray-800/80',
+      border: 'border-gray-200 dark:border-gray-700',
+      icon: <BookOpen className="text-gray-700 dark:text-gray-300" />
+    };
+  };
 
   // Get status badge for a course
   const getStatusBadge = (course) => {
@@ -400,72 +553,13 @@ const DashboardContent = ({
     }
   };
 
-  // Get course color based on category - SAFE VERSION
-  const getCourseColor = (course) => {
-    if (!course) return { 
-      gradient: 'from-gray-500 to-gray-700', 
-      bg: 'bg-gray-500',
-      light: 'bg-gray-50 dark:bg-gray-800/80',
-      border: 'border-gray-200 dark:border-gray-700',
-      icon: <BookOpen className="text-gray-700 dark:text-gray-300" />
-    };
-    
-    const courseCategory = course.category || '';
-    
-    const colors = {
-  'web development': { 
-    gradient: 'from-blue-500 to-cyan-500', 
-    bg: 'bg-blue-500',
-    light: 'bg-blue-50 dark:bg-blue-900/60', // Changed from /30 to /60 - darker
-    border: 'border-blue-200 dark:border-blue-800',
-    icon: <Code className="text-blue-700 dark:text-blue-300" />
-  },
-  'ai & machine learning': { 
-    gradient: 'from-purple-500 to-pink-500', 
-    bg: 'bg-purple-500',
-    light: 'bg-purple-50 dark:bg-purple-900/60', // Changed from /30 to /60 - darker
-    border: 'border-purple-200 dark:border-purple-800',
-    icon: <Brain className="text-purple-700 dark:text-purple-300" />
-  },
-  'cybersecurity': { 
-    gradient: 'from-red-500 to-orange-500', 
-    bg: 'bg-red-500',
-    light: 'bg-red-50 dark:bg-red-900/60', // Changed from /30 to /60 - darker
-    border: 'border-red-200 dark:border-red-800',
-    icon: <Shield className="text-red-700 dark:text-red-300" />
-  },
-  'programming': { 
-    gradient: 'from-green-500 to-teal-500', 
-    bg: 'bg-green-500',
-    light: 'bg-green-50 dark:bg-green-900/60', // Changed from /30 to /60 - darker
-    border: 'border-green-200 dark:border-green-800',
-    icon: <Code className="text-green-700 dark:text-green-300" />
-  },
-  'data science': { 
-    gradient: 'from-indigo-500 to-purple-500', 
-    bg: 'bg-indigo-500',
-    light: 'bg-indigo-50 dark:bg-indigo-900/60', // Changed from /30 to /60 - darker
-    border: 'border-indigo-200 dark:border-indigo-800',
-    icon: <TrendingUp className="text-indigo-700 dark:text-indigo-300" />
-  }
-};
-    const categoryLower = courseCategory.toLowerCase();
-    return colors[categoryLower] || { 
-      gradient: 'from-gray-500 to-gray-700', 
-      bg: 'bg-gray-500',
-      light: 'bg-gray-50 dark:bg-gray-800/80',
-      border: 'border-gray-200 dark:border-gray-700',
-      icon: <BookOpen className="text-gray-700 dark:text-gray-300" />
-    };
-  };
-
   // Calculate overall progress
   const overallProgress = stats?.overall_progress || 0;
 
   // Loading state
   if (loading) {
     return (
-      <div className={`flex items-center justify-center min-h-[60vh] ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+      <div className={`flex items-center justify-center min-h-[60vh] ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} select-none`} style={{ userSelect: 'none' }}>
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-blue-500 mx-auto mb-4" />
           <p className={`text-lg ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Loading your learning dashboard...</p>
@@ -477,7 +571,7 @@ const DashboardContent = ({
   // Error state
   if (error) {
     return (
-      <div className={`flex items-center justify-center min-h-[60vh] ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+      <div className={`flex items-center justify-center min-h-[60vh] ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} select-none`} style={{ userSelect: 'none' }}>
         <div className="text-center max-w-md mx-4">
           <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
           <h3 className={`text-xl font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Unable to Load Dashboard</h3>
@@ -496,7 +590,7 @@ const DashboardContent = ({
   // Learning Mode - Show Module Content
   if (learningMode && selectedCourse && currentModule) {
     return (
-      <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} p-4 md:p-6`}>
+      <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} p-4 md:p-6 select-none`} style={{ userSelect: 'none' }}>
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
@@ -505,25 +599,27 @@ const DashboardContent = ({
                 // SCROLL TO TOP ADDED HERE
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 setLearningMode(false);
+                setCourseListView('list');
               }}
-              className={`flex items-center ${darkMode ? 'text-gray-300 hover:text-blue-400' : 'text-gray-700 hover:text-blue-600'} transition-colors`}
+              className={`flex items-center ${darkMode ? 'text-gray-300 hover:text-blue-400' : 'text-gray-700 hover:text-blue-600'} transition-colors select-none`}
+              style={{ userSelect: 'none' }}
             >
               <ArrowLeft className="h-5 w-5 mr-2" />
               Back to Dashboard
             </button>
-            <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} select-none`} style={{ userSelect: 'none' }}>
               Module {currentModuleIndex + 1} of {modules.length}
             </div>
           </div>
 
           {/* Course Info Card */}
-          <div className={`rounded-xl p-6 mb-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+          <div className={`rounded-xl p-6 mb-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg border ${darkMode ? 'border-gray-700' : 'border-gray-200'} select-none`} style={{ userSelect: 'none' }}>
             <div className="flex flex-col md:flex-row md:items-start justify-between mb-4">
               <div className="flex-1 mb-4 md:mb-0">
                 <h1 className={`text-2xl md:text-3xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{selectedCourse.title}</h1>
                 <p className={`mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{selectedCourse.description}</p>
               </div>
-                <div className={`px-4 py-2 rounded-lg ${getCourseColor(selectedCourse).light} border ${getCourseColor(selectedCourse).border}`}>
+                <div className={`px-4 py-2 rounded-lg ${getCourseColor(selectedCourse).light} border ${getCourseColor(selectedCourse).border} select-none`} style={{ userSelect: 'none' }}>
                 <span className={`font-medium ${darkMode ? 'text-black-200' : 'text-gray-800'}`}>{selectedCourse.category}</span>
               </div>
             </div>
@@ -547,13 +643,13 @@ const DashboardContent = ({
                           setIsCurrentModuleCompleted(module.is_completed || false);
                         }
                       }}
-                      className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all ${
-                        isCurrent 
+                      className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all select-none ${isCurrent 
                           ? 'bg-blue-600 text-white ring-2 ring-blue-300 dark:ring-blue-700 shadow-lg' 
                           : isCompleted
                           ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200 hover:scale-110'
                           : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 hover:scale-110'
                       }`}
+                      style={{ userSelect: 'none' }}
                       title={`Module ${index + 1}: ${module.title} ${isCompleted ? '(Completed)' : ''}`}
                     >
                       {isCompleted ? <Check className="h-5 w-5" /> : index + 1}
@@ -562,7 +658,7 @@ const DashboardContent = ({
                 })}
               </div>
               
-              <div className="flex flex-wrap items-center gap-4 text-sm">
+              <div className="flex flex-wrap items-center gap-4 text-sm select-none" style={{ userSelect: 'none' }}>
                 <span className={`flex items-center ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                   <Clock className="h-4 w-4 mr-1" />
                   {currentModule.estimated_time || 10} min
@@ -580,7 +676,7 @@ const DashboardContent = ({
 
             {/* Module Progress Bar */}
             <div className="mb-2">
-              <div className="flex justify-between text-sm mb-1">
+              <div className="flex justify-between text-sm mb-1 select-none" style={{ userSelect: 'none' }}>
                 <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Module Progress</span>
                 <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{Math.round((completedModulesCount / (modules.length || 1)) * 100)}%</span>
               </div>
@@ -598,29 +694,29 @@ const DashboardContent = ({
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className={`text-xl md:text-2xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{currentModule.title}</h2>
-                <div className={`flex items-center text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                <div className={`flex items-center text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} select-none`} style={{ userSelect: 'none' }}>
                   <Clock className="h-4 w-4 mr-1" />
                   Estimated time: {currentModule.estimated_time || 10} minutes
                 </div>
               </div>
               {isCurrentModuleCompleted && (
-                <span className="flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200">
+                <span className="flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200 select-none" style={{ userSelect: 'none' }}>
                   <Check className="h-4 w-4 mr-1" />
                   Completed
                 </span>
               )}
             </div>
 
-            {/* Lesson Content */}
-            <div className="mb-8">
+            {/* Lesson Content - ALLOW TEXT SELECTION HERE */}
+            <div className="mb-8" style={{ userSelect: 'text' }}>
               <div className={`whitespace-pre-line leading-relaxed text-lg ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>
                 {currentModule.content}
               </div>
             </div>
 
-            {/* Code Example */}
+            {/* Code Example - ALLOW TEXT SELECTION HERE */}
             {currentModule.code_example && (
-              <div className="mb-8">
+              <div className="mb-8" style={{ userSelect: 'text' }}>
                 <div className="flex items-center mb-4">
                   <Terminal className="h-6 w-6 mr-3 text-blue-600 dark:text-blue-400" />
                   <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Code Example</h3>
@@ -635,16 +731,33 @@ const DashboardContent = ({
               </div>
             )}
 
+            {/* Completion Success Animation */}
+            {showCompletionSuccess && (
+              <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 text-center shadow-2xl animate-scale-up">
+                  <div className="w-24 h-24 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-6">
+                    <Check className="h-12 w-12 text-green-600 dark:text-green-400 animate-bounce" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Module Completed! 🎉</h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-6">Moving to next module...</p>
+                  <div className="w-32 h-2 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto overflow-hidden">
+                    <div className="h-full bg-green-500 animate-progress"></div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Navigation Buttons */}
             <div className="flex flex-col sm:flex-row justify-between pt-6 border-t dark:border-gray-700 gap-4">
               <button
                 onClick={previousModule}
                 disabled={currentModuleIndex === 0}
-                className={`px-6 py-3 rounded-lg flex items-center justify-center ${
+                className={`px-6 py-3 rounded-lg flex items-center justify-center select-none ${
                   currentModuleIndex === 0
                     ? 'opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600'
                     : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors'
                 }`}
+                style={{ userSelect: 'none' }}
               >
                 <ArrowLeft className="h-5 w-5 mr-2" />
                 Previous Module
@@ -654,13 +767,19 @@ const DashboardContent = ({
                 {!isCurrentModuleCompleted ? (
                   <button
                     onClick={markModuleCompleted}
-                    disabled={moduleLoading}
-                    className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={moduleLoading || showCompletionSuccess}
+                    className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed select-none"
+                    style={{ userSelect: 'none' }}
                   >
                     {moduleLoading ? (
                       <>
                         <Loader2 className="h-5 w-5 mr-2 animate-spin" />
                         Saving Progress...
+                      </>
+                    ) : showCompletionSuccess ? (
+                      <>
+                        <Check className="h-5 w-5 mr-2" />
+                        Completed!
                       </>
                     ) : (
                       <>
@@ -672,7 +791,8 @@ const DashboardContent = ({
                 ) : (
                   <button
                     onClick={nextModule}
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 flex items-center justify-center transition-colors"
+                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 flex items-center justify-center transition-colors select-none"
+                    style={{ userSelect: 'none' }}
                   >
                     {currentModuleIndex < modules.length - 1 ? (
                       <>
@@ -690,75 +810,191 @@ const DashboardContent = ({
               </div>
             </div>
           </div>
-
-          {/* Quiz Prompt */}
-          {allModulesCompleted && (
-            <div className={`rounded-xl p-6 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200'} border shadow-lg`}>
-              <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                <div className="flex items-center">
-                  <div className={`p-3 rounded-lg ${darkMode ? 'bg-green-900/30' : 'bg-green-100'} mr-4`}>
-                    <TargetIcon className={`h-6 w-6 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className={`font-semibold text-lg mb-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>🎉 Course Completed!</h3>
-                    <p className={darkMode ? 'text-gray-300' : 'text-gray-700'}>
-                      You've completed all {modules.length} modules. Test your knowledge of "{selectedCourse.title}"
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-3 w-full md:w-auto">
-                  <button 
-                    onClick={() => {
-                      // SCROLL TO TOP ADDED HERE
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                      setLearningMode(false);
-                    }}
-                    className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-center"
-                  >
-                    Return to Dashboard
-                  </button>
-                  <button 
-                    onClick={() => startQuiz(selectedCourse.id)}
-                    className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 transition-colors flex items-center justify-center"
-                  >
-                    <Brain className="h-5 w-5 mr-2" />
-                    Take Quiz
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     );
   }
 
-  // Original dashboard content (only show if not in learning mode)
+  // Course Detail View (from list tap)
+  if (courseListView === 'detail' && selectedCourse) {
+    const courseColor = getCourseColor(selectedCourse);
+    const statusBadge = getStatusBadge(selectedCourse);
+    const progressPercentage = selectedCourse.total_modules > 0 
+      ? (selectedCourse.completed_modules / selectedCourse.total_modules) * 100 
+      : 0;
+    
+    return (
+      <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} p-4 md:p-6 select-none`} style={{ userSelect: 'none' }}>
+        <div className="max-w-4xl mx-auto">
+          {/* Back Button */}
+          <button
+            onClick={backToCourseList}
+            className={`flex items-center mb-6 ${darkMode ? 'text-gray-300 hover:text-blue-400' : 'text-gray-700 hover:text-blue-600'} transition-colors select-none`}
+            style={{ userSelect: 'none' }}
+          >
+            <ArrowLeft className="h-5 w-5 mr-2" />
+            Back to Courses
+          </button>
+
+          {/* Course Detail Card */}
+          <div className={`rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-lg overflow-hidden select-none`} style={{ userSelect: 'none' }}>
+            {/* Course Header */}
+            <div className={`p-6 md:p-8 ${courseColor.light} border-b ${courseColor.border}`}>
+              <div className="flex flex-col md:flex-row md:items-start justify-between mb-4">
+                <div className="flex items-start mb-4 md:mb-0">
+                  <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-800/80' : 'bg-white/80'} border ${courseColor.border} mr-4`}>
+                    {courseColor.icon}
+                  </div>
+                  <div className="flex-1">
+                    <h1 className={`text-2xl md:text-3xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                      {selectedCourse.title}
+                    </h1>
+                    <div className="flex flex-wrap items-center gap-3 mb-3">
+                      <span className={`text-sm px-3 py-1 rounded-full border ${courseColor.border} ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                        {selectedCourse.category}
+                      </span>
+                      <span className={`text-sm px-3 py-1 rounded-full flex items-center ${statusBadge.className}`}>
+                        {statusBadge.icon}
+                        {statusBadge.text}
+                      </span>
+                      <span className={`text-sm px-3 py-1 rounded-full ${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'}`}>
+                        {selectedCourse.difficulty}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <p className={`text-lg ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                {selectedCourse.description}
+              </p>
+            </div>
+
+            {/* Course Stats */}
+            <div className="p-6 md:p-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700/50' : 'bg-gray-50'} border ${darkMode ? 'border-gray-600' : 'border-gray-200'}`}>
+                  <div className="flex items-center">
+                    <FileText className={`h-6 w-6 mr-3 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} />
+                    <div>
+                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Modules</p>
+                      <p className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                        {selectedCourse.completed_modules || 0}/{selectedCourse.total_modules || 0}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700/50' : 'bg-gray-50'} border ${darkMode ? 'border-gray-600' : 'border-gray-200'}`}>
+                  <div className="flex items-center">
+                    <Clock className={`h-6 w-6 mr-3 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} />
+                    <div>
+                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Time</p>
+                      <p className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                        {selectedCourse.estimated_time || 60} min
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700/50' : 'bg-gray-50'} border ${darkMode ? 'border-gray-600' : 'border-gray-200'}`}>
+                  <div className="flex items-center">
+                    <TrendingUp className={`h-6 w-6 mr-3 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} />
+                    <div>
+                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Your Progress</p>
+                      <p className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                        {Math.round(progressPercentage)}%
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Progress Bar */}
+              <div className="mb-8">
+                <div className="flex justify-between text-sm mb-2 select-none" style={{ userSelect: 'none' }}>
+                  <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Course Progress</span>
+                  <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                    {Math.round(progressPercentage)}%
+                  </span>
+                </div>
+                <div className={`h-3 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
+                  <div 
+                    className={`h-full rounded-full bg-gradient-to-r ${courseColor.gradient} transition-all duration-500`}
+                    style={{ width: `${progressPercentage}%` }}
+                  ></div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button
+                  onClick={() => startLearning(selectedCourse.id)}
+                  className="flex-1 px-6 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 transition-colors flex items-center justify-center text-lg font-semibold shadow-lg hover:shadow-xl select-none"
+                  style={{ userSelect: 'none' }}
+                >
+                  {selectedCourse.completed_modules === selectedCourse.total_modules ? (
+                    <>
+                      <BookOpen className="h-6 w-6 mr-3" />
+                      Review Course
+                    </>
+                  ) : (selectedCourse.completed_modules || 0) > 0 ? (
+                    <>
+                      <PlayCircle className="h-6 w-6 mr-3" />
+                      Continue Learning
+                    </>
+                  ) : (
+                    <>
+                      <PlayCircle className="h-6 w-6 mr-3" />
+                      Start Learning
+                    </>
+                  )}
+                </button>
+                
+                {(selectedCourse.completed_modules || 0) > 0 && (
+                  <button
+                    onClick={() => startQuiz(selectedCourse.id)}
+                    className="px-6 py-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 transition-colors flex items-center justify-center text-lg font-semibold shadow-lg hover:shadow-xl select-none"
+                    style={{ userSelect: 'none' }}
+                  >
+                    <Brain className="h-6 w-6 mr-3" />
+                    Take Quiz
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Original dashboard content (only show if not in learning mode or course detail view)
   return (
-    <div className="flex">
+    <div className="flex select-none" style={{ userSelect: 'none' }}>
       {/* Sidebar */}
       {sidebarOpen && (
-        <aside className={`w-64 ${darkMode ? 'bg-gray-800' : 'bg-white'} border-r ${darkMode ? 'border-gray-700' : 'border-gray-200'} min-h-screen sticky top-16 hidden md:block`}>
+        <aside className={`w-64 ${darkMode ? 'bg-gray-800' : 'bg-white'} border-r ${darkMode ? 'border-gray-700' : 'border-gray-200'} min-h-screen sticky top-16 hidden md:block select-none`} style={{ userSelect: 'none' }}>
           <div className="p-6">
             {/* Navigation */}
-            <h2 className={`font-semibold text-lg mb-6 flex items-center ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            <h2 className={`font-semibold text-lg mb-6 flex items-center ${darkMode ? 'text-white' : 'text-gray-900'} select-none`} style={{ userSelect: 'none' }}>
               <Home size={20} className="mr-3" />
               Navigation
             </h2>
             <nav className="space-y-2 mb-8">
-              <a href="#" className={`flex items-center p-3 rounded-lg ${darkMode ? 'bg-blue-900/30 text-blue-300 border border-blue-800' : 'bg-blue-50 text-blue-700 border border-blue-200'}`}>
+              <a href="#" className={`flex items-center p-3 rounded-lg ${darkMode ? 'bg-blue-900/30 text-blue-300 border border-blue-800' : 'bg-blue-50 text-blue-700 border border-blue-200'} select-none`} style={{ userSelect: 'none' }}>
                 <BookOpen size={20} className="mr-3" />
                 Learning Dashboard
               </a>
-              <a href="#" className={`flex items-center p-3 rounded-lg ${darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'}`}>
+              <a href="#" className={`flex items-center p-3 rounded-lg ${darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'} select-none`} style={{ userSelect: 'none' }}>
                 <BarChart size={20} className="mr-3" />
                 Progress Analytics
               </a>
-              <a href="#" className={`flex items-center p-3 rounded-lg ${darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'}`}>
+              <a href="#" className={`flex items-center p-3 rounded-lg ${darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'} select-none`} style={{ userSelect: 'none' }}>
                 <Award size={20} className="mr-3" />
                 Achievements
               </a>
-              <a href="#" className={`flex items-center p-3 rounded-lg ${darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'}`}>
+              <a href="#" className={`flex items-center p-3 rounded-lg ${darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'} select-none`} style={{ userSelect: 'none' }}>
                 <Calendar size={20} className="mr-3" />
                 Study Plan
               </a>
@@ -766,10 +1002,10 @@ const DashboardContent = ({
 
             {/* Progress Overview */}
             <div className="mb-8">
-              <h3 className={`font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Progress Overview</h3>
+              <h3 className={`font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'} select-none`} style={{ userSelect: 'none' }}>Progress Overview</h3>
               <div className="space-y-4">
                 <div>
-                  <div className="flex justify-between text-sm mb-1">
+                  <div className="flex justify-between text-sm mb-1 select-none" style={{ userSelect: 'none' }}>
                     <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Overall Progress</span>
                     <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{overallProgress}%</span>
                   </div>
@@ -780,13 +1016,13 @@ const DashboardContent = ({
                     ></div>
                   </div>
                 </div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between select-none" style={{ userSelect: 'none' }}>
                   <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Completed Modules</span>
                   <span className={`font-semibold ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                     {stats?.completed_modules || 0}/{stats?.total_modules || 0}
                   </span>
                 </div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between select-none" style={{ userSelect: 'none' }}>
                   <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Learning Streak</span>
                   <span className={`font-semibold flex items-center ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                     <Flame size={16} className="mr-1 text-orange-500" />
@@ -798,12 +1034,12 @@ const DashboardContent = ({
 
             {/* Recent Achievements */}
             <div>
-              <h3 className={`font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Recent Achievements</h3>
+              <h3 className={`font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'} select-none`} style={{ userSelect: 'none' }}>Recent Achievements</h3>
               <div className="space-y-2">
                 {achievements.slice(0, 3).map(achievement => {
                   if (!achievement) return null;
                   return (
-                    <div key={achievement.id} className={`flex items-center p-3 rounded-lg ${darkMode ? achievement.is_earned ? 'bg-yellow-900/20 border border-yellow-800' : 'bg-gray-700' : achievement.is_earned ? 'bg-yellow-50 border border-yellow-200' : 'bg-gray-100'} ${!achievement.is_earned && 'opacity-60'}`}>
+                    <div key={achievement.id} className={`flex items-center p-3 rounded-lg ${darkMode ? achievement.is_earned ? 'bg-yellow-900/20 border border-yellow-800' : 'bg-gray-700' : achievement.is_earned ? 'bg-yellow-50 border border-yellow-200' : 'bg-gray-100'} ${!achievement.is_earned && 'opacity-60'} select-none`} style={{ userSelect: 'none' }}>
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center mr-3 ${achievement.is_earned ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-200' : 'bg-gray-200 text-gray-400 dark:bg-gray-600 dark:text-gray-500'}`}>
                         <span className="text-lg">{achievement.icon || '🏆'}</span>
                       </div>
@@ -824,7 +1060,7 @@ const DashboardContent = ({
       {/* Main Content */}
       <main className={`flex-1 p-4 md:p-6 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
         {/* Welcome Section */}
-        <div className={`rounded-2xl p-6 md:p-8 mb-8 ${darkMode ? 'bg-blue-900/20' : 'bg-blue-50/80'} border ${darkMode ? 'border-blue-800/30' : 'border-blue-200'} shadow-lg`}>
+        <div className={`rounded-2xl p-6 md:p-8 mb-8 ${darkMode ? 'bg-blue-900/20' : 'bg-blue-50/80'} border ${darkMode ? 'border-blue-800/30' : 'border-blue-200'} shadow-lg select-none`} style={{ userSelect: 'none' }}>
           <div className="flex flex-col lg:flex-row lg:items-center justify-between">
             <div className="mb-6 lg:mb-0">
               <h1 className={`text-2xl md:text-3xl lg:text-4xl font-bold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
@@ -857,11 +1093,12 @@ const DashboardContent = ({
                 if (nextCourse) startLearning(nextCourse.id);
               }}
               disabled={!courses || courses.length === 0}
-              className={`px-6 py-3 rounded-lg font-semibold transition-all hover:scale-105 shadow-lg ${
+              className={`px-6 py-3 rounded-lg font-semibold transition-all hover:scale-105 shadow-lg select-none ${
                 !courses || courses.length === 0 
                   ? 'opacity-50 cursor-not-allowed bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400' 
                   : 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white'
               }`}
+              style={{ userSelect: 'none' }}
             >
               {!courses || courses.length === 0 ? 'No Courses Available' : 'Continue Learning'}
             </button>
@@ -870,7 +1107,7 @@ const DashboardContent = ({
 
         {/* Quick Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
+          <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm select-none`} style={{ userSelect: 'none' }}>
             <div className="flex items-center">
               <div className={`p-2 rounded-lg ${darkMode ? 'bg-blue-900/30' : 'bg-blue-100'} mr-3`}>
                 <BookOpen className={`h-6 w-6 ${darkMode ? 'text-blue-400' : 'text-blue-700'}`} />
@@ -882,7 +1119,7 @@ const DashboardContent = ({
             </div>
           </div>
           
-          <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
+          <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm select-none`} style={{ userSelect: 'none' }}>
             <div className="flex items-center">
               <div className={`p-2 rounded-lg ${darkMode ? 'bg-green-900/30' : 'bg-green-100'} mr-3`}>
                 <CheckCircle className={`h-6 w-6 ${darkMode ? 'text-green-400' : 'text-green-700'}`} />
@@ -894,7 +1131,7 @@ const DashboardContent = ({
             </div>
           </div>
           
-          <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
+          <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm select-none`} style={{ userSelect: 'none' }}>
             <div className="flex items-center">
               <div className={`p-2 rounded-lg ${darkMode ? 'bg-purple-900/30' : 'bg-purple-100'} mr-3`}>
                 <Brain className={`h-6 w-6 ${darkMode ? 'text-purple-400' : 'text-purple-700'}`} />
@@ -906,7 +1143,7 @@ const DashboardContent = ({
             </div>
           </div>
           
-          <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
+          <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm select-none`} style={{ userSelect: 'none' }}>
             <div className="flex items-center">
               <div className={`p-2 rounded-lg ${darkMode ? 'bg-yellow-900/30' : 'bg-yellow-100'} mr-3`}>
                 <Award className={`h-6 w-6 ${darkMode ? 'text-yellow-400' : 'text-yellow-700'}`} />
@@ -921,7 +1158,7 @@ const DashboardContent = ({
 
         {/* Next Best Action */}
         {courses && courses.length > 0 && (
-          <div className={`mb-8 p-5 rounded-xl ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-blue-50/80 border-blue-200'} border shadow-lg`}>
+          <div className={`mb-8 p-5 rounded-xl ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-blue-50/80 border-blue-200'} border shadow-lg select-none`} style={{ userSelect: 'none' }}>
             <div className="flex flex-col md:flex-row md:items-center justify-between">
               <div className="flex items-center mb-4 md:mb-0">
                 <div className={`p-3 rounded-lg ${darkMode ? 'bg-blue-900/30' : 'bg-blue-100'} mr-4`}>
@@ -939,7 +1176,8 @@ const DashboardContent = ({
                   const nextCourse = getNextRecommendedCourse();
                   if (nextCourse) startLearning(nextCourse.id);
                 }}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 transition-colors shadow-md hover:shadow-lg"
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 transition-colors shadow-md hover:shadow-lg select-none"
+                style={{ userSelect: 'none' }}
               >
                 Start Learning Now
               </button>
@@ -947,8 +1185,8 @@ const DashboardContent = ({
           </div>
         )}
 
-        {/* Search and Filter */}
-        <div className="mb-6">
+        {/* Search and Filter - ENHANCED for alphabetical list */}
+        <div className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div className="flex-1">
               <div className="relative">
@@ -959,129 +1197,275 @@ const DashboardContent = ({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className={`w-full pl-10 pr-4 py-3 rounded-lg border ${darkMode ? 'border-gray-700 bg-gray-800 text-gray-200' : 'border-gray-200 bg-white text-gray-900'} focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                  style={{ userSelect: 'auto' }} // ALLOW TEXT SELECTION HERE ONLY
                 />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 select-none"
+                    style={{ userSelect: 'none' }}
+                  >
+                    <X size={18} />
+                  </button>
+                )}
               </div>
             </div>
-            <div className="flex overflow-x-auto pb-2 md:pb-0">
-              {['all', 'in-progress', 'completed', 'not-started'].map((status) => (
+            
+            <div className="flex gap-2">
+              {/* Sort Options */}
+              <div className="relative">
                 <button
-                  key={status}
-                  onClick={() => setFilterStatus(status)}
-                  className={`px-4 py-2 text-sm font-medium capitalize whitespace-nowrap ${filterStatus === status 
-                    ? darkMode ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-700 border border-blue-300' 
-                    : darkMode ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  } ${status === 'all' ? 'rounded-l-lg' : ''} ${status === 'not-started' ? 'rounded-r-lg' : ''}`}
+                  onClick={() => setShowSortOptions(!showSortOptions)}
+                  className={`flex items-center px-4 py-2.5 rounded-lg border ${darkMode ? 'border-gray-700 bg-gray-800 hover:bg-gray-700' : 'border-gray-200 bg-white hover:bg-gray-50'} transition-colors select-none`}
+                  style={{ userSelect: 'none' }}
                 >
-                  {status.replace('-', ' ')}
+                  {sortBy === 'alphabetical' ? <SortAsc size={18} className="mr-2" /> :
+                   sortBy === 'progress' ? <TrendingUpIcon size={18} className="mr-2" /> :
+                   <SortDesc size={18} className="mr-2" />}
+                  <span className={darkMode ? 'text-gray-300' : 'text-gray-700'}>
+                    {sortBy === 'alphabetical' ? 'A-Z' :
+                     sortBy === 'progress' ? 'Progress' : 'Recent'}
+                  </span>
+                  <ChevronDown size={16} className="ml-2" />
                 </button>
-              ))}
+                
+                {showSortOptions && (
+                  <div className={`absolute right-0 mt-2 w-48 rounded-lg shadow-lg border py-1 z-50 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} select-none`} style={{ userSelect: 'none' }}>
+                    <button
+                      onClick={() => { setSortBy('alphabetical'); setShowSortOptions(false); }}
+                      className={`flex items-center w-full px-4 py-2 text-left ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'} ${sortBy === 'alphabetical' ? (darkMode ? 'bg-blue-900/30 text-blue-300' : 'bg-blue-50 text-blue-700') : (darkMode ? 'text-gray-300' : 'text-gray-700')}`}
+                    >
+                      <SortAsc size={16} className="mr-3" />
+                      Alphabetical (A-Z)
+                    </button>
+                    <button
+                      onClick={() => { setSortBy('progress'); setShowSortOptions(false); }}
+                      className={`flex items-center w-full px-4 py-2 text-left ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'} ${sortBy === 'progress' ? (darkMode ? 'bg-blue-900/30 text-blue-300' : 'bg-blue-50 text-blue-700') : (darkMode ? 'text-gray-300' : 'text-gray-700')}`}
+                    >
+                      <TrendingUpIcon size={16} className="mr-3" />
+                      Progress (Highest)
+                    </button>
+                    <button
+                      onClick={() => { setSortBy('recent'); setShowSortOptions(false); }}
+                      className={`flex items-center w-full px-4 py-2 text-left ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'} ${sortBy === 'recent' ? (darkMode ? 'bg-blue-900/30 text-blue-300' : 'bg-blue-50 text-blue-700') : (darkMode ? 'text-gray-300' : 'text-gray-700')}`}
+                    >
+                      <SortDesc size={16} className="mr-3" />
+                      Recently Added
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Status Filter */}
+              <div className="flex overflow-x-auto pb-2 md:pb-0">
+                {['all', 'in-progress', 'completed', 'not-started'].map((status) => (
+                  <button
+                    key={status}
+                    onClick={() => setFilterStatus(status)}
+                    className={`px-4 py-2.5 text-sm font-medium capitalize whitespace-nowrap select-none ${filterStatus === status 
+                      ? darkMode ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-700 border border-blue-300' 
+                      : darkMode ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    } ${status === 'all' ? 'rounded-l-lg' : ''} ${status === 'not-started' ? 'rounded-r-lg' : ''}`}
+                    style={{ userSelect: 'none' }}
+                  >
+                    {status.replace('-', ' ')}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Courses Section */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>My Learning Courses</h2>
-            <span className={darkMode ? 'text-gray-300' : 'text-gray-700'}>
-              {filteredCourses.length} course{filteredCourses.length !== 1 ? 's' : ''} found
+        {/* Courses Section - ALPHABETICAL LIST VIEW */}
+        <div className="mb-12">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className={`text-2xl md:text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} select-none`} style={{ userSelect: 'none' }}>
+              My Learning Courses
+            </h2>
+            <span className={`${darkMode ? 'text-gray-300' : 'text-gray-700'} select-none`} style={{ userSelect: 'none' }}>
+              {Object.values(groupedCourses).flat().length} course{Object.values(groupedCourses).flat().length !== 1 ? 's' : ''} found
             </span>
           </div>
 
-          {filteredCourses.length === 0 ? (
-            <div className="text-center py-12">
-              <BookOpen className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-              <h3 className={`text-xl font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>No courses found</h3>
-              <p className={darkMode ? 'text-gray-300' : 'text-gray-700'}>
-                {searchQuery ? 'Try a different search term' : 'No courses available yet'}
+          {Object.keys(groupedCourses).length === 0 ? (
+            <div className="text-center py-16 rounded-xl border dark:border-gray-700 select-none" style={{ userSelect: 'none' }}>
+              <BookOpen className="h-20 w-20 text-gray-400 mx-auto mb-6" />
+              <h3 className={`text-2xl font-semibold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                {searchQuery ? 'No matching courses found' : 'No courses available yet'}
+              </h3>
+              <p className={`text-lg mb-8 max-w-md mx-auto ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                {searchQuery ? 'Try adjusting your search terms or filters' : 'Check back soon for new learning materials!'}
               </p>
+              {searchQuery && (
+                <button
+                  onClick={() => { setSearchQuery(''); setFilterStatus('all'); }}
+                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 transition-colors select-none"
+                  style={{ userSelect: 'none' }}
+                >
+                  Clear Search
+                </button>
+              )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredCourses.map((course) => {
-                if (!course) return null;
-                const courseColor = getCourseColor(course);
-                const statusBadge = getStatusBadge(course);
-                const progressPercentage = course.total_modules > 0 
-                  ? (course.completed_modules / course.total_modules) * 100 
-                  : 0;
-                
-                return (
-                  <div
-                    key={course.id}
-                    className={`rounded-xl border ${darkMode ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'} p-6 transition-all hover:shadow-xl hover:scale-[1.02]`}
-                  >
+            <div className="space-y-6">
+              {Object.entries(groupedCourses)
+                .sort(([letterA], [letterB]) => letterA.localeCompare(letterB))
+                .map(([letter, letterCourses]) => {
+                  const isExpanded = expandedLetters.has(letter) || Object.keys(groupedCourses).length <= 5;
+                  
+                  return (
+                    <div 
+                      key={letter} 
+                      className={`rounded-xl border ${darkMode ? 'border-gray-700 bg-gray-800/50' : 'border-gray-200 bg-white'} overflow-hidden select-none`}
+                      style={{ userSelect: 'none' }}
+                    >
+                      {/* Letter Header */}
+                      <button
+                        onClick={() => toggleLetterExpansion(letter)}
+                        className={`w-full px-6 py-4 flex items-center justify-between ${darkMode ? 'hover:bg-gray-700/50' : 'hover:bg-gray-50'} transition-colors select-none`}
+                        style={{ userSelect: 'none' }}
+                      >
+                        <div className="flex items-center">
+                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-4 ${darkMode ? 'bg-blue-900/30 text-blue-300' : 'bg-blue-100 text-blue-700'}`}>
+                            <span className="text-xl font-bold">{letter}</span>
+                          </div>
+                          <div>
+                            <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                              {letter}
+                            </h3>
+                            <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                              {letterCourses.length} course{letterCourses.length !== 1 ? 's' : ''}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center">
+                          <span className={`text-sm mr-4 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                            {isExpanded ? 'Collapse' : 'Expand'}
+                          </span>
+                          {isExpanded ? (
+                            <ChevronUp className={darkMode ? 'text-gray-400' : 'text-gray-600'} />
+                          ) : (
+                            <ChevronDown className={darkMode ? 'text-gray-400' : 'text-gray-600'} />
+                          )}
+                        </div>
+                      </button>
 
-                      <div className="flex items-start justify-between mb-4">
-                      <div className={`p-3 rounded-lg ${courseColor.light} border ${courseColor.border}`}>
-                        {courseColor.icon}
-                      </div>
-                      <span className={`text-xs font-semibold px-3 py-1.5 rounded-full flex items-center ${statusBadge.className}`}>
-                        {statusBadge.icon}
-                        {statusBadge.text}
-                      </span>
-                     </div>
-                    
-                    <h3 className={`text-xl font-bold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{course.title || 'Untitled Course'}</h3>
-                    <p className={`text-sm mb-5 ${darkMode ? 'text-gray-300' : 'text-gray-700'} line-clamp-2`}>
-                      {course.description || 'No description available'}
-                    </p>
-                    
-                    <div className="space-y-4">
-                      <div>
-                        <div className="flex justify-between text-sm mb-1">
-                          <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Progress</span>
-                          <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{Math.round(progressPercentage)}%</span>
+                      {/* Course List */}
+                      {isExpanded && (
+                        <div className="border-t dark:border-gray-700">
+                          {letterCourses.map((course) => {
+                            if (!course) return null;
+                            const courseColor = getCourseColor(course);
+                            const statusBadge = getStatusBadge(course);
+                            const progressPercentage = course.total_modules > 0 
+                              ? (course.completed_modules / course.total_modules) * 100 
+                              : 0;
+                            
+                            return (
+                              <div
+                                key={course.id}
+                                onClick={() => openCourseDetail(course)}
+                                className={`group p-6 border-b last:border-b-0 ${darkMode ? 'border-gray-700 hover:bg-gray-700/30' : 'border-gray-200 hover:bg-gray-50'} cursor-pointer transition-all hover:scale-[1.005] active:scale-[0.995] select-none`}
+                                style={{ userSelect: 'none' }}
+                              >
+                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                  {/* Course Info */}
+                                  <div className="flex-1">
+                                    <div className="flex items-start mb-3">
+                                      <div className={`p-3 rounded-lg ${courseColor.light} border ${courseColor.border} mr-4 flex-shrink-0`}>
+                                        {courseColor.icon}
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <h3 className={`text-xl font-bold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                          {course.title || 'Untitled Course'}
+                                          <ChevronRight className="inline-block ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        </h3>
+                                        <p className={`text-sm mb-3 ${darkMode ? 'text-gray-300' : 'text-gray-700'} line-clamp-2`}>
+                                          {course.description || 'No description available'}
+                                        </p>
+                                        <div className="flex flex-wrap items-center gap-3">
+                                          <span className={`text-xs font-semibold px-2.5 py-1 rounded-full flex items-center ${statusBadge.className}`}>
+                                            {statusBadge.icon}
+                                            {statusBadge.text}
+                                          </span>
+                                          <span className={`text-xs px-2.5 py-1 rounded-full ${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'}`}>
+                                            {course.category}
+                                          </span>
+                                          <span className={`text-xs px-2.5 py-1 rounded-full ${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'}`}>
+                                            <Clock size={12} className="inline mr-1" />
+                                            {course.estimated_time || 60} min
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Progress and Actions */}
+                                  <div className="md:w-64 lg:w-80 flex flex-col gap-4">
+                                    {/* Progress Bar */}
+                                    <div>
+                                      <div className="flex justify-between text-sm mb-1 select-none" style={{ userSelect: 'none' }}>
+                                        <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Progress</span>
+                                        <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                          {Math.round(progressPercentage)}%
+                                        </span>
+                                      </div>
+                                      <div className={`h-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
+                                        <div 
+                                          className={`h-full rounded-full bg-gradient-to-r ${courseColor.gradient} transition-all duration-500`}
+                                          style={{ width: `${progressPercentage}%` }}
+                                        ></div>
+                                      </div>
+                                      <div className={`flex justify-between text-xs mt-1 select-none ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} style={{ userSelect: 'none' }}>
+                                        <span>{course.completed_modules || 0}/{course.total_modules || 0} modules</span>
+                                        <span>{Math.round(progressPercentage)}% complete</span>
+                                      </div>
+                                    </div>
+
+                                    {/* Quick Actions */}
+                                    <div className="flex gap-2">
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          startLearning(course.id);
+                                        }}
+                                        className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 transition-colors flex items-center justify-center text-sm font-medium select-none"
+                                        style={{ userSelect: 'none' }}
+                                      >
+                                        {course.completed_modules === course.total_modules ? 'Review' : 
+                                        (course.completed_modules || 0) > 0 ? 'Continue' : 'Start'}
+                                      </button>
+                                      {(course.completed_modules || 0) > 0 && (
+                                        <button
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            startQuiz(course.id);
+                                          }}
+                                          className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 transition-colors flex items-center justify-center text-sm font-medium select-none"
+                                          style={{ userSelect: 'none' }}
+                                          title="Take Quiz"
+                                        >
+                                          <Brain size={16} />
+                                        </button>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
-                        <div className={`h-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
-                          <div 
-                            className={`h-full rounded-full bg-gradient-to-r ${courseColor.gradient} transition-all duration-500`}
-                            style={{ width: `${progressPercentage}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                      
-                      <div className={`flex justify-between text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                        <span className="flex items-center">
-                          <FileText size={14} className="mr-1" />
-                          {course.completed_modules || 0}/{course.total_modules || 0} modules
-                        </span>
-                        <span className="flex items-center">
-                          <Clock size={14} className="mr-1" />
-                          {course.estimated_time || 60} min
-                        </span>
-                      </div>
-                      
-                      <div className="flex flex-col sm:flex-row gap-2 mt-6">
-                        <button
-                          onClick={() => startLearning(course.id)}
-                          className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 transition-colors flex items-center justify-center text-sm font-medium"
-                        >
-                          {course.completed_modules === course.total_modules ? 'Review Course' : 
-                          (course.completed_modules || 0) > 0 ? 'Continue Learning' : 'Start Learning'}
-                          <BookOpen size={18} className="ml-2" />
-                        </button>
-                        {(course.completed_modules || 0) > 0 && (
-                          <button
-                            onClick={() => startQuiz(course.id)}
-                            className="px-4 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 transition-colors flex items-center justify-center text-sm font-medium"
-                            title="Take Quiz"
-                          >
-                            <Brain size={18} />
-                          </button>
-                        )}
-                      </div>
+                      )}
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
             </div>
           )}
         </div>
 
-        {/* Quiz Modal */}
-        {quizStarted && !quizCompleted && (
-          <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${darkMode ? 'bg-gray-900/95' : 'bg-black/70'}`}>
+        {/* Quiz Modal - FIXED: Now opens properly when quizStarted is true */}
+        {(quizStarted && !quizCompleted) && (
+          <div className={`fixed inset-0 z-[100] flex items-center justify-center p-4 ${darkMode ? 'bg-gray-900/95' : 'bg-black/70'}`}>
             <div className={`w-full max-w-2xl rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 shadow-2xl`}>
               <div className="flex items-center justify-between mb-6">
                 <div>
@@ -1090,7 +1474,8 @@ const DashboardContent = ({
                 </div>
                 <button
                   onClick={exitQuiz}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-gray-700 dark:text-gray-300"
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-gray-700 dark:text-gray-300 select-none"
+                  style={{ userSelect: 'none' }}
                   aria-label="Close quiz"
                 >
                   <X size={24} />
@@ -1100,7 +1485,7 @@ const DashboardContent = ({
               {quizQuestions.length > 0 && currentQuestion < quizQuestions.length ? (
                 <>
                   <div className="mb-6">
-                    <div className="flex justify-between text-sm mb-2">
+                    <div className="flex justify-between text-sm mb-2 select-none" style={{ userSelect: 'none' }}>
                       <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Question {currentQuestion + 1} of {quizQuestions.length}</span>
                       <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                         Score: <span className="text-blue-600 dark:text-blue-400">{score}</span>
@@ -1124,7 +1509,7 @@ const DashboardContent = ({
                         <button
                           key={index}
                           onClick={() => handleQuizAnswerSelect(currentQuestion, index)}
-                          className={`w-full text-left p-4 rounded-lg border transition-all ${
+                          className={`w-full text-left p-4 rounded-lg border transition-all select-none ${
                             selectedAnswers[currentQuestion] === index
                               ? darkMode 
                                 ? 'border-blue-500 bg-blue-900/30' 
@@ -1133,6 +1518,7 @@ const DashboardContent = ({
                                 ? 'border-gray-700 hover:border-blue-500 hover:bg-blue-900/20 text-gray-300' 
                                 : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50 text-gray-800'
                           }`}
+                          style={{ userSelect: 'none' }}
                         >
                           <div className="flex items-center">
                             <div className={`w-8 h-8 rounded-full border flex items-center justify-center mr-4 ${
@@ -1153,11 +1539,12 @@ const DashboardContent = ({
                     <button
                       onClick={() => currentQuestion > 0 && setCurrentQuestion(prev => prev - 1)}
                       disabled={currentQuestion === 0}
-                      className={`px-6 py-3 rounded-lg ${
+                      className={`px-6 py-3 rounded-lg select-none ${
                         currentQuestion === 0
                           ? 'opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800 text-gray-400'
                           : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                       }`}
+                      style={{ userSelect: 'none' }}
                     >
                       Previous
                     </button>
@@ -1166,11 +1553,12 @@ const DashboardContent = ({
                       <button
                         onClick={() => setCurrentQuestion(prev => prev + 1)}
                         disabled={selectedAnswers[currentQuestion] === undefined}
-                        className={`px-6 py-3 rounded-lg ${
+                        className={`px-6 py-3 rounded-lg select-none ${
                           selectedAnswers[currentQuestion] === undefined
                             ? 'opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800 text-gray-400'
                             : 'bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800'
                         }`}
+                        style={{ userSelect: 'none' }}
                       >
                         Next Question
                       </button>
@@ -1178,11 +1566,12 @@ const DashboardContent = ({
                       <button
                         onClick={submitQuiz}
                         disabled={selectedAnswers[currentQuestion] === undefined}
-                        className={`px-6 py-3 rounded-lg ${
+                        className={`px-6 py-3 rounded-lg select-none ${
                           selectedAnswers[currentQuestion] === undefined
                             ? 'opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800 text-gray-400'
                             : 'bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800'
                         }`}
+                        style={{ userSelect: 'none' }}
                       >
                         Submit Quiz
                       </button>
@@ -1199,10 +1588,9 @@ const DashboardContent = ({
           </div>
         )}
 
-
-        {/* Quiz Results Modal - FIXED DARK MODE ISSUES */}
+        {/* Quiz Results Modal */}
         {quizCompleted && quizResults && (
-          <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${darkMode ? 'bg-gray-900/95' : 'bg-black/70'}`}>
+          <div className={`fixed inset-0 z-[100] flex items-center justify-center p-4 ${darkMode ? 'bg-gray-900/95' : 'bg-black/70'}`}>
             <div className={`w-full max-w-2xl rounded-xl shadow-2xl max-h-[90vh] flex flex-col ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
               {/* Modal Header */}
               <div className="p-6 border-b dark:border-gray-700 flex-shrink-0">
@@ -1235,7 +1623,6 @@ const DashboardContent = ({
                     {quizResults.percentage.toFixed(0)}%
                   </div>
                   
-                  {/* Result Message - FIXED DARK MODE BACKGROUND & TEXT */}
                   <div className={`p-3 rounded-lg ${
                     quizResults.percentage >= 70 
                       ? darkMode ? 'bg-green-900/40 border border-green-800' : 'bg-green-50 border border-green-200'
@@ -1251,8 +1638,8 @@ const DashboardContent = ({
                 </div>
               </div>
 
-              {/* Scrollable Content Area - FIXED DARK MODE TEXT VISIBILITY */}
-              <div className="flex-1 overflow-y-auto px-6">
+              {/* Scrollable Content Area */}
+              <div className="flex-1 overflow-y-auto px-6" style={{ userSelect: 'text' }}>
                 {/* Score Breakdown */}
                 <div className="py-4">
                   <h3 className={`font-semibold text-lg mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Question Breakdown</h3>
@@ -1305,7 +1692,8 @@ const DashboardContent = ({
                 <div className="flex flex-col sm:flex-row justify-center gap-3">
                   <button
                     onClick={exitQuiz}
-                    className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 transition-colors text-sm font-medium flex-1 sm:flex-none"
+                    className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 transition-colors text-sm font-medium flex-1 sm:flex-none select-none"
+                    style={{ userSelect: 'none' }}
                   >
                     Return to Dashboard
                   </button>
@@ -1313,7 +1701,8 @@ const DashboardContent = ({
                   {quizResults.percentage < 70 && (
                     <button
                       onClick={retakeQuiz}
-                      className="px-5 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 transition-colors text-sm font-medium flex-1 sm:flex-none"
+                      className="px-5 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 transition-colors text-sm font-medium flex-1 sm:flex-none select-none"
+                      style={{ userSelect: 'none' }}
                     >
                       Retake Quiz
                     </button>
@@ -1321,7 +1710,8 @@ const DashboardContent = ({
                   
                   <button
                     onClick={() => selectedCourse && startLearning(selectedCourse.id)}
-                    className="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm font-medium flex-1 sm:flex-none"
+                    className="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm font-medium flex-1 sm:flex-none select-none"
+                    style={{ userSelect: 'none' }}
                   >
                     Review Course
                   </button>
@@ -1331,8 +1721,8 @@ const DashboardContent = ({
           </div>
         )}
 
-        {/* Progress Analytics - FIXED CATEGORY TEXT VISIBILITY */}
-        <div className={`rounded-xl p-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm`}>
+        {/* Progress Analytics */}
+        <div className={`rounded-xl p-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm select-none`} style={{ userSelect: 'none' }}>
           <h2 className={`text-2xl font-bold mb-6 flex items-center ${darkMode ? 'text-white' : 'text-gray-900'}`}>
             <BarChart3 size={24} className="mr-3" />
             Learning Analytics

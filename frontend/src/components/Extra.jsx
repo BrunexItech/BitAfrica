@@ -123,6 +123,9 @@ const DashboardContent = ({
   // Start learning a course - show modules first
   const startLearning = async (courseId) => {
     try {
+      // SCROLL TO TOP ADDED HERE
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
       const course = courses.find(c => c.id === courseId);
       if (!course) return;
       
@@ -149,6 +152,9 @@ const DashboardContent = ({
   // Start quiz for a course
   const startQuiz = async (courseId) => {
     try {
+      // SCROLL TO TOP ADDED HERE
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
       const course = courses.find(c => c.id === courseId);
       if (!course) return;
       
@@ -200,6 +206,9 @@ const DashboardContent = ({
   // Go to next module
   const nextModule = () => {
     if (currentModuleIndex < modules.length - 1) {
+      // SCROLL TO TOP ADDED HERE
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
       const nextIndex = currentModuleIndex + 1;
       setCurrentModuleIndex(nextIndex);
       
@@ -215,6 +224,9 @@ const DashboardContent = ({
   // Go to previous module
   const previousModule = () => {
     if (currentModuleIndex > 0) {
+      // SCROLL TO TOP ADDED HERE
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
       const prevIndex = currentModuleIndex - 1;
       setCurrentModuleIndex(prevIndex);
       
@@ -273,6 +285,9 @@ const DashboardContent = ({
 
   // Retake quiz
   const retakeQuiz = () => {
+    // SCROLL TO TOP ADDED HERE
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     setQuizCompleted(false);
     setQuizResults(null);
     setCurrentQuestion(0);
@@ -282,6 +297,9 @@ const DashboardContent = ({
 
   // Exit quiz
   const exitQuiz = () => {
+    // SCROLL TO TOP ADDED HERE
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     setQuizStarted(false);
     setQuizCompleted(false);
     setQuizResults(null);
@@ -483,7 +501,11 @@ const DashboardContent = ({
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <button
-              onClick={() => setLearningMode(false)}
+              onClick={() => {
+                // SCROLL TO TOP ADDED HERE
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                setLearningMode(false);
+              }}
               className={`flex items-center ${darkMode ? 'text-gray-300 hover:text-blue-400' : 'text-gray-700 hover:text-blue-600'} transition-colors`}
             >
               <ArrowLeft className="h-5 w-5 mr-2" />
@@ -519,6 +541,8 @@ const DashboardContent = ({
                       key={module.id || index}
                       onClick={() => {
                         if (index !== currentModuleIndex) {
+                          // SCROLL TO TOP ADDED HERE
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
                           setCurrentModuleIndex(index);
                           setIsCurrentModuleCompleted(module.is_completed || false);
                         }
@@ -684,7 +708,11 @@ const DashboardContent = ({
                 </div>
                 <div className="flex flex-col gap-3 w-full md:w-auto">
                   <button 
-                    onClick={() => setLearningMode(false)}
+                    onClick={() => {
+                      // SCROLL TO TOP ADDED HERE
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      setLearningMode(false);
+                    }}
                     className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-center"
                   >
                     Return to Dashboard
