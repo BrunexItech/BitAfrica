@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'consultation',
     'contact',
     'learning',
+    'newsletter',
 
     
 ]

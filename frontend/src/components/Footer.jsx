@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import newsletterService from '../services/newsletterService'; // ADD THIS IMPORT
 import {
   Globe, Mail, Phone, MapPin, Sparkles, Brain,
   Zap, Shield, Cloud, Terminal, Cpu, Database,
@@ -12,6 +14,8 @@ const Footer = () => {
   const [activeHover, setActiveHover] = useState(null);
   const [clientTime, setClientTime] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [subscriptionError, setSubscriptionError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const footerRef = useRef(null);
   const particlesRef = useRef([]);
@@ -90,7 +94,7 @@ const Footer = () => {
     };
   }, []);
 
-  // Services
+  // Services - ALL redirect to /services
   const services = [
     { name: "AI Development", icon: <Brain className="h-3 w-3" />, color: colors.primary },
     { name: "Web Applications", icon: <Globe className="h-3 w-3" />, color: colors.secondary },
@@ -100,14 +104,14 @@ const Footer = () => {
     { name: "Mobile Apps", icon: <Terminal className="h-3 w-3" />, color: colors.primary }
   ];
 
-  // Company links
+  // Company links with proper routing
   const companyLinks = [
-    { name: "About Us", icon: <Users className="h-3 w-3" /> },
-    { name: "Location", icon: <Briefcase className="h-3 w-3" /> },
-    { name: "Privacy Policy", icon: <FileText className="h-3 w-3" /> },
-    { name: "Our Blogs", icon: <MessageSquare className="h-3 w-3" /> },
-    { name: "Our Partners", icon: <Award className="h-3 w-3" /> },
-    { name: "Our Support", icon: <MessageSquare className="h-3 w-3" /> }
+    { name: "About Us", icon: <Users className="h-3 w-3" />, path: "/company/about-us" },
+    { name: "Location", icon: <Briefcase className="h-3 w-3" />, path: "/company/about-us" },
+    { name: "Privacy Policy", icon: <FileText className="h-3 w-3" />, path: "/privacy-policy" },
+    { name: "Our Blogs", icon: <MessageSquare className="h-3 w-3" />, path: "/blog" },
+    { name: "Our Partners", icon: <Award className="h-3 w-3" />, path: "/company/about-us" },
+    { name: "Our Support", icon: <MessageSquare className="h-3 w-3" />, path: "/contact" }
   ];
 
   // Contact info
@@ -124,12 +128,50 @@ const Footer = () => {
     { name: "Instagram", icon: <Instagram className="h-3.5 w-3.5" />, color: "#E4405F" }
   ];
 
-  // Newsletter
-  const handleSubscribe = (e) => {
+  // Newsletter subscription handler
+  const handleSubscribe = async (e) => {
     e.preventDefault();
-    setSubscribed(true);
-    setTimeout(() => setSubscribed(false), 3000);
-    e.target.reset();
+    setIsSubmitting(true);
+    setSubscriptionError('');
+    
+    const formData = new FormData(e.target);
+    const email = formData.get('email');
+    
+    try {
+      const response = await newsletterService.subscribe(email);
+      if (response.success) {
+        setSubscribed(true);
+        e.target.reset();
+        // Clear success message after 5 seconds
+        setTimeout(() => setSubscribed(false), 5000);
+      }
+    } catch (error) {
+      // Handle error
+      if (error.response) {
+        // Server responded with error
+        const errorData = error.response.data;
+        if (errorData.email) {
+          setSubscriptionError(errorData.email[0]);
+        } else if (errorData.error) {
+          setSubscriptionError(errorData.error);
+        } else if (errorData.message) {
+          setSubscriptionError(errorData.message);
+        } else {
+          setSubscriptionError('Failed to subscribe. Please try again.');
+        }
+      } else if (error.request) {
+        // Request was made but no response
+        setSubscriptionError('Network error. Please check your connection.');
+      } else {
+        // Something else happened
+        setSubscriptionError('An unexpected error occurred.');
+      }
+      
+      // Clear error after 5 seconds
+      setTimeout(() => setSubscriptionError(''), 5000);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Compact Global presence component
@@ -231,9 +273,9 @@ const Footer = () => {
             </h3>
             <div className="space-y-1">
               {services.map((service) => (
-                <a
+                <Link
                   key={service.name}
-                  href="#"
+                  to="/services"
                   className="group flex items-center gap-1.5 p-1 rounded hover:bg-white/5 transition-all duration-200"
                 >
                   <div 
@@ -247,7 +289,7 @@ const Footer = () => {
                   <span className="text-blue-100/80 text-[12px] group-hover:text-white">
                     {service.name}
                   </span>
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -259,9 +301,9 @@ const Footer = () => {
             </h3>
             <div className="space-y-1">
               {companyLinks.map((link) => (
-                <a
+                <Link
                   key={link.name}
-                  href="#"
+                  to={link.path}
                   className="group flex items-center gap-1.5 p-1 rounded hover:bg-white/5 transition-all duration-200"
                 >
                   <div className="p-1 rounded bg-white/5">
@@ -272,7 +314,7 @@ const Footer = () => {
                   <span className="text-blue-100/80 text-[12px] group-hover:text-white">
                     {link.name}
                   </span>
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -293,20 +335,36 @@ const Footer = () => {
                   required
                   placeholder="Your email"
                   className="w-full px-2.5 py-1.5 text-[13px] rounded bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-cyan-500"
+                  disabled={isSubmitting}
                 />
                 <button
                   type="submit"
-                  className="w-full py-1.5 text-[13px] rounded bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 transition-all flex items-center justify-center gap-1"
+                  disabled={isSubmitting}
+                  className="w-full py-1.5 text-[13px] rounded bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 transition-all flex items-center justify-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <span className="text-white font-semibold">Subscribe</span>
-                  <Send className="h-2.5 w-2.5 text-white" />
+                  {isSubmitting ? (
+                    <span className="text-white font-semibold">Subscribing...</span>
+                  ) : (
+                    <>
+                      <span className="text-white font-semibold">Subscribe</span>
+                      <Send className="h-2.5 w-2.5 text-white" />
+                    </>
+                  )}
                 </button>
               </form>
               
+              {/* Success Message */}
               {subscribed && (
-                <div className="mt-1.5 flex items-center justify-center gap-1 text-green-400 text-[11px]">
+                <div className="mt-1.5 flex items-center justify-center gap-1 text-green-400 text-[11px] animate-fadeIn">
                   <Sparkles className="h-2.5 w-2.5" />
-                  <span>Welcome aboard! 🚀</span>
+                  <span>Successfully subscribed! Welcome aboard! 🚀</span>
+                </div>
+              )}
+              
+              {/* Error Message */}
+              {subscriptionError && (
+                <div className="mt-1.5 flex items-center justify-center gap-1 text-red-400 text-[11px] animate-fadeIn">
+                  <span>⚠️ {subscriptionError}</span>
                 </div>
               )}
             </div>
@@ -338,7 +396,7 @@ const Footer = () => {
                     <MapPin className="h-3.5 w-3.5 text-cyan-300" />
                   </div>
                   <span className="text-blue-100/80 text-[12px]">
-                  Nairobi
+                    Nairobi
                   </span>
                 </div>
               </div>

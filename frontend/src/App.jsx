@@ -29,6 +29,10 @@ import ProtectedRoute from './components/ProtectedRoute';
 // Error Pages
 import NotFound from './pages/NotFound';
 
+// New Footer Components
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import Blog from './pages/Blog';
+
 // Public Layout Component (with Header)
 const PublicLayout = ({ children }) => (
   <>
@@ -221,6 +225,20 @@ function App() {
           <Route path="/company/newsroom" element={
             <PublicLayout>
               <Company />
+            </PublicLayout>
+          } />
+          
+          {/* ========== NEW FOOTER ROUTES (with Header + Footer) ========== */}
+          
+          <Route path="/privacy-policy" element={
+            <PublicLayout>
+              <PrivacyPolicy />
+            </PublicLayout>
+          } />
+          
+          <Route path="/blog" element={
+            <PublicLayout>
+              <Blog />
             </PublicLayout>
           } />
           
