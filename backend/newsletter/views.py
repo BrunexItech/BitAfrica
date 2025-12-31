@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from django.core.mail import send_mail
 from django.conf import settings
+from .models import Subscriber
 from .serializers import NewsletterSubscribeSerializer
 import logging
 

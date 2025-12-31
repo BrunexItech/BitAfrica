@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import newsletterService from '../services/newsletterService'; // ADD THIS IMPORT
+import newsletterService from '../services/newsletterService';
 import {
   Globe, Mail, Phone, MapPin, Sparkles, Brain,
   Zap, Shield, Cloud, Terminal, Cpu, Database,
@@ -128,47 +128,56 @@ const Footer = () => {
     { name: "Instagram", icon: <Instagram className="h-3.5 w-3.5" />, color: "#E4405F" }
   ];
 
-  // Newsletter subscription handler
+  // Newsletter subscription handler - FINAL CORRECTED VERSION
   const handleSubscribe = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubscriptionError('');
+    setSubscribed(false);
     
     const formData = new FormData(e.target);
     const email = formData.get('email');
     
     try {
       const response = await newsletterService.subscribe(email);
-      if (response.success) {
+      
+      // Success case (201 Created)
+      if (response.success === true) {
         setSubscribed(true);
         e.target.reset();
-        // Clear success message after 5 seconds
         setTimeout(() => setSubscribed(false), 5000);
       }
     } catch (error) {
-      // Handle error
-      if (error.response) {
-        // Server responded with error
-        const errorData = error.response.data;
-        if (errorData.email) {
-          setSubscriptionError(errorData.email[0]);
-        } else if (errorData.error) {
-          setSubscriptionError(errorData.error);
-        } else if (errorData.message) {
-          setSubscriptionError(errorData.message);
+      // Handle duplicate email (400 error) as success
+      if (error.response?.status === 400) {
+        const errorMessage = error.response?.data?.email?.[0] || '';
+        
+        if (errorMessage.includes('already subscribed')) {
+          // Email already subscribed - treat as success
+          setSubscribed(true);
+          e.target.reset();
+          setTimeout(() => setSubscribed(false), 5000);
         } else {
-          setSubscriptionError('Failed to subscribe. Please try again.');
+          // Other 400 errors (invalid email format, etc.)
+          setSubscriptionError(errorMessage || 'Invalid email address');
+          setTimeout(() => setSubscriptionError(''), 5000);
         }
-      } else if (error.request) {
-        // Request was made but no response
-        setSubscriptionError('Network error. Please check your connection.');
-      } else {
-        // Something else happened
-        setSubscriptionError('An unexpected error occurred.');
+      } 
+      // Handle server errors
+      else if (error.response?.status === 500) {
+        setSubscriptionError('Server error. Please try again later.');
+        setTimeout(() => setSubscriptionError(''), 5000);
       }
-      
-      // Clear error after 5 seconds
-      setTimeout(() => setSubscriptionError(''), 5000);
+      // Handle network errors
+      else if (!error.response) {
+        setSubscriptionError('Network error. Please check your connection.');
+        setTimeout(() => setSubscriptionError(''), 5000);
+      }
+      // Handle other errors
+      else {
+        setSubscriptionError('Failed to subscribe. Please try again.');
+        setTimeout(() => setSubscriptionError(''), 5000);
+      }
     } finally {
       setIsSubmitting(false);
     }
