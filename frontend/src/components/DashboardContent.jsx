@@ -553,37 +553,43 @@ const DashboardContent = ({
     const isLastModule = currentModuleIndex === modules.length - 1;
     
     return (
-      <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} px-3 xs:px-4 sm:p-4 md:p-6 select-none`}>
-        <div className="max-w-4xl mx-auto">
-          {/* Header - RESPONSIVE FIX: Stack on mobile */}
-          <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-3 mb-6">
+      <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} px-2 xs:px-3 sm:px-4 md:p-6 select-none overflow-x-hidden`}>
+        <div className="max-w-full sm:max-w-4xl mx-auto">
+          {/* Header - MOBILE FIX: Better stacking and text handling */}
+          <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-2 mb-4 xs:mb-6">
             <button
               onClick={resetToDashboard}
-              className={`flex items-center justify-center xs:justify-start ${darkMode ? 'text-gray-300 hover:text-blue-400' : 'text-gray-700 hover:text-blue-600'} transition-colors select-none text-sm xs:text-base`}
+              className={`flex items-center justify-center xs:justify-start ${darkMode ? 'text-gray-300 hover:text-blue-400' : 'text-gray-700 hover:text-blue-600'} transition-colors select-none text-xs xs:text-sm sm:text-base w-full xs:w-auto`}
             >
-              <ArrowLeft className="h-4 w-4 xs:h-5 xs:w-5 mr-2" />
-              Back to Dashboard
+              <ArrowLeft className="h-3 w-3 xs:h-4 xs:w-4 sm:h-5 sm:w-5 mr-1 xs:mr-2" />
+              <span className="truncate">Back to Dashboard</span>
             </button>
-            <div className={`text-xs xs:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} select-none text-center xs:text-right`}>
+            <div className={`text-xs xs:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} select-none text-center xs:text-right whitespace-nowrap`}>
               Module {currentModuleIndex + 1} of {modules.length}
             </div>
           </div>
 
-          {/* Course Info Card - RESPONSIVE FIX: Adjust padding and layout */}
-          <div className={`rounded-xl p-4 xs:p-5 sm:p-6 mb-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg border ${darkMode ? 'border-gray-700' : 'border-gray-200'} select-none`}>
-            <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4 mb-4">
-              <div className="flex-1">
-                <h1 className={`text-xl xs:text-2xl sm:text-3xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>{selectedCourse.title}</h1>
-                <p className={`mb-4 text-sm xs:text-base ${darkMode ? 'text-gray-300' : 'text-gray-700'} select-none`}>{selectedCourse.description}</p>
+          {/* Course Info Card - MOBILE FIX: Better text wrapping */}
+          <div className={`rounded-lg xs:rounded-xl sm:rounded-xl p-3 xs:p-4 sm:p-6 mb-4 xs:mb-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg border ${darkMode ? 'border-gray-700' : 'border-gray-200'} select-none overflow-hidden`}>
+            <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-3 mb-3 xs:mb-4">
+              <div className="flex-1 min-w-0">
+                <h1 className={`text-lg xs:text-xl sm:text-2xl md:text-3xl font-bold mb-1 xs:mb-2 break-words ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>
+                  {selectedCourse.title}
+                </h1>
+                <p className={`mb-3 xs:mb-4 text-xs xs:text-sm sm:text-base ${darkMode ? 'text-gray-300' : 'text-gray-700'} select-none break-words`}>
+                  {selectedCourse.description}
+                </p>
               </div>
-              <div className={`px-3 xs:px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} border ${courseColor.border} select-none flex-shrink-0 self-start`}>
-                <span className={`font-medium text-sm xs:text-base ${courseColor.text} select-none`}>{selectedCourse.category}</span>
+              <div className={`px-2 xs:px-3 sm:px-4 py-1 xs:py-2 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} border ${courseColor.border} select-none flex-shrink-0 self-start max-w-full overflow-hidden`}>
+                <span className={`font-medium text-xs xs:text-sm sm:text-base ${courseColor.text} select-none truncate block`}>
+                  {selectedCourse.category}
+                </span>
               </div>
             </div>
 
-            {/* Module Progress Dots - RESPONSIVE FIX: Better wrapping and sizing */}
-            <div className="mb-6">
-              <div className="flex flex-wrap justify-center xs:justify-start gap-1.5 xs:gap-2 mb-4 select-none">
+            {/* Module Progress Dots - MOBILE FIX: Better wrapping */}
+            <div className="mb-4 xs:mb-6">
+              <div className="flex flex-wrap justify-center xs:justify-start gap-1 xs:gap-1.5 sm:gap-2 mb-3 xs:mb-4 select-none">
                 {modules.map((module, index) => {
                   if (!module) return null;
                   const isCompleted = module.is_completed;
@@ -599,9 +605,9 @@ const DashboardContent = ({
                           setIsCurrentModuleCompleted(module.is_completed || false);
                         }
                       }}
-                      className={`w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs xs:text-sm font-medium transition-all select-none ${
+                      className={`w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-xs font-medium transition-all select-none flex-shrink-0 ${
                         isCurrent 
-                          ? 'bg-blue-600 text-white ring-2 ring-blue-300 dark:ring-blue-700 shadow-lg' 
+                          ? 'bg-blue-600 text-white ring-1 xs:ring-2 ring-blue-300 dark:ring-blue-700 shadow-lg' 
                           : isCompleted
                           ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200 hover:scale-110'
                           : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 hover:scale-110'
@@ -614,17 +620,18 @@ const DashboardContent = ({
                 })}
               </div>
               
-              <div className="flex flex-wrap items-center justify-center xs:justify-start gap-3 text-xs xs:text-sm select-none">
-                <span className={`flex items-center ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                  <Clock className="h-3 w-3 xs:h-4 xs:w-4 mr-1" />
+              <div className="flex flex-wrap items-center justify-center xs:justify-start gap-2 xs:gap-3 text-xs select-none">
+                <span className={`flex items-center ${darkMode ? 'text-gray-400' : 'text-gray-600'} whitespace-nowrap`}>
+                  <Clock className="h-3 w-3 xs:h-4 xs:w-4 mr-1 flex-shrink-0" />
                   {currentModule.estimated_time || 10} min
                 </span>
-                <span className={`flex items-center ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                  <FileText className="h-3 w-3 xs:h-4 xs:w-4 mr-1" />
-                  {completedModulesCount} of {modules.length} modules completed
+                <span className={`flex items-center ${darkMode ? 'text-gray-400' : 'text-gray-600'} whitespace-nowrap`}>
+                  <FileText className="h-3 w-3 xs:h-4 xs:w-4 mr-1 flex-shrink-0" />
+                  <span className="hidden xs:inline">{completedModulesCount} of {modules.length} modules completed</span>
+                  <span className="xs:hidden">{completedModulesCount}/{modules.length} modules</span>
                 </span>
-                <span className={`flex items-center ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                  <TrendingUp className="h-3 w-3 xs:h-4 xs:w-4 mr-1" />
+                <span className={`flex items-center ${darkMode ? 'text-gray-400' : 'text-gray-600'} whitespace-nowrap`}>
+                  <TrendingUp className="h-3 w-3 xs:h-4 xs:w-4 mr-1 flex-shrink-0" />
                   {Math.round((completedModulesCount / (modules.length || 1)) * 100)}% complete
                 </span>
               </div>
@@ -634,7 +641,9 @@ const DashboardContent = ({
             <div className="mb-2">
               <div className="flex justify-between text-xs xs:text-sm mb-1 select-none">
                 <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Module Progress</span>
-                <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} select-none`}>{Math.round((completedModulesCount / (modules.length || 1)) * 100)}%</span>
+                <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} select-none`}>
+                  {Math.round((completedModulesCount / (modules.length || 1)) * 100)}%
+                </span>
               </div>
               <div className={`h-1.5 xs:h-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
                 <div 
@@ -645,41 +654,43 @@ const DashboardContent = ({
             </div>
           </div>
 
-          {/* Module Content Card - RESPONSIVE FIX: Adjust padding and text */}
-          <div className={`rounded-xl p-4 xs:p-5 sm:p-6 mb-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-            <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-3 mb-6">
-              <div className="flex-1">
-                <h2 className={`text-lg xs:text-xl sm:text-2xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>{currentModule.title}</h2>
-                <div className={`flex items-center text-xs xs:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} select-none`}>
-                  <Clock className="h-3 w-3 xs:h-4 xs:w-4 mr-1" />
+          {/* Module Content Card - MOBILE FIX: Better text handling */}
+          <div className={`rounded-lg xs:rounded-xl sm:rounded-xl p-3 xs:p-4 sm:p-6 mb-4 xs:mb-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg border ${darkMode ? 'border-gray-700' : 'border-gray-200'} overflow-hidden`}>
+            <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-2 xs:gap-3 mb-4 xs:mb-6">
+              <div className="flex-1 min-w-0">
+                <h2 className={`text-base xs:text-lg sm:text-xl md:text-2xl font-bold mb-1 xs:mb-2 break-words ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>
+                  {currentModule.title}
+                </h2>
+                <div className={`flex items-center text-xs xs:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} select-none whitespace-nowrap`}>
+                  <Clock className="h-3 w-3 xs:h-4 xs:w-4 mr-1 flex-shrink-0" />
                   Estimated time: {currentModule.estimated_time || 10} minutes
                 </div>
               </div>
               {isCurrentModuleCompleted && (
-                <span className="flex items-center px-2 xs:px-3 py-1 rounded-full bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200 select-none text-xs xs:text-sm self-start xs:self-auto">
-                  <Check className="h-3 w-3 xs:h-4 xs:w-4 mr-1" />
+                <span className="flex items-center px-2 xs:px-3 py-1 rounded-full bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200 select-none text-xs xs:text-sm self-start xs:self-auto whitespace-nowrap mt-2 xs:mt-0">
+                  <Check className="h-3 w-3 xs:h-4 xs:w-4 mr-1 flex-shrink-0" />
                   Completed
                 </span>
               )}
             </div>
 
             {/* Lesson Content - ALLOW TEXT SELECTION HERE ONLY */}
-            <div className="mb-6 xs:mb-8" style={{ userSelect: 'text' }}>
-              <div className={`whitespace-pre-line leading-relaxed text-base xs:text-lg ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+            <div className="mb-4 xs:mb-6 sm:mb-8" style={{ userSelect: 'text' }}>
+              <div className={`whitespace-pre-line leading-relaxed text-sm xs:text-base sm:text-lg break-words ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>
                 {currentModule.content}
               </div>
             </div>
 
-            {/* Code Example - RESPONSIVE FIX: Adjust padding and text */}
+            {/* Code Example - MOBILE FIX: Better overflow handling */}
             {currentModule.code_example && (
-              <div className="mb-6 xs:mb-8" style={{ userSelect: 'text' }}>
-                <div className="flex items-center mb-3 xs:mb-4">
-                  <Terminal className="h-5 w-5 xs:h-6 xs:w-6 mr-2 xs:mr-3 text-blue-600 dark:text-blue-400" />
-                  <h3 className={`text-base xs:text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Code Example</h3>
+              <div className="mb-4 xs:mb-6 sm:mb-8" style={{ userSelect: 'text' }}>
+                <div className="flex items-center mb-2 xs:mb-3 sm:mb-4">
+                  <Terminal className="h-4 w-4 xs:h-5 xs:w-5 sm:h-6 sm:w-6 mr-2 xs:mr-3 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                  <h3 className={`text-sm xs:text-base sm:text-lg font-semibold break-words ${darkMode ? 'text-white' : 'text-gray-900'}`}>Code Example</h3>
                 </div>
-                <div className={`p-3 xs:p-4 rounded-lg border ${darkMode ? 'bg-gray-900 border-gray-700' : 'bg-gray-50 border-gray-200'}`}>
-                  <pre className="overflow-x-auto">
-                    <code className={`text-xs xs:text-sm ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>
+                <div className={`p-2 xs:p-3 sm:p-4 rounded-lg border ${darkMode ? 'bg-gray-900 border-gray-700' : 'bg-gray-50 border-gray-200'} overflow-auto`}>
+                  <pre className="overflow-x-auto text-xs xs:text-sm">
+                    <code className={`break-all ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}>
                       {currentModule.code_example}
                     </code>
                   </pre>
@@ -687,44 +698,44 @@ const DashboardContent = ({
               </div>
             )}
 
-            {/* Completion Success Animation - RESPONSIVE FIX: Adjust modal size */}
+            {/* Completion Success Animation - MOBILE FIX: Better modal sizing */}
             {showCompletionSuccess && (
-              <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 p-3 xs:p-4">
-                <div className="bg-white dark:bg-gray-800 rounded-xl xs:rounded-2xl p-5 xs:p-6 sm:p-8 text-center shadow-2xl animate-scale-up select-none w-full max-w-xs xs:max-w-sm sm:max-w-md mx-auto">
-                  <div className="w-16 h-16 xs:w-20 xs:h-20 sm:w-24 sm:h-24 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-4 xs:mb-6">
-                    <Check className="h-8 w-8 xs:h-10 xs:w-10 sm:h-12 sm:w-12 text-green-600 dark:text-green-400 animate-bounce" />
+              <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 p-2 xs:p-3 sm:p-4">
+                <div className="bg-white dark:bg-gray-800 rounded-lg xs:rounded-xl sm:rounded-2xl p-3 xs:p-4 sm:p-6 md:p-8 text-center shadow-2xl animate-scale-up select-none w-full max-w-[90vw] xs:max-w-xs sm:max-w-sm md:max-w-md mx-auto">
+                  <div className="w-14 h-14 xs:w-16 xs:h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-3 xs:mb-4 sm:mb-6">
+                    <Check className="h-6 w-6 xs:h-8 xs:w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-green-600 dark:text-green-400 animate-bounce" />
                   </div>
-                  <h3 className="text-xl xs:text-2xl font-bold text-gray-900 dark:text-white mb-2">Module Completed! 🎉</h3>
-                  <p className="text-sm xs:text-base text-gray-600 dark:text-gray-300 mb-4 xs:mb-6">
+                  <h3 className="text-base xs:text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-1 xs:mb-2 break-words">Module Completed! 🎉</h3>
+                  <p className="text-xs xs:text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 xs:mb-4 sm:mb-6 break-words">
                     {isLastModule ? 'Course completed!' : 'Moving to next module...'}
                   </p>
-                  <div className="w-24 xs:w-32 h-1.5 xs:h-2 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto overflow-hidden">
+                  <div className="w-20 xs:w-24 sm:w-32 h-1 xs:h-1.5 sm:h-2 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto overflow-hidden">
                     <div className="h-full bg-green-500 animate-progress"></div>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Course Completion Modal - RESPONSIVE FIX: Adjust modal size and buttons */}
+            {/* Course Completion Modal - MOBILE FIX: Better modal sizing */}
             {showCourseCompletionModal && (
-              <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/70 p-3 xs:p-4">
-                <div className="bg-white dark:bg-gray-800 rounded-xl xs:rounded-2xl p-5 xs:p-6 sm:p-8 text-center shadow-2xl max-w-xs xs:max-w-sm sm:max-w-md w-full animate-scale-up select-none">
-                  <div className="w-16 h-16 xs:w-20 xs:h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900/30 dark:to-orange-900/30 flex items-center justify-center mx-auto mb-4 xs:mb-6">
-                    <Trophy className="h-8 w-8 xs:h-10 xs:w-10 sm:h-12 sm:w-12 text-yellow-600 dark:text-yellow-400" />
+              <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/70 p-2 xs:p-3 sm:p-4">
+                <div className="bg-white dark:bg-gray-800 rounded-lg xs:rounded-xl sm:rounded-2xl p-3 xs:p-4 sm:p-6 md:p-8 text-center shadow-2xl max-w-[90vw] xs:max-w-xs sm:max-w-sm md:max-w-md w-full animate-scale-up select-none">
+                  <div className="w-14 h-14 xs:w-16 xs:h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900/30 dark:to-orange-900/30 flex items-center justify-center mx-auto mb-3 xs:mb-4 sm:mb-6">
+                    <Trophy className="h-6 w-6 xs:h-8 xs:w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-yellow-600 dark:text-yellow-400" />
                   </div>
-                  <h3 className="text-xl xs:text-2xl font-bold text-gray-900 dark:text-white mb-2 xs:mb-3">
+                  <h3 className="text-base xs:text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-1 xs:mb-2 sm:mb-3 break-words">
                     Course Completed! 🎊
                   </h3>
-                  <p className="text-sm xs:text-base text-gray-600 dark:text-gray-300 mb-4 xs:mb-6">
+                  <p className="text-xs xs:text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-2 xs:mb-3 sm:mb-4 break-words">
                     Congratulations! You've completed all {modules.length} modules of "{selectedCourse.title}".
                   </p>
-                  <p className="text-sm xs:text-base text-gray-600 dark:text-gray-300 mb-6 xs:mb-8">
+                  <p className="text-xs xs:text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 xs:mb-4 sm:mb-6 md:mb-8 break-words">
                     Ready to test your knowledge with a quiz?
                   </p>
-                  <div className="flex flex-col gap-2 xs:gap-3">
+                  <div className="flex flex-col gap-1 xs:gap-2 sm:gap-3">
                     <button
                       onClick={resetToDashboard}
-                      className="px-4 xs:px-5 py-2.5 xs:py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors select-none text-sm xs:text-base"
+                      className="px-3 xs:px-4 sm:px-5 py-2 xs:py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors select-none text-xs xs:text-sm sm:text-base break-words"
                     >
                       Return to Dashboard
                     </button>
@@ -733,9 +744,9 @@ const DashboardContent = ({
                         setShowCourseCompletionModal(false);
                         startQuiz(selectedCourse.id);
                       }}
-                      className="px-4 xs:px-5 py-2.5 xs:py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 transition-colors flex items-center justify-center select-none text-sm xs:text-base"
+                      className="px-3 xs:px-4 sm:px-5 py-2 xs:py-2.5 sm:py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 transition-colors flex items-center justify-center select-none text-xs xs:text-sm sm:text-base break-words"
                     >
-                      <Brain className="h-4 w-4 xs:h-5 xs:w-5 mr-2" />
+                      <Brain className="h-3 w-3 xs:h-4 xs:w-4 sm:h-5 sm:w-5 mr-1 xs:mr-2 flex-shrink-0" />
                       Take Quiz Now
                     </button>
                   </div>
@@ -743,59 +754,59 @@ const DashboardContent = ({
               </div>
             )}
 
-            {/* Navigation Buttons - RESPONSIVE FIX: Stack on mobile, adjust padding */}
-            <div className="flex flex-col sm:flex-row justify-between pt-6 border-t dark:border-gray-700 gap-3 xs:gap-4">
+            {/* Navigation Buttons - MOBILE FIX: Better stacking */}
+            <div className="flex flex-col sm:flex-row justify-between pt-4 xs:pt-6 border-t dark:border-gray-700 gap-2 xs:gap-3 sm:gap-4">
               <button
                 onClick={previousModule}
                 disabled={currentModuleIndex === 0}
-                className={`px-4 xs:px-5 sm:px-6 py-2.5 xs:py-3 rounded-lg flex items-center justify-center select-none text-sm xs:text-base ${
+                className={`px-3 xs:px-4 sm:px-5 md:px-6 py-2 xs:py-2.5 sm:py-3 rounded-lg flex items-center justify-center select-none text-xs xs:text-sm sm:text-base w-full sm:w-auto ${
                   currentModuleIndex === 0
                     ? 'opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600'
                     : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors'
                 }`}
               >
-                <ArrowLeft className="h-4 w-4 xs:h-5 xs:w-5 mr-2" />
-                Previous Module
+                <ArrowLeft className="h-3 w-3 xs:h-4 xs:w-4 sm:h-5 sm:w-5 mr-1 xs:mr-2 flex-shrink-0" />
+                <span className="truncate">Previous Module</span>
               </button>
 
-              <div className="flex flex-col xs:flex-row gap-2 xs:gap-3">
+              <div className="flex flex-col xs:flex-row gap-2 xs:gap-3 w-full sm:w-auto">
                 {!isCurrentModuleCompleted ? (
                   <button
                     onClick={markModuleCompleted}
                     disabled={moduleLoading || showCompletionSuccess}
-                    className="px-4 xs:px-5 sm:px-6 py-2.5 xs:py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed select-none text-sm xs:text-base"
+                    className="px-3 xs:px-4 sm:px-5 md:px-6 py-2 xs:py-2.5 sm:py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed select-none text-xs xs:text-sm sm:text-base w-full"
                   >
                     {moduleLoading ? (
                       <>
-                        <Loader2 className="h-4 w-4 xs:h-5 xs:w-5 mr-2 animate-spin" />
-                        Saving...
+                        <Loader2 className="h-3 w-3 xs:h-4 xs:w-4 sm:h-5 sm:w-5 mr-1 xs:mr-2 animate-spin flex-shrink-0" />
+                        <span className="truncate">Saving...</span>
                       </>
                     ) : showCompletionSuccess ? (
                       <>
-                        <Check className="h-4 w-4 xs:h-5 xs:w-5 mr-2" />
-                        Completed!
+                        <Check className="h-3 w-3 xs:h-4 xs:w-4 sm:h-5 sm:w-5 mr-1 xs:mr-2 flex-shrink-0" />
+                        <span className="truncate">Completed!</span>
                       </>
                     ) : (
                       <>
-                        <Check className="h-4 w-4 xs:h-5 xs:w-5 mr-2" />
-                        Mark as Completed
+                        <Check className="h-3 w-3 xs:h-4 xs:w-4 sm:h-5 sm:w-5 mr-1 xs:mr-2 flex-shrink-0" />
+                        <span className="truncate">Mark as Completed</span>
                       </>
                     )}
                   </button>
                 ) : (
                   <button
                     onClick={isLastModule ? () => setShowCourseCompletionModal(true) : nextModule}
-                    className="px-4 xs:px-5 sm:px-6 py-2.5 xs:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 flex items-center justify-center transition-colors select-none text-sm xs:text-base"
+                    className="px-3 xs:px-4 sm:px-5 md:px-6 py-2 xs:py-2.5 sm:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 flex items-center justify-center transition-colors select-none text-xs xs:text-sm sm:text-base w-full"
                   >
                     {isLastModule ? (
                       <>
-                        Finish Course
-                        <Trophy className="h-4 w-4 xs:h-5 xs:w-5 ml-2" />
+                        <span className="truncate">Finish Course</span>
+                        <Trophy className="h-3 w-3 xs:h-4 xs:w-4 sm:h-5 sm:w-5 ml-1 xs:ml-2 flex-shrink-0" />
                       </>
                     ) : (
                       <>
-                        Next Module
-                        <ChevronRight className="h-4 w-4 xs:h-5 xs:w-5 ml-2" />
+                        <span className="truncate">Next Module</span>
+                        <ChevronRight className="h-3 w-3 xs:h-4 xs:w-4 sm:h-5 sm:w-5 ml-1 xs:ml-2 flex-shrink-0" />
                       </>
                     )}
                   </button>
@@ -814,32 +825,36 @@ const DashboardContent = ({
     const isLastQuestion = currentQuestion === quizQuestions.length - 1;
     
     return (
-      <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} px-3 xs:px-4 sm:p-4 md:p-6 select-none`}>
-        <div className="max-w-4xl mx-auto">
-          {/* Header - RESPONSIVE FIX: Stack on mobile */}
-          <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-3 mb-6">
+      <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} px-2 xs:px-3 sm:px-4 md:p-6 select-none overflow-x-hidden`}>
+        <div className="max-w-full sm:max-w-4xl mx-auto">
+          {/* Header - MOBILE FIX: Better stacking */}
+          <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-2 mb-4 xs:mb-6">
             <button
               onClick={resetToDashboard}
-              className={`flex items-center justify-center xs:justify-start ${darkMode ? 'text-gray-300 hover:text-blue-400' : 'text-gray-700 hover:text-blue-600'} transition-colors select-none text-sm xs:text-base`}
+              className={`flex items-center justify-center xs:justify-start ${darkMode ? 'text-gray-300 hover:text-blue-400' : 'text-gray-700 hover:text-blue-600'} transition-colors select-none text-xs xs:text-sm sm:text-base w-full xs:w-auto`}
             >
-              <ArrowLeft className="h-4 w-4 xs:h-5 xs:w-5 mr-2" />
-              Back to Dashboard
+              <ArrowLeft className="h-3 w-3 xs:h-4 xs:w-4 sm:h-5 sm:w-5 mr-1 xs:mr-2" />
+              <span className="truncate">Back to Dashboard</span>
             </button>
-            <div className={`text-xs xs:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} select-none text-center xs:text-right`}>
+            <div className={`text-xs xs:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} select-none text-center xs:text-right whitespace-nowrap`}>
               Question {currentQuestion + 1} of {quizQuestions.length}
             </div>
           </div>
 
-          {/* Quiz Card - RESPONSIVE FIX: Adjust padding */}
-          <div className={`rounded-xl p-4 xs:p-5 sm:p-6 mb-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg border ${darkMode ? 'border-gray-700' : 'border-gray-200'} select-none`}>
-            <div className="mb-6">
-              <h1 className={`text-xl xs:text-2xl sm:text-3xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>Quiz: {selectedCourse.title}</h1>
-              <p className={`mb-4 text-sm xs:text-base ${darkMode ? 'text-gray-300' : 'text-gray-700'} select-none`}>Test your knowledge of {selectedCourse.category}</p>
+          {/* Quiz Card - MOBILE FIX: Better text handling */}
+          <div className={`rounded-lg xs:rounded-xl sm:rounded-xl p-3 xs:p-4 sm:p-6 mb-4 xs:mb-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg border ${darkMode ? 'border-gray-700' : 'border-gray-200'} select-none overflow-hidden`}>
+            <div className="mb-4 xs:mb-6">
+              <h1 className={`text-lg xs:text-xl sm:text-2xl md:text-3xl font-bold mb-1 xs:mb-2 break-words ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>
+                Quiz: {selectedCourse.title}
+              </h1>
+              <p className={`mb-3 xs:mb-4 text-xs xs:text-sm sm:text-base ${darkMode ? 'text-gray-300' : 'text-gray-700'} select-none break-words`}>
+                Test your knowledge of {selectedCourse.category}
+              </p>
             </div>
 
             {/* Progress Bar */}
-            <div className="mb-6 xs:mb-8">
-              <div className="flex justify-between text-xs xs:text-sm mb-2 select-none">
+            <div className="mb-4 xs:mb-6 sm:mb-8">
+              <div className="flex justify-between text-xs xs:text-sm mb-1 xs:mb-2 select-none">
                 <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Progress</span>
                 <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} select-none`}>
                   Score: <span className="text-blue-600 dark:text-blue-400">{score}</span>
@@ -853,30 +868,30 @@ const DashboardContent = ({
               </div>
             </div>
 
-            {/* Quiz Results View WITH ANSWER EXPLANATIONS - RESPONSIVE FIX: Adjust layout */}
+            {/* Quiz Results View WITH ANSWER EXPLANATIONS - MOBILE FIX: Better text wrapping */}
             {quizResults ? (
               <div>
-                <div className="text-center py-6 xs:py-8">
-                  <div className={`w-20 h-20 xs:w-24 xs:h-24 sm:w-32 sm:h-32 rounded-full mx-auto mb-4 xs:mb-6 flex items-center justify-center ${
+                <div className="text-center py-4 xs:py-6 sm:py-8">
+                  <div className={`w-16 h-16 xs:w-20 xs:h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full mx-auto mb-3 xs:mb-4 sm:mb-6 flex items-center justify-center ${
                     quizResults.percentage >= 70 
-                      ? 'bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 border-4 border-green-200 dark:border-green-800' 
-                      : 'bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900/30 dark:to-orange-900/30 border-4 border-yellow-200 dark:border-yellow-800'
+                      ? 'bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 border-2 xs:border-4 border-green-200 dark:border-green-800' 
+                      : 'bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900/30 dark:to-orange-900/30 border-2 xs:border-4 border-yellow-200 dark:border-yellow-800'
                   }`}>
                     {quizResults.percentage >= 70 ? (
-                      <Trophy className="h-10 w-10 xs:h-12 xs:w-12 sm:h-16 sm:w-16 text-green-600 dark:text-green-400" />
+                      <Trophy className="h-8 w-8 xs:h-10 xs:w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 text-green-600 dark:text-green-400" />
                     ) : (
-                      <Brain className="h-10 w-10 xs:h-12 xs:w-12 sm:h-16 sm:w-16 text-yellow-600 dark:text-yellow-400" />
+                      <Brain className="h-8 w-8 xs:h-10 xs:w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 text-yellow-600 dark:text-yellow-400" />
                     )}
                   </div>
                   
-                  <h2 className={`text-2xl xs:text-3xl font-bold mb-3 xs:mb-4 ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>
+                  <h2 className={`text-xl xs:text-2xl sm:text-3xl font-bold mb-2 xs:mb-3 sm:mb-4 break-words ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>
                     {quizResults.percentage >= 70 ? 'Quiz Passed! 🎉' : 'Good Effort! 💪'}
                   </h2>
-                  <p className={`text-lg xs:text-xl mb-4 xs:mb-6 ${darkMode ? 'text-gray-300' : 'text-gray-700'} select-none`}>
+                  <p className={`text-base xs:text-lg sm:text-xl mb-3 xs:mb-4 sm:mb-6 ${darkMode ? 'text-gray-300' : 'text-gray-700'} select-none break-words`}>
                     You scored <span className="font-bold">{quizResults.correct_answers}</span> out of <span className="font-bold">{quizResults.total_questions}</span> questions
                   </p>
                   
-                  <div className={`text-4xl xs:text-5xl font-bold mb-6 xs:mb-8 ${
+                  <div className={`text-3xl xs:text-4xl sm:text-5xl font-bold mb-4 xs:mb-6 sm:mb-8 ${
                     quizResults.percentage >= 90 ? 'text-green-600 dark:text-green-400' :
                     quizResults.percentage >= 70 ? 'text-blue-600 dark:text-blue-400' :
                     quizResults.percentage >= 50 ? 'text-yellow-600 dark:text-yellow-400' :
@@ -886,22 +901,26 @@ const DashboardContent = ({
                   </div>
                 </div>
 
-                {/* Question Breakdown with Explanations - RESPONSIVE FIX: Adjust padding */}
-                <div className="mb-6 xs:mb-8">
-                  <h3 className={`text-lg xs:text-xl font-semibold mb-4 xs:mb-6 ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>Question Breakdown</h3>
-                  <div className="space-y-3 xs:space-y-4">
+                {/* Question Breakdown with Explanations - MOBILE FIX: Better text handling */}
+                <div className="mb-4 xs:mb-6 sm:mb-8">
+                  <h3 className={`text-base xs:text-lg sm:text-xl font-semibold mb-3 xs:mb-4 sm:mb-6 break-words ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>
+                    Question Breakdown
+                  </h3>
+                  <div className="space-y-2 xs:space-y-3 sm:space-y-4">
                     {quizResults.details?.map((detail, index) => (
                       <div 
                         key={index}
-                        className={`p-3 xs:p-4 rounded-lg ${
+                        className={`p-2 xs:p-3 sm:p-4 rounded-lg ${
                           detail.is_correct 
                             ? darkMode ? 'bg-green-900/30 border border-green-800' : 'bg-green-50 border border-green-200'
                             : darkMode ? 'bg-red-900/30 border border-red-800' : 'bg-red-50 border border-red-200'
                         }`}
                       >
-                        <div className="flex justify-between items-start mb-2">
-                          <span className={`font-medium text-sm xs:text-base ${darkMode ? 'text-gray-100' : 'text-gray-900'} select-none`}>Question {index + 1}</span>
-                          <span className={`text-xs px-2 py-1 rounded-full ${
+                        <div className="flex justify-between items-start mb-1 xs:mb-2">
+                          <span className={`font-medium text-xs xs:text-sm sm:text-base break-words ${darkMode ? 'text-gray-100' : 'text-gray-900'} select-none`}>
+                            Question {index + 1}
+                          </span>
+                          <span className={`text-xs px-1 xs:px-2 py-0.5 xs:py-1 rounded-full flex-shrink-0 ${
                             detail.is_correct 
                               ? darkMode ? 'bg-green-800 text-green-200' : 'bg-green-100 text-green-800'
                               : darkMode ? 'bg-red-800 text-red-200' : 'bg-red-100 text-red-800'
@@ -909,18 +928,20 @@ const DashboardContent = ({
                             {detail.is_correct ? 'Correct ✓' : 'Incorrect ✗'}
                           </span>
                         </div>
-                        <p className={`text-xs xs:text-sm mb-1 ${darkMode ? 'text-gray-200' : 'text-gray-700'} select-none`}>
+                        <p className={`text-xs xs:text-sm mb-1 break-words ${darkMode ? 'text-gray-200' : 'text-gray-700'} select-none`}>
                           <span className="font-medium">Your answer:</span> Option {String.fromCharCode(64 + detail.selected_option)}
                           {!detail.is_correct && (
-                            <span className={`ml-1 xs:ml-2 ${darkMode ? 'text-green-300' : 'text-green-700'} select-none`}>
+                            <span className={`ml-1 ${darkMode ? 'text-green-300' : 'text-green-700'} select-none`}>
                               (Correct: Option {String.fromCharCode(64 + detail.correct_option)})
                             </span>
                           )}
                         </p>
                         {!detail.is_correct && detail.explanation && (
-                          <div className={`mt-2 p-2 xs:p-3 rounded ${darkMode ? 'bg-gray-700/70' : 'bg-gray-100'}`}>
-                            <p className={`text-xs xs:text-sm font-medium mb-1 ${darkMode ? 'text-blue-300' : 'text-blue-700'} select-none`}>Explanation:</p>
-                            <p className={`text-xs xs:text-sm ${darkMode ? 'text-gray-200' : 'text-gray-700'}`} style={{ userSelect: 'text' }}>
+                          <div className={`mt-1 xs:mt-2 p-2 xs:p-3 rounded ${darkMode ? 'bg-gray-700/70' : 'bg-gray-100'}`}>
+                            <p className={`text-xs xs:text-sm font-medium mb-0.5 xs:mb-1 ${darkMode ? 'text-blue-300' : 'text-blue-700'} select-none`}>
+                              Explanation:
+                            </p>
+                            <p className={`text-xs xs:text-sm break-words ${darkMode ? 'text-gray-200' : 'text-gray-700'}`} style={{ userSelect: 'text' }}>
                               {detail.explanation}
                             </p>
                           </div>
@@ -928,17 +949,19 @@ const DashboardContent = ({
                       </div>
                     )) || (
                       <div className="text-center py-4">
-                        <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>No quiz details available</p>
+                        <p className={`text-xs xs:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                          No quiz details available
+                        </p>
                       </div>
                     )}
                   </div>
                 </div>
 
-                {/* Action Buttons - RESPONSIVE FIX: Stack and adjust padding */}
-                <div className="flex flex-col sm:flex-row justify-center gap-2 xs:gap-3 pt-6 border-t dark:border-gray-700">
+                {/* Action Buttons - MOBILE FIX: Better stacking */}
+                <div className="flex flex-col sm:flex-row justify-center gap-1 xs:gap-2 sm:gap-3 pt-4 xs:pt-6 border-t dark:border-gray-700">
                   <button
                     onClick={resetToDashboard}
-                    className="px-4 xs:px-5 sm:px-6 py-2.5 xs:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 transition-colors select-none text-sm xs:text-base"
+                    className="px-3 xs:px-4 sm:px-5 md:px-6 py-2 xs:py-2.5 sm:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 transition-colors select-none text-xs xs:text-sm sm:text-base break-words"
                   >
                     Return to Dashboard
                   </button>
@@ -946,7 +969,7 @@ const DashboardContent = ({
                   {quizResults.percentage < 70 && (
                     <button
                       onClick={retakeQuiz}
-                      className="px-4 xs:px-5 sm:px-6 py-2.5 xs:py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 transition-colors select-none text-sm xs:text-base"
+                      className="px-3 xs:px-4 sm:px-5 md:px-6 py-2 xs:py-2.5 sm:py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 transition-colors select-none text-xs xs:text-sm sm:text-base break-words"
                     >
                       Retake Quiz
                     </button>
@@ -954,25 +977,25 @@ const DashboardContent = ({
                   
                   <button
                     onClick={() => startLearning(selectedCourse.id)}
-                    className="px-4 xs:px-5 sm:px-6 py-2.5 xs:py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors select-none text-sm xs:text-base"
+                    className="px-3 xs:px-4 sm:px-5 md:px-6 py-2 xs:py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors select-none text-xs xs:text-sm sm:text-base break-words"
                   >
                     Review Course
                   </button>
                 </div>
               </div>
             ) : (
-              /* Quiz Question View - RESPONSIVE FIX: Adjust layout and sizes */
+              /* Quiz Question View - MOBILE FIX: Better text wrapping */
               <>
-                <h3 className={`text-lg xs:text-xl font-semibold mb-4 xs:mb-6 ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>
+                <h3 className={`text-base xs:text-lg sm:text-xl font-semibold mb-3 xs:mb-4 sm:mb-6 break-words ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>
                   {currentQuizQuestion?.question || 'Question not available'}
                 </h3>
                 
-                <div className="space-y-2 xs:space-y-3 mb-6 xs:mb-8">
+                <div className="space-y-1 xs:space-y-2 sm:space-y-3 mb-4 xs:mb-6 sm:mb-8">
                   {currentQuizQuestion?.options?.map((option, index) => (
                     <button
                       key={index}
                       onClick={() => handleQuizAnswerSelect(currentQuestion, index)}
-                      className={`w-full text-left p-3 xs:p-4 rounded-lg border transition-all select-none ${
+                      className={`w-full text-left p-2 xs:p-3 sm:p-4 rounded-lg border transition-all select-none break-words ${
                         selectedAnswers[currentQuestion] === index
                           ? darkMode 
                             ? 'border-blue-500 bg-blue-900/30' 
@@ -983,20 +1006,22 @@ const DashboardContent = ({
                       }`}
                     >
                       <div className="flex items-center">
-                        <div className={`w-7 h-7 xs:w-8 xs:h-8 rounded-full border flex items-center justify-center mr-3 xs:mr-4 flex-shrink-0 ${
+                        <div className={`w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 rounded-full border flex items-center justify-center mr-2 xs:mr-3 sm:mr-4 flex-shrink-0 ${
                           selectedAnswers[currentQuestion] === index
                             ? 'border-blue-500 bg-blue-500 text-white'
                             : darkMode ? 'border-gray-600 text-gray-300' : 'border-gray-300 text-gray-700'
                         } select-none`}>
-                          <span className="font-medium text-sm xs:text-base">{String.fromCharCode(65 + index)}</span>
+                          <span className="font-medium text-xs xs:text-sm sm:text-base">{String.fromCharCode(65 + index)}</span>
                         </div>
-                        <span className={`text-sm xs:text-base ${darkMode ? 'text-gray-200' : 'text-gray-800'} select-none`}>{option || 'Option not available'}</span>
+                        <span className={`text-xs xs:text-sm sm:text-base break-words ${darkMode ? 'text-gray-200' : 'text-gray-800'} select-none`}>
+                          {option || 'Option not available'}
+                        </span>
                       </div>
                     </button>
-                  )) || <p className={darkMode ? 'text-gray-500' : 'text-gray-600'}>No options available</p>}
+                  )) || <p className={`text-xs xs:text-sm ${darkMode ? 'text-gray-500' : 'text-gray-600'} text-center`}>No options available</p>}
                 </div>
                 
-                <div className="flex flex-col xs:flex-row xs:justify-between gap-3">
+                <div className="flex flex-col xs:flex-row xs:justify-between gap-2 xs:gap-3">
                   <button
                     onClick={() => {
                       if (currentQuestion > 0) {
@@ -1005,7 +1030,7 @@ const DashboardContent = ({
                       }
                     }}
                     disabled={currentQuestion === 0}
-                    className={`px-4 xs:px-5 sm:px-6 py-2.5 xs:py-3 rounded-lg select-none text-sm xs:text-base ${
+                    className={`px-3 xs:px-4 sm:px-5 md:px-6 py-2 xs:py-2.5 sm:py-3 rounded-lg select-none text-xs xs:text-sm sm:text-base w-full xs:w-auto ${
                       currentQuestion === 0
                         ? 'opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800 text-gray-400'
                         : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
@@ -1021,7 +1046,7 @@ const DashboardContent = ({
                         setCurrentQuestion(prev => prev + 1);
                       }}
                       disabled={selectedAnswers[currentQuestion] === undefined}
-                      className={`px-4 xs:px-5 sm:px-6 py-2.5 xs:py-3 rounded-lg select-none text-sm xs:text-base ${
+                      className={`px-3 xs:px-4 sm:px-5 md:px-6 py-2 xs:py-2.5 sm:py-3 rounded-lg select-none text-xs xs:text-sm sm:text-base w-full xs:w-auto ${
                         selectedAnswers[currentQuestion] === undefined
                           ? 'opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800 text-gray-400'
                           : 'bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800'
@@ -1033,7 +1058,7 @@ const DashboardContent = ({
                     <button
                       onClick={submitQuiz}
                       disabled={selectedAnswers[currentQuestion] === undefined}
-                      className={`px-4 xs:px-5 sm:px-6 py-2.5 xs:py-3 rounded-lg select-none text-sm xs:text-base ${
+                      className={`px-3 xs:px-4 sm:px-5 md:px-6 py-2 xs:py-2.5 sm:py-3 rounded-lg select-none text-xs xs:text-sm sm:text-base w-full xs:w-auto ${
                         selectedAnswers[currentQuestion] === undefined
                           ? 'opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800 text-gray-400'
                           : 'bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800'
@@ -1053,37 +1078,37 @@ const DashboardContent = ({
 
   // Dashboard View (Main Content)
   return (
-    <div className="flex select-none">
-      {/* Sidebar - RESPONSIVE FIX: Hidden on small screens, width adjustment */}
+    <div className="flex select-none overflow-x-hidden">
+      {/* Sidebar - MOBILE FIX: Hidden on small screens */}
       {sidebarOpen && (
         <aside className={`w-48 lg:w-56 xl:w-64 ${darkMode ? 'bg-gray-800' : 'bg-white'} border-r ${darkMode ? 'border-gray-700' : 'border-gray-200'} min-h-screen sticky top-16 hidden lg:block select-none`}>
           <div className="p-4 lg:p-6">
-            <h2 className={`font-semibold text-base lg:text-lg mb-4 lg:mb-6 flex items-center ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>
-              <Home size={18} className="mr-2 lg:mr-3" />
+            <h2 className={`font-semibold text-base lg:text-lg mb-4 lg:mb-6 flex items-center ${darkMode ? 'text-white' : 'text-gray-900'} select-none break-words`}>
+              <Home size={18} className="mr-2 lg:mr-3 flex-shrink-0" />
               Navigation
             </h2>
             <nav className="space-y-1 lg:space-y-2 mb-6 lg:mb-8 select-none">
-              <a href="#" className={`flex items-center p-2 lg:p-3 rounded-lg ${darkMode ? 'bg-blue-900/30 text-blue-300 border border-blue-800' : 'bg-blue-50 text-blue-700 border border-blue-200'} select-none text-sm lg:text-base`}>
-                <BookOpen size={18} className="mr-2 lg:mr-3" />
+              <a href="#" className={`flex items-center p-2 lg:p-3 rounded-lg ${darkMode ? 'bg-blue-900/30 text-blue-300 border border-blue-800' : 'bg-blue-50 text-blue-700 border border-blue-200'} select-none text-sm lg:text-base break-words`}>
+                <BookOpen size={18} className="mr-2 lg:mr-3 flex-shrink-0" />
                 Learning Dashboard
               </a>
-              <a href="#" className={`flex items-center p-2 lg:p-3 rounded-lg ${darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'} select-none text-sm lg:text-base`}>
-                <BarChart size={18} className="mr-2 lg:mr-3" />
+              <a href="#" className={`flex items-center p-2 lg:p-3 rounded-lg ${darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'} select-none text-sm lg:text-base break-words`}>
+                <BarChart size={18} className="mr-2 lg:mr-3 flex-shrink-0" />
                 Progress Analytics
               </a>
-              <a href="#" className={`flex items-center p-2 lg:p-3 rounded-lg ${darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'} select-none text-sm lg:text-base`}>
-                <Award size={18} className="mr-2 lg:mr-3" />
+              <a href="#" className={`flex items-center p-2 lg:p-3 rounded-lg ${darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'} select-none text-sm lg:text-base break-words`}>
+                <Award size={18} className="mr-2 lg:mr-3 flex-shrink-0" />
                 Achievements
               </a>
-              <a href="#" className={`flex items-center p-2 lg:p-3 rounded-lg ${darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'} select-none text-sm lg:text-base`}>
-                <Calendar size={18} className="mr-2 lg:mr-3" />
+              <a href="#" className={`flex items-center p-2 lg:p-3 rounded-lg ${darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'} select-none text-sm lg:text-base break-words`}>
+                <Calendar size={18} className="mr-2 lg:mr-3 flex-shrink-0" />
                 Study Plan
               </a>
             </nav>
 
             {/* Progress Overview */}
             <div className="mb-6 lg:mb-8 select-none">
-              <h3 className={`font-semibold mb-3 lg:mb-4 ${darkMode ? 'text-white' : 'text-gray-900'} select-none text-sm lg:text-base`}>Progress Overview</h3>
+              <h3 className={`font-semibold mb-3 lg:mb-4 ${darkMode ? 'text-white' : 'text-gray-900'} select-none text-sm lg:text-base break-words`}>Progress Overview</h3>
               <div className="space-y-3 lg:space-y-4 select-none">
                 <div>
                   <div className="flex justify-between text-xs lg:text-sm mb-1 select-none">
@@ -1098,15 +1123,15 @@ const DashboardContent = ({
                   </div>
                 </div>
                 <div className="flex items-center justify-between select-none">
-                  <span className={`text-xs lg:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Completed Modules</span>
-                  <span className={`font-semibold ${darkMode ? 'text-gray-300' : 'text-gray-700'} select-none`}>
+                  <span className={`text-xs lg:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} break-words`}>Completed Modules</span>
+                  <span className={`font-semibold ${darkMode ? 'text-gray-300' : 'text-gray-700'} select-none whitespace-nowrap`}>
                     {stats?.completed_modules || 0}/{stats?.total_modules || 0}
                   </span>
                 </div>
                 <div className="flex items-center justify-between select-none">
-                  <span className={`text-xs lg:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Learning Streak</span>
-                  <span className={`font-semibold flex items-center ${darkMode ? 'text-gray-300' : 'text-gray-700'} select-none`}>
-                    <Flame size={14} className="mr-1 text-orange-500" />
+                  <span className={`text-xs lg:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} break-words`}>Learning Streak</span>
+                  <span className={`font-semibold flex items-center ${darkMode ? 'text-gray-300' : 'text-gray-700'} select-none whitespace-nowrap`}>
+                    <Flame size={14} className="mr-1 text-orange-500 flex-shrink-0" />
                     {stats?.learning_streak || 0} days
                   </span>
                 </div>
@@ -1115,13 +1140,13 @@ const DashboardContent = ({
 
             {/* Recent Achievements */}
             <div className="select-none">
-              <h3 className={`font-semibold mb-3 lg:mb-4 ${darkMode ? 'text-white' : 'text-gray-900'} select-none text-sm lg:text-base`}>Recent Achievements</h3>
+              <h3 className={`font-semibold mb-3 lg:mb-4 ${darkMode ? 'text-white' : 'text-gray-900'} select-none text-sm lg:text-base break-words`}>Recent Achievements</h3>
               <div className="space-y-1 lg:space-y-2 select-none">
                 {achievements.slice(0, 3).map(achievement => {
                   if (!achievement) return null;
                   return (
-                    <div key={achievement.id} className={`flex items-center p-2 lg:p-3 rounded-lg ${darkMode ? achievement.is_earned ? 'bg-yellow-900/20 border border-yellow-800' : 'bg-gray-700' : achievement.is_earned ? 'bg-yellow-50 border border-yellow-200' : 'bg-gray-100'} ${!achievement.is_earned && 'opacity-60'} select-none`}>
-                      <div className={`w-8 h-8 lg:w-10 lg:h-10 rounded-full flex items-center justify-center mr-2 lg:mr-3 ${achievement.is_earned ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-200' : 'bg-gray-200 text-gray-400 dark:bg-gray-600 dark:text-gray-500'} select-none`}>
+                    <div key={achievement.id} className={`flex items-center p-2 lg:p-3 rounded-lg ${darkMode ? achievement.is_earned ? 'bg-yellow-900/20 border border-yellow-800' : 'bg-gray-700' : achievement.is_earned ? 'bg-yellow-50 border border-yellow-200' : 'bg-gray-100'} ${!achievement.is_earned && 'opacity-60'} select-none overflow-hidden`}>
+                      <div className={`w-8 h-8 lg:w-10 lg:h-10 rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0 ${achievement.is_earned ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-200' : 'bg-gray-200 text-gray-400 dark:bg-gray-600 dark:text-gray-500'} select-none`}>
                         <span className="text-sm lg:text-lg">{achievement.icon || '🏆'}</span>
                       </div>
                       <div className="flex-1 min-w-0">
@@ -1138,32 +1163,32 @@ const DashboardContent = ({
         </aside>
       )}
 
-      {/* Main Content - RESPONSIVE FIX: Adjust padding */}
-      <main className={`flex-1 px-3 xs:px-4 sm:p-4 md:p-6 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} select-none`}>
-        {/* Welcome Section - RESPONSIVE FIX: Stack and adjust text */}
-        <div className={`rounded-xl xs:rounded-2xl p-4 xs:p-5 sm:p-6 md:p-8 mb-6 sm:mb-8 ${darkMode ? 'bg-blue-900/20' : 'bg-blue-50/80'} border ${darkMode ? 'border-blue-800/30' : 'border-blue-200'} shadow-lg select-none`}>
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 xs:gap-6">
-            <div className="flex-1">
-              <h1 className={`text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 xs:mb-3 ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>
+      {/* Main Content - MOBILE FIX: Better overflow handling */}
+      <main className={`flex-1 px-2 xs:px-3 sm:px-4 md:p-6 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} select-none overflow-x-hidden`}>
+        {/* Welcome Section - MOBILE FIX: Better text wrapping */}
+        <div className={`rounded-lg xs:rounded-xl sm:rounded-2xl p-3 xs:p-4 sm:p-6 md:p-8 mb-4 xs:mb-6 sm:mb-8 ${darkMode ? 'bg-blue-900/20' : 'bg-blue-50/80'} border ${darkMode ? 'border-blue-800/30' : 'border-blue-200'} shadow-lg select-none overflow-hidden`}>
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 xs:gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0">
+              <h1 className={`text-lg xs:text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold mb-1 xs:mb-2 sm:mb-3 break-words ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>
                 Welcome back, {getUserDisplayName()} 👋
               </h1>
-              <p className={`mb-4 xs:mb-6 text-base xs:text-lg ${darkMode ? 'text-blue-200' : 'text-blue-800'} select-none`}>
+              <p className={`mb-3 xs:mb-4 sm:mb-6 text-sm xs:text-base sm:text-lg ${darkMode ? 'text-blue-200' : 'text-blue-800'} select-none break-words`}>
                 {stats?.completed_modules || 0} modules completed • Level {stats?.level || 1}
               </p>
-              <div className="flex flex-col xs:flex-row xs:items-center gap-3 xs:gap-4 select-none">
-                <div className="flex items-center select-none">
-                  <div className={`w-24 xs:w-28 sm:w-32 ${darkMode ? 'bg-blue-800/40' : 'bg-blue-100'} rounded-full h-2 xs:h-3 mr-3`}>
+              <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-3 sm:gap-4 select-none">
+                <div className="flex items-center select-none min-w-0">
+                  <div className={`w-20 xs:w-24 sm:w-28 md:w-32 ${darkMode ? 'bg-blue-800/40' : 'bg-blue-100'} rounded-full h-1.5 xs:h-2 sm:h-3 mr-2 xs:mr-3 flex-shrink-0`}>
                     <div 
-                      className={`h-2 xs:h-3 rounded-full ${darkMode ? 'bg-blue-400' : 'bg-blue-600'} transition-all duration-500`}
+                      className={`h-1.5 xs:h-2 sm:h-3 rounded-full ${darkMode ? 'bg-blue-400' : 'bg-blue-600'} transition-all duration-500`}
                       style={{ width: `${overallProgress}%` }}
                     ></div>
                   </div>
-                  <span className={`text-xs xs:text-sm font-medium ${darkMode ? 'text-blue-300' : 'text-blue-800'} select-none`}>
+                  <span className={`text-xs xs:text-sm font-medium ${darkMode ? 'text-blue-300' : 'text-blue-800'} select-none truncate`}>
                     {overallProgress}% Overall Progress
                   </span>
                 </div>
-                <span className={`flex items-center text-xs xs:text-sm ${darkMode ? 'text-blue-300' : 'text-blue-800'} select-none`}>
-                  <Trophy size={16} className="mr-1 xs:mr-2" />
+                <span className={`flex items-center text-xs xs:text-sm ${darkMode ? 'text-blue-300' : 'text-blue-800'} select-none whitespace-nowrap`}>
+                  <Trophy size={14} className="mr-1 xs:mr-2 flex-shrink-0" />
                   {stats?.achievements_earned || 0} Achievements Earned
                 </span>
               </div>
@@ -1174,7 +1199,7 @@ const DashboardContent = ({
                 if (nextCourse) startLearning(nextCourse.id);
               }}
               disabled={!courses || courses.length === 0}
-              className={`px-4 xs:px-5 sm:px-6 py-2.5 xs:py-3 rounded-lg font-semibold transition-all hover:scale-105 shadow-lg select-none text-sm xs:text-base ${
+              className={`px-3 xs:px-4 sm:px-5 md:px-6 py-2 xs:py-2.5 sm:py-3 rounded-lg font-semibold transition-all hover:scale-105 shadow-lg select-none text-xs xs:text-sm sm:text-base w-full lg:w-auto mt-3 lg:mt-0 ${
                 !courses || courses.length === 0 
                   ? 'opacity-50 cursor-not-allowed bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400' 
                   : 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white'
@@ -1185,68 +1210,70 @@ const DashboardContent = ({
           </div>
         </div>
 
-        {/* Quick Stats - RESPONSIVE FIX: Grid adjustment for tablets */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 xs:gap-4 mb-6 sm:mb-8 select-none">
-          <div className={`p-3 xs:p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm select-none`}>
+        {/* Quick Stats - MOBILE FIX: Better grid and text handling */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 xs:gap-3 sm:gap-4 mb-4 xs:mb-6 sm:mb-8 select-none">
+          <div className={`p-2 xs:p-3 sm:p-4 rounded-lg xs:rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm select-none overflow-hidden`}>
             <div className="flex items-center select-none">
-              <div className={`p-1.5 xs:p-2 rounded-lg ${darkMode ? 'bg-blue-900/30' : 'bg-blue-100'} mr-2 xs:mr-3`}>
-                <BookOpen className={`h-5 w-5 xs:h-6 xs:w-6 ${darkMode ? 'text-blue-400' : 'text-blue-700'}`} />
+              <div className={`p-1 xs:p-1.5 sm:p-2 rounded-lg ${darkMode ? 'bg-blue-900/30' : 'bg-blue-100'} mr-2 xs:mr-3 flex-shrink-0`}>
+                <BookOpen className={`h-4 w-4 xs:h-5 xs:w-5 sm:h-6 sm:w-6 ${darkMode ? 'text-blue-400' : 'text-blue-700'}`} />
               </div>
-              <div>
-                <p className={`text-xs xs:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} select-none`}>Active Courses</p>
-                <p className={`text-xl xs:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>{stats?.enrolled_courses || 0}</p>
+              <div className="min-w-0">
+                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'} select-none truncate`}>Active Courses</p>
+                <p className={`text-lg xs:text-xl sm:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} select-none truncate`}>{stats?.enrolled_courses || 0}</p>
               </div>
             </div>
           </div>
           
-          <div className={`p-3 xs:p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm select-none`}>
+          <div className={`p-2 xs:p-3 sm:p-4 rounded-lg xs:rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm select-none overflow-hidden`}>
             <div className="flex items-center select-none">
-              <div className={`p-1.5 xs:p-2 rounded-lg ${darkMode ? 'bg-green-900/30' : 'bg-green-100'} mr-2 xs:mr-3`}>
-                <CheckCircle className={`h-5 w-5 xs:h-6 xs:w-6 ${darkMode ? 'text-green-400' : 'text-green-700'}`} />
+              <div className={`p-1 xs:p-1.5 sm:p-2 rounded-lg ${darkMode ? 'bg-green-900/30' : 'bg-green-100'} mr-2 xs:mr-3 flex-shrink-0`}>
+                <CheckCircle className={`h-4 w-4 xs:h-5 xs:w-5 sm:h-6 sm:w-6 ${darkMode ? 'text-green-400' : 'text-green-700'}`} />
               </div>
-              <div>
-                <p className={`text-xs xs:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} select-none`}>Completed Modules</p>
-                <p className={`text-xl xs:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>{stats?.completed_modules || 0}</p>
+              <div className="min-w-0">
+                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'} select-none truncate`}>Completed Modules</p>
+                <p className={`text-lg xs:text-xl sm:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} select-none truncate`}>{stats?.completed_modules || 0}</p>
               </div>
             </div>
           </div>
           
-          <div className={`p-3 xs:p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm select-none`}>
+          <div className={`p-2 xs:p-3 sm:p-4 rounded-lg xs:rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm select-none overflow-hidden`}>
             <div className="flex items-center select-none">
-              <div className={`p-1.5 xs:p-2 rounded-lg ${darkMode ? 'bg-purple-900/30' : 'bg-purple-100'} mr-2 xs:mr-3`}>
-                <Brain className={`h-5 w-5 xs:h-6 xs:w-6 ${darkMode ? 'text-purple-400' : 'text-purple-700'}`} />
+              <div className={`p-1 xs:p-1.5 sm:p-2 rounded-lg ${darkMode ? 'bg-purple-900/30' : 'bg-purple-100'} mr-2 xs:mr-3 flex-shrink-0`}>
+                <Brain className={`h-4 w-4 xs:h-5 xs:w-5 sm:h-6 sm:w-6 ${darkMode ? 'text-purple-400' : 'text-purple-700'}`} />
               </div>
-              <div>
-                <p className={`text-xs xs:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} select-none`}>Quiz Accuracy</p>
-                <p className={`text-xl xs:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>{stats?.quiz_accuracy?.toFixed(0) || 0}%</p>
+              <div className="min-w-0">
+                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'} select-none truncate`}>Quiz Accuracy</p>
+                <p className={`text-lg xs:text-xl sm:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} select-none truncate`}>{stats?.quiz_accuracy?.toFixed(0) || 0}%</p>
               </div>
             </div>
           </div>
           
-          <div className={`p-3 xs:p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm select-none`}>
+          <div className={`p-2 xs:p-3 sm:p-4 rounded-lg xs:rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm select-none overflow-hidden`}>
             <div className="flex items-center select-none">
-              <div className={`p-1.5 xs:p-2 rounded-lg ${darkMode ? 'bg-yellow-900/30' : 'bg-yellow-100'} mr-2 xs:mr-3`}>
-                <Award className={`h-5 w-5 xs:h-6 xs:w-6 ${darkMode ? 'text-yellow-400' : 'text-yellow-700'}`} />
+              <div className={`p-1 xs:p-1.5 sm:p-2 rounded-lg ${darkMode ? 'bg-yellow-900/30' : 'bg-yellow-100'} mr-2 xs:mr-3 flex-shrink-0`}>
+                <Award className={`h-4 w-4 xs:h-5 xs:w-5 sm:h-6 sm:w-6 ${darkMode ? 'text-yellow-400' : 'text-yellow-700'}`} />
               </div>
-              <div>
-                <p className={`text-xs xs:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} select-none`}>Learning Level</p>
-                <p className={`text-xl xs:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>{stats?.level || 1}</p>
+              <div className="min-w-0">
+                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'} select-none truncate`}>Learning Level</p>
+                <p className={`text-lg xs:text-xl sm:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} select-none truncate`}>{stats?.level || 1}</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Next Best Action - RESPONSIVE FIX: Stack and adjust padding */}
+        {/* Next Best Action - MOBILE FIX: Better text wrapping */}
         {courses && courses.length > 0 && (
-          <div className={`mb-6 sm:mb-8 p-4 xs:p-5 rounded-xl ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-blue-50/80 border-blue-200'} border shadow-lg select-none`}>
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 xs:gap-4">
-              <div className="flex items-center mb-3 md:mb-0">
-                <div className={`p-2 xs:p-3 rounded-lg ${darkMode ? 'bg-blue-900/30' : 'bg-blue-100'} mr-3 xs:mr-4`}>
-                  <TargetIcon className={`h-5 w-5 xs:h-6 xs:w-6 ${darkMode ? 'text-blue-400' : 'text-blue-700'}`} />
+          <div className={`mb-4 xs:mb-6 sm:mb-8 p-3 xs:p-4 sm:p-5 rounded-lg xs:rounded-xl ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-blue-50/80 border-blue-200'} border shadow-lg select-none overflow-hidden`}>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 xs:gap-3 sm:gap-4">
+              <div className="flex items-center mb-2 md:mb-0 min-w-0">
+                <div className={`p-1.5 xs:p-2 sm:p-3 rounded-lg ${darkMode ? 'bg-blue-900/30' : 'bg-blue-100'} mr-2 xs:mr-3 sm:mr-4 flex-shrink-0`}>
+                  <TargetIcon className={`h-4 w-4 xs:h-5 xs:w-5 sm:h-6 sm:w-6 ${darkMode ? 'text-blue-400' : 'text-blue-700'}`} />
                 </div>
-                <div>
-                  <h3 className={`font-semibold text-base xs:text-lg mb-1 ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>Continue Your Learning Journey</h3>
-                  <p className={`text-sm xs:text-base ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                <div className="min-w-0">
+                  <h3 className={`font-semibold text-sm xs:text-base sm:text-lg mb-0.5 xs:mb-1 break-words ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>
+                    Continue Your Learning Journey
+                  </h3>
+                  <p className={`text-xs xs:text-sm sm:text-base break-words ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                     Based on your progress, we recommend continuing with your next course.
                   </p>
                 </div>
@@ -1256,7 +1283,7 @@ const DashboardContent = ({
                   const nextCourse = getNextRecommendedCourse();
                   if (nextCourse) startLearning(nextCourse.id);
                 }}
-                className="px-4 xs:px-5 sm:px-6 py-2.5 xs:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 transition-colors shadow-md hover:shadow-lg select-none text-sm xs:text-base"
+                className="px-3 xs:px-4 sm:px-5 md:px-6 py-2 xs:py-2.5 sm:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 transition-colors shadow-md hover:shadow-lg select-none text-xs xs:text-sm sm:text-base w-full md:w-auto mt-2 md:mt-0"
               >
                 Start Learning Now
               </button>
@@ -1264,92 +1291,92 @@ const DashboardContent = ({
           </div>
         )}
 
-        {/* Search and Filter - RESPONSIVE FIX: Stack and adjust layout */}
-        <div className="mb-6 select-none">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-            <div className="flex-1">
+        {/* Search and Filter - MOBILE FIX: Better layout */}
+        <div className="mb-4 xs:mb-6 select-none">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4 xs:mb-6">
+            <div className="flex-1 min-w-0">
               <div className="relative flex items-center">
-                <Search className="absolute left-3 text-gray-400 dark:text-gray-500" size={18} />
+                <Search className="absolute left-2 xs:left-3 text-gray-400 dark:text-gray-500" size={16} />
                 <input
                   type="text"
                   placeholder="Search courses..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && setSearchFocused(true)}
-                  className={`w-full pl-9 xs:pl-10 pr-20 xs:pr-24 py-2.5 xs:py-3 rounded-lg border text-sm xs:text-base ${darkMode ? 'border-gray-700 bg-gray-800 text-gray-200' : 'border-gray-200 bg-white text-gray-900'} focus:outline-none focus:ring-2 focus:ring-blue-500 select-text`}
+                  className={`w-full pl-7 xs:pl-9 sm:pl-10 pr-16 xs:pr-20 sm:pr-24 py-2 xs:py-2.5 sm:py-3 rounded-lg border text-xs xs:text-sm sm:text-base ${darkMode ? 'border-gray-700 bg-gray-800 text-gray-200' : 'border-gray-200 bg-white text-gray-900'} focus:outline-none focus:ring-2 focus:ring-blue-500 select-text break-words`}
                   style={{ userSelect: 'text' }}
                 />
                 <div className="absolute right-0 flex">
                   {searchQuery && (
                     <button
                       onClick={() => setSearchQuery('')}
-                      className="p-2.5 xs:p-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 select-none"
+                      className="p-1.5 xs:p-2 sm:p-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 select-none"
                     >
-                      <X size={18} />
+                      <X size={16} />
                     </button>
                   )}
                   <button
                     onClick={() => setSearchFocused(!searchFocused)}
-                    className={`px-3 xs:px-4 py-2.5 xs:py-3 rounded-r-lg ${darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-600 hover:bg-blue-700'} text-white transition-colors select-none`}
+                    className={`px-2 xs:px-3 sm:px-4 py-2 xs:py-2.5 sm:py-3 rounded-r-lg ${darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-600 hover:bg-blue-700'} text-white transition-colors select-none`}
                   >
-                    <Search size={18} />
+                    <Search size={16} />
                   </button>
                 </div>
               </div>
             </div>
-            <div className="flex flex-col xs:flex-row gap-2 select-none">
-              {/* Sort Options - FIXED DARK/LIGHT THEME VISIBILITY */}
+            <div className="flex flex-col xs:flex-row gap-1 xs:gap-2 select-none">
+              {/* Sort Options - MOBILE FIX: Better dropdown */}
               <div className="relative">
                 <button
                   onClick={() => setShowSortOptions(!showSortOptions)}
-                  className={`flex items-center px-3 xs:px-4 py-2 xs:py-2.5 rounded-lg border text-sm ${darkMode ? 'border-gray-600 bg-gray-800 hover:bg-gray-700' : 'border-gray-300 bg-white hover:bg-gray-50'} transition-colors select-none`}
+                  className={`flex items-center px-2 xs:px-3 sm:px-4 py-1.5 xs:py-2 sm:py-2.5 rounded-lg border text-xs xs:text-sm ${darkMode ? 'border-gray-600 bg-gray-800 hover:bg-gray-700' : 'border-gray-300 bg-white hover:bg-gray-50'} transition-colors select-none w-full xs:w-auto`}
                 >
-                  {sortBy === 'alphabetical' ? <SortAsc size={14} className="mr-2" /> :
-                   sortBy === 'progress' ? <TrendingUpIcon size={14} className="mr-2" /> :
-                   <SortDesc size={14} className="mr-2" />}
-                  <span className={darkMode ? 'text-gray-300' : 'text-gray-700'} select-none>
+                  {sortBy === 'alphabetical' ? <SortAsc size={12} className="mr-1 xs:mr-2" /> :
+                   sortBy === 'progress' ? <TrendingUpIcon size={12} className="mr-1 xs:mr-2" /> :
+                   <SortDesc size={12} className="mr-1 xs:mr-2" />}
+                  <span className={`truncate ${darkMode ? 'text-gray-300' : 'text-gray-700'} select-none`}>
                     {sortBy === 'alphabetical' ? 'A-Z' :
                      sortBy === 'progress' ? 'Progress' : 'Recent'}
                   </span>
                 </button>
                 
                 {showSortOptions && (
-                  <div className={`absolute left-0 right-0 mt-1 rounded-lg shadow-lg border py-1 z-50 ${darkMode ? 'bg-gray-900 border-gray-700' : 'bg-blue-50 border-blue-200'} select-none`}>
+                  <div className={`absolute left-0 right-0 mt-1 rounded-lg shadow-lg border py-1 z-50 ${darkMode ? 'bg-gray-900 border-gray-700' : 'bg-blue-50 border-blue-200'} select-none min-w-full`}>
                     <button
                       onClick={() => { setSortBy('alphabetical'); setShowSortOptions(false); }}
-                      className={`flex items-center w-full px-3 py-2 text-left text-xs xs:text-sm ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-blue-100'} ${sortBy === 'alphabetical' ? (darkMode ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-100 text-blue-800') : (darkMode ? 'text-gray-300' : 'text-gray-700')} select-none`}
+                      className={`flex items-center w-full px-2 xs:px-3 py-1.5 xs:py-2 text-left text-xs xs:text-sm ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-blue-100'} ${sortBy === 'alphabetical' ? (darkMode ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-100 text-blue-800') : (darkMode ? 'text-gray-300' : 'text-gray-700')} select-none break-words`}
                     >
-                      <SortAsc size={12} className="mr-2 xs:mr-3" />
+                      <SortAsc size={10} className="mr-1 xs:mr-2 sm:mr-3 flex-shrink-0" />
                       Alphabetical (A-Z)
                     </button>
                     <button
                       onClick={() => { setSortBy('progress'); setShowSortOptions(false); }}
-                      className={`flex items-center w-full px-3 py-2 text-left text-xs xs:text-sm ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-blue-100'} ${sortBy === 'progress' ? (darkMode ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-100 text-blue-800') : (darkMode ? 'text-gray-300' : 'text-gray-700')} select-none`}
+                      className={`flex items-center w-full px-2 xs:px-3 py-1.5 xs:py-2 text-left text-xs xs:text-sm ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-blue-100'} ${sortBy === 'progress' ? (darkMode ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-100 text-blue-800') : (darkMode ? 'text-gray-300' : 'text-gray-700')} select-none break-words`}
                     >
-                      <TrendingUpIcon size={12} className="mr-2 xs:mr-3" />
+                      <TrendingUpIcon size={10} className="mr-1 xs:mr-2 sm:mr-3 flex-shrink-0" />
                       Progress (Highest)
                     </button>
                     <button
                       onClick={() => { setSortBy('recent'); setShowSortOptions(false); }}
-                      className={`flex items-center w-full px-3 py-2 text-left text-xs xs:text-sm ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-blue-100'} ${sortBy === 'recent' ? (darkMode ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-100 text-blue-800') : (darkMode ? 'text-gray-300' : 'text-gray-700')} select-none`}
+                      className={`flex items-center w-full px-2 xs:px-3 py-1.5 xs:py-2 text-left text-xs xs:text-sm ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-blue-100'} ${sortBy === 'recent' ? (darkMode ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-100 text-blue-800') : (darkMode ? 'text-gray-300' : 'text-gray-700')} select-none break-words`}
                     >
-                      <SortDesc size={12} className="mr-2 xs:mr-3" />
+                      <SortDesc size={10} className="mr-1 xs:mr-2 sm:mr-3 flex-shrink-0" />
                       Recently Added
                     </button>
                   </div>
                 )}
               </div>
 
-              {/* Status Filter - RESPONSIVE FIX: Better scrolling on mobile */}
-              <div className="flex overflow-x-auto pb-1 select-none">
+              {/* Status Filter - MOBILE FIX: Better scrolling */}
+              <div className="flex overflow-x-auto pb-1 select-none gap-0.5">
                 {['all', 'in-progress', 'completed', 'not-started'].map((status) => (
                   <button
                     key={status}
                     onClick={() => setFilterStatus(status)}
-                    className={`px-3 xs:px-4 py-2 xs:py-2.5 text-xs xs:text-sm font-medium capitalize whitespace-nowrap ${filterStatus === status 
+                    className={`px-2 xs:px-3 sm:px-4 py-1.5 xs:py-2 sm:py-2.5 text-xs xs:text-sm font-medium capitalize whitespace-nowrap ${filterStatus === status 
                       ? darkMode ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-700 border border-blue-300' 
                       : darkMode ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    } ${status === 'all' ? 'rounded-l-lg' : ''} ${status === 'not-started' ? 'rounded-r-lg' : ''} select-none`}
+                    } ${status === 'all' ? 'rounded-l-lg' : ''} ${status === 'not-started' ? 'rounded-r-lg' : ''} select-none flex-shrink-0`}
                   >
                     {status === 'all' ? 'All' : 
                      status === 'in-progress' ? 'In Progress' : 
@@ -1361,25 +1388,29 @@ const DashboardContent = ({
           </div>
         </div>
 
-        {/* Courses Section - PROFESSIONAL VERTICAL LAYOUT WITH BLUE HOVER EFFECTS - RESPONSIVE FIX: Adjust layout */}
-        <div className="mb-6 sm:mb-8 select-none">
-          <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-2 xs:gap-0 mb-4 xs:mb-6 select-none">
-            <h2 className={`text-xl xs:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>My Learning Courses</h2>
-            <span className={`text-sm xs:text-base ${darkMode ? 'text-gray-300' : 'text-gray-700'} select-none`}>
+        {/* Courses Section - MOBILE FIX: Better text handling */}
+        <div className="mb-4 xs:mb-6 sm:mb-8 select-none">
+          <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1 xs:gap-2 mb-3 xs:mb-4 sm:mb-6 select-none">
+            <h2 className={`text-lg xs:text-xl sm:text-2xl font-bold break-words ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>
+              My Learning Courses
+            </h2>
+            <span className={`text-xs xs:text-sm sm:text-base ${darkMode ? 'text-gray-300' : 'text-gray-700'} select-none whitespace-nowrap`}>
               {filteredCourses.length} course{filteredCourses.length !== 1 ? 's' : ''} found
             </span>
           </div>
 
           {filteredCourses.length === 0 ? (
-            <div className="text-center py-8 xs:py-12 select-none">
-              <BookOpen className="h-12 w-12 xs:h-16 xs:w-16 text-gray-400 mx-auto mb-3 xs:mb-4" />
-              <h3 className={`text-lg xs:text-xl font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>No courses found</h3>
-              <p className={`text-sm xs:text-base ${darkMode ? 'text-gray-300' : 'text-gray-700'} select-none`}>
+            <div className="text-center py-6 xs:py-8 sm:py-12 select-none">
+              <BookOpen className="h-10 w-10 xs:h-12 xs:w-12 sm:h-16 sm:w-16 text-gray-400 mx-auto mb-2 xs:mb-3 sm:mb-4" />
+              <h3 className={`text-base xs:text-lg sm:text-xl font-semibold mb-1 xs:mb-2 break-words ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>
+                No courses found
+              </h3>
+              <p className={`text-xs xs:text-sm sm:text-base ${darkMode ? 'text-gray-300' : 'text-gray-700'} select-none break-words`}>
                 {searchQuery ? 'Try a different search term' : 'No courses available yet'}
               </p>
             </div>
           ) : (
-            <div className="space-y-2 xs:space-y-1 select-none">
+            <div className="space-y-1.5 xs:space-y-1 select-none">
               {filteredCourses.map((course) => {
                 if (!course) return null;
                 const courseColor = getCourseColor(course);
@@ -1394,88 +1425,88 @@ const DashboardContent = ({
                     key={course.id}
                     className={`border ${darkMode ? 'border-gray-700' : 'border-gray-200'} ${isExpanded ? 'rounded-lg' : 'rounded-lg'} overflow-hidden transition-all duration-300 select-none hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-md`}
                   >
-                    {/* Course Title Row - Click to Expand WITH BLUE HOVER EFFECT - RESPONSIVE FIX: Adjust layout */}
+                    {/* Course Title Row - MOBILE FIX: Better layout */}
                     <button
                       onClick={() => toggleCourseExpansion(course.id)}
-                      className={`w-full text-left px-4 xs:px-6 py-3 xs:py-4 flex items-center justify-between ${darkMode ? 'hover:bg-gray-800/50' : 'hover:bg-blue-50/30'} transition-colors border-b ${isExpanded ? (darkMode ? 'border-gray-700' : 'border-blue-200') : 'border-transparent'} group`}
+                      className={`w-full text-left px-3 xs:px-4 sm:px-6 py-2 xs:py-3 sm:py-4 flex items-center justify-between ${darkMode ? 'hover:bg-gray-800/50' : 'hover:bg-blue-50/30'} transition-colors border-b ${isExpanded ? (darkMode ? 'border-gray-700' : 'border-blue-200') : 'border-transparent'} group overflow-hidden`}
                     >
                       <div className="flex items-center flex-1 min-w-0">
-                        <div className={`p-1.5 xs:p-2 rounded-md ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} mr-2 xs:mr-3 border ${courseColor.border} group-hover:border-blue-400 dark:group-hover:border-blue-500 transition-colors flex-shrink-0`}>
+                        <div className={`p-1 xs:p-1.5 sm:p-2 rounded-md ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} mr-2 xs:mr-3 border ${courseColor.border} group-hover:border-blue-400 dark:group-hover:border-blue-500 transition-colors flex-shrink-0`}>
                           {courseColor.icon}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className={`text-base xs:text-lg font-semibold truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                          <h3 className={`text-sm xs:text-base sm:text-lg font-semibold truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                             {course.title || 'Untitled Course'}
                           </h3>
-                          <div className="flex flex-wrap items-center gap-1 xs:gap-2 mt-1">
-                            <span className={`text-xs px-1.5 xs:px-2 py-0.5 xs:py-1 rounded-full flex items-center ${statusBadge.className}`}>
+                          <div className="flex flex-wrap items-center gap-1 xs:gap-2 mt-0.5 xs:mt-1">
+                            <span className={`text-xs px-1 xs:px-1.5 sm:px-2 py-0.5 xs:py-1 rounded-full flex items-center ${statusBadge.className} truncate max-w-[100px] xs:max-w-none`}>
                               {statusBadge.icon}
-                              {statusBadge.text}
+                              <span className="truncate">{statusBadge.text}</span>
                             </span>
-                            <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'} group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors`}>
+                            <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'} group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate max-w-[80px] xs:max-w-none`}>
                               {course.category}
                             </span>
-                            <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'} flex items-center group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors`}>
-                              <Clock size={10} className="mr-0.5 xs:mr-1" />
+                            <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'} flex items-center group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors whitespace-nowrap`}>
+                              <Clock size={10} className="mr-0.5 flex-shrink-0" />
                               {course.estimated_time || 60} min
                             </span>
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center ml-2 xs:ml-4">
-                        <div className="hidden xs:block w-16 xs:w-20 sm:w-24 h-1.5 xs:h-2 rounded-full bg-gray-200 dark:bg-gray-700 mr-2 xs:mr-4">
+                      <div className="flex items-center ml-1 xs:ml-2 sm:ml-4">
+                        <div className="hidden xs:block w-12 xs:w-16 sm:w-20 md:w-24 h-1 xs:h-1.5 sm:h-2 rounded-full bg-gray-200 dark:bg-gray-700 mr-1 xs:mr-2 sm:mr-4 flex-shrink-0">
                           <div 
                             className={`h-full rounded-full ${progressPercentage === 100 ? 'bg-green-500' : 'bg-blue-500'}`}
                             style={{ width: `${progressPercentage}%` }}
                           ></div>
                         </div>
-                        <span className={`text-xs xs:text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} w-8 xs:w-10 text-right group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors`}>
+                        <span className={`text-xs xs:text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} w-6 xs:w-8 sm:w-10 text-right group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors whitespace-nowrap`}>
                           {Math.round(progressPercentage)}%
                         </span>
                         {isExpanded ? (
-                          <ChevronUp className="ml-1 xs:ml-3 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" size={18} />
+                          <ChevronUp className="ml-0.5 xs:ml-1 sm:ml-3 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" size={16} />
                         ) : (
-                          <ChevronDown className="ml-1 xs:ml-3 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" size={18} />
+                          <ChevronDown className="ml-0.5 xs:ml-1 sm:ml-3 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" size={16} />
                         )}
                       </div>
                     </button>
 
-                    {/* Expanded Content - FIXED DARK/LIGHT THEME VISIBILITY - RESPONSIVE FIX: Adjust padding */}
+                    {/* Expanded Content - MOBILE FIX: Better text handling */}
                     {isExpanded && (
-                      <div className={`px-4 xs:px-6 py-3 xs:py-4 ${darkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-blue-50/30 border-blue-100'} border-t`}>
+                      <div className={`px-3 xs:px-4 sm:px-6 py-2 xs:py-3 sm:py-4 ${darkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-blue-50/30 border-blue-100'} border-t`}>
                         {/* Course Description */}
-                        <p className={`text-xs xs:text-sm mb-3 xs:mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                        <p className={`text-xs xs:text-sm mb-2 xs:mb-3 sm:mb-4 break-words ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                           {course.description || 'No description available'}
                         </p>
 
-                        {/* Quick Actions - RESPONSIVE FIX: Stack buttons on mobile */}
-                        <div className="flex flex-col sm:flex-row gap-2 xs:gap-3 mb-3 xs:mb-4">
+                        {/* Quick Actions - MOBILE FIX: Better stacking */}
+                        <div className="flex flex-col sm:flex-row gap-1.5 xs:gap-2 sm:gap-3 mb-2 xs:mb-3 sm:mb-4">
                           <button
                             onClick={() => startLearning(course.id)}
-                            className="px-3 xs:px-4 py-2 xs:py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 transition-colors flex items-center justify-center text-xs xs:text-sm font-medium flex-1"
+                            className="px-2 xs:px-3 sm:px-4 py-1.5 xs:py-2 sm:py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 transition-colors flex items-center justify-center text-xs xs:text-sm font-medium flex-1 break-words"
                           >
                             {course.completed_modules === course.total_modules ? 'Review Course' : 
                             (course.completed_modules || 0) > 0 ? 'Continue Learning' : 'Start Learning'}
-                            <BookOpen size={14} className="ml-1 xs:ml-2" />
+                            <BookOpen size={12} className="ml-1 xs:ml-2 flex-shrink-0" />
                           </button>
                           
                           {(course.completed_modules || 0) > 0 && (
                             <button
                               onClick={() => startQuiz(course.id)}
-                              className="px-3 xs:px-4 py-2 xs:py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 transition-colors flex items-center justify-center text-xs xs:text-sm font-medium"
+                              className="px-2 xs:px-3 sm:px-4 py-1.5 xs:py-2 sm:py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 transition-colors flex items-center justify-center text-xs xs:text-sm font-medium break-words"
                             >
-                              <Brain size={14} className="mr-1 xs:mr-2" />
+                              <Brain size={12} className="mr-1 xs:mr-2 flex-shrink-0" />
                               Take Quiz
                             </button>
                           )}
                         </div>
 
-                        {/* Modules List - RESPONSIVE FIX: Adjust spacing */}
-                        <div className="mb-3 xs:mb-4">
-                          <h4 className={`text-xs xs:text-sm font-semibold mb-1 xs:mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                        {/* Modules List - MOBILE FIX: Better spacing */}
+                        <div className="mb-2 xs:mb-3 sm:mb-4">
+                          <h4 className={`text-xs xs:text-sm font-semibold mb-1 xs:mb-2 break-words ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                             Modules ({course.completed_modules || 0}/{course.total_modules || 0} completed)
                           </h4>
-                          <div className="space-y-1 xs:space-y-2">
+                          <div className="space-y-1 xs:space-y-1.5 sm:space-y-2">
                             {Array.from({ length: course.total_modules || 0 }).map((_, index) => {
                               const moduleNumber = index + 1;
                               const isCompleted = index < (course.completed_modules || 0);
@@ -1483,27 +1514,27 @@ const DashboardContent = ({
                                 <button
                                   key={index}
                                   onClick={() => startLearning(course.id, index)}
-                                  className={`w-full text-left px-2 xs:px-3 py-1.5 xs:py-2 rounded-lg flex items-center justify-between ${darkMode ? 'hover:bg-gray-700/50' : 'hover:bg-blue-100/50'} transition-colors hover:text-blue-600 dark:hover:text-blue-400`}
+                                  className={`w-full text-left px-2 xs:px-3 py-1 xs:py-1.5 sm:py-2 rounded-lg flex items-center justify-between ${darkMode ? 'hover:bg-gray-700/50' : 'hover:bg-blue-100/50'} transition-colors hover:text-blue-600 dark:hover:text-blue-400 overflow-hidden`}
                                 >
-                                  <div className="flex items-center">
-                                    <div className={`w-5 h-5 xs:w-6 xs:h-6 rounded-full flex items-center justify-center mr-2 xs:mr-3 ${isCompleted ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'}`}>
-                                      {isCompleted ? <Check size={10} className="xs:h-3 xs:w-3" /> : moduleNumber}
+                                  <div className="flex items-center min-w-0">
+                                    <div className={`w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center mr-1 xs:mr-2 sm:mr-3 flex-shrink-0 ${isCompleted ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'}`}>
+                                      {isCompleted ? <Check size={8} className="xs:h-2 xs:w-2 sm:h-3 sm:w-3" /> : moduleNumber}
                                     </div>
-                                    <span className={`text-xs xs:text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                    <span className={`text-xs xs:text-sm truncate ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                                       Module {moduleNumber}
                                     </span>
                                   </div>
-                                  <ChevronRight size={14} className={darkMode ? 'text-gray-500' : 'text-gray-400'} />
+                                  <ChevronRight size={12} className={darkMode ? 'text-gray-500' : 'text-gray-400'} />
                                 </button>
                               );
                             })}
                           </div>
                         </div>
 
-                        {/* Progress Details - RESPONSIVE FIX: Stack on mobile */}
-                        <div className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'} flex flex-col xs:flex-row xs:justify-between gap-1 xs:gap-0`}>
-                          <span>{course.completed_modules || 0}/{course.total_modules || 0} modules completed</span>
-                          <span>{Math.round(progressPercentage)}% overall progress</span>
+                        {/* Progress Details - MOBILE FIX: Better stacking */}
+                        <div className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'} flex flex-col xs:flex-row xs:justify-between gap-0.5 xs:gap-0`}>
+                          <span className="truncate">{course.completed_modules || 0}/{course.total_modules || 0} modules completed</span>
+                          <span className="truncate">{Math.round(progressPercentage)}% overall progress</span>
                         </div>
                       </div>
                     )}
@@ -1514,46 +1545,54 @@ const DashboardContent = ({
           )}
         </div>
 
-        {/* Progress Analytics - RESPONSIVE FIX: Grid adjustment */}
-        <div className={`rounded-xl p-4 xs:p-5 sm:p-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm select-none`}>
-          <h2 className={`text-xl xs:text-2xl font-bold mb-4 xs:mb-6 flex items-center ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>
-            <BarChart3 size={20} className="mr-2 xs:mr-3" />
+        {/* Progress Analytics - MOBILE FIX: Better grid */}
+        <div className={`rounded-lg xs:rounded-xl sm:rounded-xl p-3 xs:p-4 sm:p-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-sm select-none overflow-hidden`}>
+          <h2 className={`text-lg xs:text-xl sm:text-2xl font-bold mb-3 xs:mb-4 sm:mb-6 flex items-center break-words ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>
+            <BarChart3 size={18} className="mr-2 xs:mr-3 flex-shrink-0" />
             Learning Analytics
           </h2>
-          <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 xs:gap-4 lg:gap-6 select-none">
-            <div className={`p-3 xs:p-4 rounded-lg ${darkMode ? 'bg-gray-700/50' : 'bg-blue-50'} border ${darkMode ? 'border-gray-600' : 'border-blue-100'}`}>
+          <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-2 xs:gap-3 sm:gap-4 lg:gap-6 select-none">
+            <div className={`p-2 xs:p-3 sm:p-4 rounded-lg ${darkMode ? 'bg-gray-700/50' : 'bg-blue-50'} border ${darkMode ? 'border-gray-600' : 'border-blue-100'} overflow-hidden`}>
               <div className="flex items-center">
-                <Clock size={18} className="mr-2 xs:mr-3 text-blue-700 dark:text-blue-400" />
-                <div>
-                  <p className={`text-xs xs:text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'} select-none`}>Total Study Time</p>
-                  <p className={`text-lg xs:text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>{Math.round((stats?.completed_modules || 0) * 15)} min</p>
+                <Clock size={16} className="mr-2 xs:mr-3 text-blue-700 dark:text-blue-400 flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className={`text-xs xs:text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'} select-none truncate`}>Total Study Time</p>
+                  <p className={`text-base xs:text-lg sm:text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} select-none truncate`}>
+                    {Math.round((stats?.completed_modules || 0) * 15)} min
+                  </p>
                 </div>
               </div>
             </div>
-            <div className={`p-3 xs:p-4 rounded-lg ${darkMode ? 'bg-gray-700/50' : 'bg-green-50'} border ${darkMode ? 'border-gray-600' : 'border-green-100'}`}>
+            <div className={`p-2 xs:p-3 sm:p-4 rounded-lg ${darkMode ? 'bg-gray-700/50' : 'bg-green-50'} border ${darkMode ? 'border-gray-600' : 'border-green-100'} overflow-hidden`}>
               <div className="flex items-center">
-                <CheckCircle size={18} className="mr-2 xs:mr-3 text-green-700 dark:text-green-400" />
-                <div>
-                  <p className={`text-xs xs:text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'} select-none`}>Quiz Accuracy</p>
-                  <p className={`text-lg xs:text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>{stats?.quiz_accuracy?.toFixed(1) || 0}%</p>
+                <CheckCircle size={16} className="mr-2 xs:mr-3 text-green-700 dark:text-green-400 flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className={`text-xs xs:text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'} select-none truncate`}>Quiz Accuracy</p>
+                  <p className={`text-base xs:text-lg sm:text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} select-none truncate`}>
+                    {stats?.quiz_accuracy?.toFixed(1) || 0}%
+                  </p>
                 </div>
               </div>
             </div>
-            <div className={`p-3 xs:p-4 rounded-lg ${darkMode ? 'bg-gray-700/50' : 'bg-purple-50'} border ${darkMode ? 'border-gray-600' : 'border-purple-100'}`}>
+            <div className={`p-2 xs:p-3 sm:p-4 rounded-lg ${darkMode ? 'bg-gray-700/50' : 'bg-purple-50'} border ${darkMode ? 'border-gray-600' : 'border-purple-100'} overflow-hidden`}>
               <div className="flex items-center">
-                <Award size={18} className="mr-2 xs:mr-3 text-purple-700 dark:text-purple-400" />
-                <div>
-                  <p className={`text-xs xs:text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'} select-none`}>Achievements</p>
-                  <p className={`text-lg xs:text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>{stats?.achievements_earned || 0}/{stats?.total_achievements || 0}</p>
+                <Award size={16} className="mr-2 xs:mr-3 text-purple-700 dark:text-purple-400 flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className={`text-xs xs:text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'} select-none truncate`}>Achievements</p>
+                  <p className={`text-base xs:text-lg sm:text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} select-none truncate`}>
+                    {stats?.achievements_earned || 0}/{stats?.total_achievements || 0}
+                  </p>
                 </div>
               </div>
             </div>
-            <div className={`p-3 xs:p-4 rounded-lg ${darkMode ? 'bg-gray-700/50' : 'bg-orange-50'} border ${darkMode ? 'border-gray-600' : 'border-orange-100'}`}>
+            <div className={`p-2 xs:p-3 sm:p-4 rounded-lg ${darkMode ? 'bg-gray-700/50' : 'bg-orange-50'} border ${darkMode ? 'border-gray-600' : 'border-orange-100'} overflow-hidden`}>
               <div className="flex items-center">
-                <Flame size={18} className="mr-2 xs:mr-3 text-orange-700 dark:text-orange-400" />
-                <div>
-                  <p className={`text-xs xs:text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'} select-none`}>Learning Streak</p>
-                  <p className={`text-lg xs:text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} select-none`}>{stats?.learning_streak || 0} days</p>
+                <Flame size={16} className="mr-2 xs:mr-3 text-orange-700 dark:text-orange-400 flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className={`text-xs xs:text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'} select-none truncate`}>Learning Streak</p>
+                  <p className={`text-base xs:text-lg sm:text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} select-none truncate`}>
+                    {stats?.learning_streak || 0} days
+                  </p>
                 </div>
               </div>
             </div>
